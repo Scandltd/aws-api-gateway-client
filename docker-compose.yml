@@ -1,0 +1,15 @@
+version: '2'
+
+services:
+  app:
+    build:
+      dockerfile: ./docker/node/Dockerfile
+      context: .
+    image: api_gateway_app
+    volumes:
+      - ./app:/app
+    ports:
+      - ${PUBLIC_PORT}:3000
+    environment:
+      - CHOKIDAR_USEPOLLING=${CHOKIDAR_USEPOLLING}      # Used for hot reload. Without it hot reload does not work for me
+    #  - HOST=${HOST}
