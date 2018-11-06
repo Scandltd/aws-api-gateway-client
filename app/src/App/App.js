@@ -10,6 +10,11 @@ import AccountContext from '../components/contexts/AccountContext';
  * App component
  */
 class App extends Component {
+  
+  /**
+   * 
+   * @param {*} props 
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -27,6 +32,9 @@ class App extends Component {
     });
   }
 
+  /**
+   * 
+   */
   render() {
     return (
       <div className="App">
