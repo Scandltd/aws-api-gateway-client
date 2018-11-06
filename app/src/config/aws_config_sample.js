@@ -1,4 +1,4 @@
-{
+export default {
     "accounts": [
         {
             "id": "1",

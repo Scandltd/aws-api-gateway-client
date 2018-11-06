@@ -7,9 +7,9 @@ import './footer.scss';
 class Footer extends Component
 {
     render() {
-        return <div className="container footer">
+        return <footer className="container footer">
                 footer text
-            </div>
+            </footer>
     } 
 }
 

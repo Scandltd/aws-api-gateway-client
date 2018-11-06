@@ -24,3 +24,4 @@ yarn-error.log*
 
 #config_file
 config/services/aws_config.json
+src/config/aws_config.js
