@@ -1,0 +1,3 @@
+.idea
+*.phtml*.compiled
+.env
