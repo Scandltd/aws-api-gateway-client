@@ -1,3 +1,4 @@
 .idea
 *.phtml*.compiled
 .env
+app/src/config/aws_config.js

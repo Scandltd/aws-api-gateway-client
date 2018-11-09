@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import './MainScreen.scss';
-import AccountItem from './parts/AccountItem';
+import './MainContainer.scss';
+import AccountItem from '../../components/account/AccountItem';
 import AccountContext from '../../components/contexts/AccountContext';
 
 /**

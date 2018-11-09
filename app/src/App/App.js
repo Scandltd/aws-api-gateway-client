@@ -3,8 +3,10 @@ import './App.scss';
 import Header from '../components/header/Header';
 import Footer from '../components/footer/Footer';
 import AccountLoader from '../services/accounts/AccountLoader';
-import MainScreen from '../screens/main/MainScreen';
 import AccountContext from '../components/contexts/AccountContext';
+import { BrowserRouter} from 'react-router-dom';
+import Main from '../components/main/Main';
+
 
 /**
  * App component
@@ -37,15 +39,15 @@ class App extends Component {
    */
   render() {
     return (
-      <div className="App">
-        <AccountContext.Provider value={{accounts: this.state.accounts}}>
-          <Header />
-          <div className="container main-container">
-            <MainScreen />
-          </div>
-          <Footer />
-        </AccountContext.Provider>
-      </div>
+      <BrowserRouter>
+        <div className="App">
+          <AccountContext.Provider value={{accounts: this.state.accounts}}>
+            <Header />
+            <Main />
+            <Footer />
+          </AccountContext.Provider>
+        </div>
+      </BrowserRouter>
     );
   }
 }
