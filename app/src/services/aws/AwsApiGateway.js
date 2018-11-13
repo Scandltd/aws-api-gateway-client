@@ -11,14 +11,6 @@ class AwsApiGateway
                 secretAccessKey: secretKey
             }
         });
-        console.log({
-            region: region,
-            apiVersion: '2015-07-09',
-            credentials: {
-                accessKeyId: accessKey, 
-                secretAccessKey: secretKey
-            }
-        });
     }
 
     /**

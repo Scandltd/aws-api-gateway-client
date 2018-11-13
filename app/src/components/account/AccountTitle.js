@@ -5,10 +5,16 @@ import React, {Component} from 'react';
  */
 class AccountTitle extends Component
 {
+    /**
+     * 
+     */
     handleClick = (e) => {
         this.props.onLoadApi(this.props.accountId);
     }
 
+    /**
+     * 
+     */
     render() {
         const loadBtnText = this.props.loaded ? 'Refresh' : 'Connect';
 
