@@ -1,17 +1,105 @@
 import React, {Component} from 'react';
+import { connect } from 'react-redux';
+import { find } from 'lodash';
+import { loadResorces } from '../../store/actions/entriesActions';
+import { loadAccountList } from '../../store/actions/accountActions';
+import EntriesTree from '../../components/entriesTree/EntriesTree';
 
 /**
  * 
  */
 class ApiDetail extends Component
 {
+    /**
+     *
+     * @param props
+     */
+    constructor(props) {
+        super(props);
+        this.state = {
+            accountId: props.match.params.accountId,
+            apiId: props.match.params.apiId,
+            loadedResources : false,
+        };
+    }
+
+    /**
+     *
+     */
+    componentDidMount() {
+        let account = this.getAccount();
+        if (account) {
+            this.loadResources(account);
+        } else {
+            this.props.actions.loadAccounts();
+        }
+    }
+
+    /**
+     *
+     */
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (!this.state.loadedResources) {
+            let account = this.getAccount();
+            if (account) {
+                this.loadResources(account);
+            }
+        }
+    }
+
+    /**
+     *
+     * @param account
+     */
+    loadResources(account) {
+        this.setState({loadedResources: true});
+        this.props.actions.loadResources(this.state.apiId, this.getAccount().credentials);
+    }
+
+
+    /**
+     *
+     * @returns {*}
+     */
+    getAccount = () => {
+       return find(this.props.accounts, {id: this.state.accountId});
+    };
+
     render() {
+        const entries = this.props.entries && Array.isArray(this.props.entries[this.state.apiId]) ? this.props.entries[this.state.apiId] : [];
+
         return (
             <div>
                 API detail page. Account id: {this.props.match.params.accountId} | Api id: {this.props.match.params.apiId}
+                <EntriesTree entries={entries} />
             </div>
         );
     }
 }
 
-export default ApiDetail;
+/**
+ *
+ * @param {*} state
+ */
+const mapStateToProps = (state) => {
+    return {
+        entries: state.entries.entries,
+        accounts: state.account.accounts,
+        loaded: false
+    }
+};
+
+/**
+ *
+ * @param {*} dispatch
+ */
+const mapDispatchToProps = (dispatch) => {
+    return {
+        actions: {
+            loadResources: (apiId, credentials) => dispatch(loadResorces(apiId, credentials)),
+            loadAccounts: () => dispatch(loadAccountList())
+        }
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ApiDetail);

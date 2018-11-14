@@ -12,7 +12,7 @@ export const loadApiList = (accountId, credentials) => {
     let client = new ApiGateway(credentials.accessKeyId, credentials.secretAccessKey, credentials.region);
 
     return dispatch => {
-        client.getApiList()
+        client.fetchApiList()
             .then((response) => {
                 dispatch(setAccountLoaded(accountId));
                 dispatch(setApiList(accountId, response.items));

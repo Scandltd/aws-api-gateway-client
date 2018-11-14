@@ -13,7 +13,7 @@ const defaultState = {
  * @param {*} state 
  * @param {*} action 
  */
-const accountReducer = (state = defaultState, action) => {
+const apiReducer = (state = defaultState, action) => {
     switch (action.type) {
         case ACTION_SET_API_LIST:
             if (!Array.isArray(action.payload.apiList)) {
@@ -27,4 +27,4 @@ const accountReducer = (state = defaultState, action) => {
     }
 };
 
-export default accountReducer;
+export default apiReducer;

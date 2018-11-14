@@ -14,11 +14,23 @@ class AwsApiGateway
     }
 
     /**
-     * 
+     *
+     * @returns {Promise<PromiseResult<APIGateway.RestApis, AWSError>>}
      */
-    getApiList = () => {
+    fetchApiList = () => {
         return this._client.getRestApis().promise();
-    }
+    };
+
+    /**
+     *
+     * @param params
+     *
+     * @returns {Promise<PromiseResult<D, E>>}
+     */
+    fetchApiResorces = (params) => {
+        return this._client.getResources(params).promise();
+    };
+
 }
 
 export default AwsApiGateway;
