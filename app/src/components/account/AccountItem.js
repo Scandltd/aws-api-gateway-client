@@ -7,12 +7,21 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Button from '@material-ui/core/Button';
+import { Redirect } from 'react-router';
 
 /**
  * 
  */
 class AccountItem extends Component
 {
+    constructor(props) {
+        super(props);
+        this.state = {
+            redirect: false
+        };
+    }
+
+
     /**
      * 
      */
@@ -22,17 +31,23 @@ class AccountItem extends Component
         }
     };
 
+    /**
+     *
+     * @param e
+     */
     handleAccountBtn = (e) => {
-
-        e.preventDefault();
         e.stopPropagation();
-        console.log('clicked');
+        this.setState({redirect:true});
     };
 
     /**
      * 
      */
     render() {
+        if (this.state.redirect) {
+            return <Redirect push to={`/${this.props.accountId}`} />;
+        }
+
         return (
             <ExpansionPanel onChange={this.handleLoadApi}>
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
