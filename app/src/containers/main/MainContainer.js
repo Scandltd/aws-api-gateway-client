@@ -6,6 +6,8 @@ import { loadAccountList } from '../../store/actions/accountActions';
 import { loadApiList } from '../../store/actions/apiActions';
 import PropTypes from 'prop-types';
 import {find} from 'lodash';
+import Typography from '@material-ui/core/Typography';
+import Divider from '@material-ui/core/Divider';
 
 /**
  * 
@@ -33,14 +35,14 @@ class MainContainer extends Component
         }
         
         this.props.accountActions.fetchApiList(id, account.credentials);
-    }
+    };
 
     /**
      * 
      */
     getAccount = (id) => {
         return find(this.props.accounts, {id: id});
-    }
+    };
 
     /**
      * 
@@ -48,7 +50,6 @@ class MainContainer extends Component
     render() {
         const items = this.props.accounts.map((item, idx) => {
             let ApiList = this.props.apiList && Array.isArray(this.props.apiList[item.id]) ? this.props.apiList[item.id] : [];
-
             return <AccountItem 
                 accountTitle={item.name} 
                 accountId={item.id} 
@@ -59,8 +60,14 @@ class MainContainer extends Component
             />;
         });
 
+        console.log(items);
         return (
+
             <div className="main-page">
+                <Typography variant="h2">
+                    Accounts
+                </Typography>
+                <Divider className="main-page-divider" />
                 {items}
             </div>
           );

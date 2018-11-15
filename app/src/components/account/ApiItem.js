@@ -1,6 +1,12 @@
 import React, {Component} from 'react';
 import { Redirect } from 'react-router';
 import PropTypes from 'prop-types';
+import Grid from '@material-ui/core/Grid';
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
 
 /**
  * 
@@ -26,13 +32,23 @@ class ApiItem extends Component
         }
 
         return (
-            <div className="api-item">
-                <div className="api-item-wrapper">
-                    <div className="api-item-header">{this.props.name}</div>
-                    <div className="api-item-info">{this.props.description}</div>
-                    <button onClick={this.handleMangeBtn}>Manage</button>
-                </div>
-            </div>
+            <Grid item sm={6} md={4} lg={3}>
+                <Card>
+                    <CardContent>
+                        <Typography gutterBottom variant="h5" component="h2">
+                            {this.props.name}
+                        </Typography>
+                        <Typography>
+                            {this.props.description}
+                        </Typography>
+                    </CardContent>
+                    <CardActions>
+                        <Button size="small" color="primary" onClick={this.handleMangeBtn}>
+                            Edit
+                        </Button>
+                    </CardActions>
+                </Card>
+            </Grid>
         );
     }
 }

@@ -3,35 +3,4 @@
   flex-direction: column;
   justify-content: space-between;
   min-height: 100vh;
-
-  .header {
-      height: 80px;
-      border: 1px solid #000000;
-  }
-
-  .main-container {
-      flex-grow: 1;
-      border: 1px solid green;
-      //display: flex;
-
-      .second-page {
-          display: flex;
-      }
-
-      .sidebar {
-          width: 300px;
-          border: 1px solid green;
-          
-      }
-
-      .main-content {
-          flex-grow: 1;
-          border: 1px solid green;
-      }
-  }
-
-  .footer {
-      height: 80px;
-      border: 1px solid red;
-  }
 }

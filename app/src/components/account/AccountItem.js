@@ -1,7 +1,12 @@
 import React, {Component} from 'react';
 import AccountList from './ApiList';
-import AccountTitle from './AccountTitle';
 import PropTypes from 'prop-types';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import Typography from '@material-ui/core/Typography';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import Button from '@material-ui/core/Button';
 
 /**
  * 
@@ -12,7 +17,16 @@ class AccountItem extends Component
      * 
      */
     handleLoadApi = () => {
-        this.props.onLoadApiList(this.props.accountId);
+        if (!this.props.loaded) {
+            this.props.onLoadApiList(this.props.accountId);
+        }
+    };
+
+    handleAccountBtn = (e) => {
+
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('clicked');
     };
 
     /**
@@ -20,11 +34,17 @@ class AccountItem extends Component
      */
     render() {
         return (
-            <div className="account-item">
-                <AccountTitle title={this.props.accountTitle} loaded={this.props.loaded} accountId={this.props.accountId} onLoadApi={this.handleLoadApi}/>
-                <AccountList items={this.props.apiList} accountId={this.props.accountId}/>
-            </div>
-        );
+            <ExpansionPanel onChange={this.handleLoadApi}>
+                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                    <Typography>
+                        <Button onClick={this.handleAccountBtn}>{this.props.accountTitle}</Button>
+                    </Typography>
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails>
+                    <AccountList items={this.props.apiList} accountId={this.props.accountId}/>
+                </ExpansionPanelDetails>
+            </ExpansionPanel>
+        ) ;
     }
 }
 

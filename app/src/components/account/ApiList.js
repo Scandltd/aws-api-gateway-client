@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import ApiItem from './ApiItem';
 import PropTypes from 'prop-types';
+import Grid from '@material-ui/core/Grid';
 
 /**
  * 
@@ -20,9 +21,9 @@ class ApiList extends Component
         });
 
         return (
-            <div className="row">
+            <Grid container spacing={40}>
                 {items}
-            </div>
+            </Grid>
         );
     }
 }
