@@ -13,7 +13,7 @@ class AccountItem extends Component
      */
     handleLoadApi = () => {
         this.props.onLoadApiList(this.props.accountId);
-    }
+    };
 
     /**
      * 

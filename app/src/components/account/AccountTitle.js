@@ -10,7 +10,7 @@ class AccountTitle extends Component
      */
     handleClick = (e) => {
         this.props.onLoadApi(this.props.accountId);
-    }
+    };
 
     /**
      * 
