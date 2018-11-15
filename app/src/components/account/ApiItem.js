@@ -43,5 +43,5 @@ ApiItem.propTypes = {
     accountId: PropTypes.any.isRequired,
     apiId: PropTypes.any.isRequired,
     name: PropTypes.string.isRequired,
-    description: PropTypes.string,
+    description: PropTypes.string
 };
