@@ -4,6 +4,7 @@ import { find } from 'lodash';
 import { loadResorces } from '../../store/actions/entriesActions';
 import { loadAccountList } from '../../store/actions/accountActions';
 import EntriesTree from '../../components/entriesTree/EntriesTree';
+import arrayToTree from 'array-to-tree';
 
 /**
  * 
@@ -65,13 +66,34 @@ class ApiDetail extends Component
        return find(this.props.accounts, {id: this.state.accountId});
     };
 
+    /**
+     *
+     * @returns {Array}
+     */
+    getEntries = () => {
+        return this.props.entries && Array.isArray(this.props.entries[this.state.apiId]) ? this.props.entries[this.state.apiId] : [];
+    };
+
+    /**
+     *
+     * @returns {Array}
+     */
+    buildTree = () => {
+        return arrayToTree(this.getEntries(), {
+            parentProperty: 'parentId',
+            customID: 'id'
+        });
+    };
+
     render() {
-        const entries = this.props.entries && Array.isArray(this.props.entries[this.state.apiId]) ? this.props.entries[this.state.apiId] : [];
+
+        const tree = this.buildTree();
+        console.log(tree);
 
         return (
             <div>
                 API detail page. Account id: {this.props.match.params.accountId} | Api id: {this.props.match.params.apiId}
-                <EntriesTree entries={entries} />
+                <EntriesTree treeEntries={this.buildTree()} />
             </div>
         );
     }

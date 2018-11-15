@@ -1,53 +1,61 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import ListToTree from 'list-to-tree';
+import TreeResourceElement from './TreeResourceElement';
 
 /**
  *
  */
 class EntriesTree extends Component
 {
+
     /**
      *
-     * @param props
+     * @param resource
+     *
+     * @returns {*}
      */
-    constructor(props) {
-        super(props);
-        this.state = {
-            entriesTree: []
-        };
-    }
+    renderTreeElements(resource) {
+        return resource.map((item, idx) => {
+            let nested = '';
+            if (item.children && 0 !== item.children.length) {
+                nested = this.renderTreeElements(item.children);
+            }
 
-    buildTree = () => {
-        console.log();
-        const ltt = new ListToTree(this.props.entries, {
-            key_id: 'id',
-            key_parent: 'parentId'
+            return <TreeResourceElement
+                key={item.id}
+                id={item.id}
+                path={item.path}
+                parentId={item.parentId}
+                resourceMethods={item.resourceMethods}
+                nested={nested}
+            />
         });
-
-       this.setState({entriesTree: ltt.GetTree()});
-    };
-
-    componentDidMount() {
-        this.buildTree();
     }
 
+    /**
+     *
+     * @returns {*}
+     */
+    renderTree() {
+        return this.renderTreeElements(this.props.treeEntries);
+    }
+
+    /**
+     *
+     * @returns {*}
+     */
     render() {
-        console.log(this.state);
-
-
 
         return (
-            <div >
-                entries tree
+            <div className="entries-tree">
+                {this.renderTree()}
             </div>
         );
     };
-
 }
 
 export default EntriesTree;
 
 EntriesTree.propsTypes = {
-    entries: PropTypes.array.isRequired
+    treeEntries: PropTypes.array.isRequired
 };

@@ -18,7 +18,7 @@ class ApiItem extends Component
         this.setState({
             redirect: true
         });
-    }
+    };
 
     render() {
         if (this.state.redirect) {
