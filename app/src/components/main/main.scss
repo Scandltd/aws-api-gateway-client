@@ -1,9 +1,10 @@
 .main-container {
   flex-grow: 1;
   max-width: 1200px;
-  justify-content: center;
+  /*justify-content: center;*/
   display: flex;
   flex-direction: column;
   margin: 0 auto;
   width: 100%;
+  padding-top: 20px;
 }

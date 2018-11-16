@@ -45,7 +45,7 @@ class AccountItem extends Component
      */
     render() {
         if (this.state.redirect) {
-            return <Redirect push to={`/${this.props.accountId}`} />;
+            return <Redirect push to={`/account/${this.props.accountId}/api`} />;
         }
 
         return (

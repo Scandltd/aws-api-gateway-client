@@ -2,14 +2,13 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { find } from 'lodash';
 import { loadResorces } from '../../store/actions/entriesActions';
-import { loadAccountList } from '../../store/actions/accountActions';
 import EntriesTree from '../../components/entriesTree/EntriesTree';
 import arrayToTree from 'array-to-tree';
 
 /**
  * 
  */
-class ApiDetail extends Component
+class ApiResourceDetail extends Component
 {
     /**
      *
@@ -31,8 +30,6 @@ class ApiDetail extends Component
         let account = this.getAccount();
         if (account) {
             this.loadResources(account);
-        } else {
-            this.props.actions.loadAccounts();
         }
     }
 
@@ -118,10 +115,9 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         actions: {
-            loadResources: (apiId, credentials) => dispatch(loadResorces(apiId, credentials)),
-            loadAccounts: () => dispatch(loadAccountList())
+            loadResources: (apiId, credentials) => dispatch(loadResorces(apiId, credentials))
         }
     }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ApiDetail);
+export default connect(mapStateToProps, mapDispatchToProps)(ApiResourceDetail);

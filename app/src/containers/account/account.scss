@@ -1,0 +1,17 @@
+.account-container {
+  flex-grow: 1;
+  width: 100%;
+  min-height: 100vh;
+  padding-right: 12px;
+
+  .account-grid {
+    min-height: 100vh;
+
+    .account-grid-content {
+      min-height: 100vh;
+      flex-grow: 1;
+      padding: 12px;
+
+    }
+  }
+}

@@ -26,13 +26,17 @@ class ApiItem extends Component
         });
     };
 
+    handleDeleteBtn = () => {
+        console.log('delete', this.props.apiId);
+    };
+
     render() {
         if (this.state.redirect) {
-            return <Redirect push to={`/${this.props.accountId}/api/${this.props.apiId}`} />;
+            return <Redirect push to={`/account/${this.props.accountId}/api/${this.props.apiId}/resource`} />;
         }
 
         return (
-            <Grid item sm={6} md={4} lg={3}>
+            <Grid item sm={6} md={4} lg={4}>
                 <Card>
                     <CardContent>
                         <Typography gutterBottom variant="h5" component="h2">
@@ -44,7 +48,10 @@ class ApiItem extends Component
                     </CardContent>
                     <CardActions>
                         <Button size="small" color="primary" onClick={this.handleMangeBtn}>
-                            Edit
+                            Resources
+                        </Button>
+                        <Button size="small" color="primary" onClick={this.handleDeleteBtn}>
+                            Delete
                         </Button>
                     </CardActions>
                 </Card>

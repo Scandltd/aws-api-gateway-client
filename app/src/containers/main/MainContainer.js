@@ -2,10 +2,9 @@ import React, {Component} from 'react';
 import './MainContainer.scss';
 import AccountItem from '../../components/account/AccountItem';
 import { connect } from 'react-redux';
-import { loadAccountList } from '../../store/actions/accountActions';
 import { loadApiList } from '../../store/actions/apiActions';
 import PropTypes from 'prop-types';
-import {find} from 'lodash';
+import { find } from 'lodash';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 
@@ -17,19 +16,10 @@ class MainContainer extends Component
     /**
      * 
      */
-    componentDidMount() {
-        if(!this.props.loaded) {
-            this.props.accountActions.loadAccounts();
-        }
-    }
-
-    /**
-     * 
-     */
     handleLoadApiList = (id) => {
         const account = this.getAccount(id);
         if (!account) {
-            console.error('account not found');        //@todo replace with message
+            console.error('account not found');
 
             return ;
         }
@@ -60,7 +50,6 @@ class MainContainer extends Component
             />;
         });
 
-        console.log(items);
         return (
 
             <div className="main-page">
@@ -93,7 +82,6 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         accountActions: {
-            loadAccounts: () => dispatch(loadAccountList()),
             fetchApiList: (accountId, credentials) => dispatch(loadApiList(accountId, credentials))
         }
     }
