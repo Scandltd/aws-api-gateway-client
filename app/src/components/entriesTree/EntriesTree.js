@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import TreeResourceElement from './TreeResourceElement';
+import './entriesTree.scss';
 
 /**
  *
@@ -14,11 +15,11 @@ class EntriesTree extends Component
      *
      * @returns {*}
      */
-    renderTreeElements(resource) {
+    renderTreeElements(resource, level = 0) {
         return resource.map((item, idx) => {
             let nested = '';
             if (item.children && 0 !== item.children.length) {
-                nested = this.renderTreeElements(item.children);
+                nested = this.renderTreeElements(item.children, level + 1);
             }
 
             return <TreeResourceElement
@@ -28,6 +29,7 @@ class EntriesTree extends Component
                 parentId={item.parentId}
                 resourceMethods={item.resourceMethods}
                 nested={nested}
+                expanded={0 === level}
             />
         });
     }

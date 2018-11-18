@@ -1,0 +1,110 @@
+.entries-tree {
+    .tree-source-element-details {
+        flex-direction: column;
+        padding: 0 0 0 24px;
+
+        .tree-method {
+            .method-head-first {
+                flex-basis: 20%;
+                flex-shrink: 0;
+
+                p {
+                    display: inline-block;
+                    border-radius: 3px;
+                    padding: 5px 15px;
+                    color: white;
+                    font-weight: bold;
+                    background-color: #D5DBDB;
+                }
+            }
+
+            .tree-method-header {
+                & > div{
+                    align-items: center;
+                }
+            }
+
+            .smethod-head-first {
+                color: grey,
+            }
+        }
+
+        .tree-method-header-type-GET {
+            background-color: #EBF5FB;
+
+            .method-head-first {
+                p {
+                    background-color: #5DADE2;
+                }
+            }
+        }
+
+        .tree-method-header-type-POST {
+            background-color: #E8F8F5;
+
+            .method-head-first {
+                p {
+                    background-color: #48C9B0;
+                }
+            }
+        }
+
+        .tree-method-header-type-PATCH {
+            background-color: #EFEF9E;
+
+            .method-head-first {
+                p {
+                    background-color:  #F4D03F;
+                }
+            }
+        }
+
+        .tree-method-header-type-PUT {
+            background-color: #FBEEE6;
+
+            .method-head-first {
+                p {
+                    background-color: #DC7633;
+                }
+            }
+        }
+
+        .tree-method-header-type-DELETE {
+            background-color: #FDEDEC;
+
+            .method-head-first {
+                p {
+                    background-color: #EC7063;
+                }
+            }
+        }
+
+        .tree-method-header-type-HEAD {
+            background-color: #EBEDEF;
+
+            .method-head-first {
+                p {
+                    background-color: #5D6D7E;
+                }
+            }
+        }
+
+        .tree-method-header-type-OPTIONS {
+            background-color: #FDFEFE;
+
+            .method-head-first {
+                p {
+                    background-color: #D0D3D4;
+                }
+            }
+        }
+    }
+
+    .tree-resource-expanded { 
+        margin: 0; 
+    }
+
+    .tree-resource-header {
+        background: rgba(0, 0, 0, .05);
+    }
+}
