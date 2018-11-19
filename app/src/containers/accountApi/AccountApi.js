@@ -41,17 +41,14 @@ class AccountApi extends Component
      * @param snapshot
      */
     componentDidUpdate(prevProps, prevState, snapshot) {
-        this.fetchApiList();
+        //this.fetchApiList();
     };
 
     /**
      *
      */
     fetchApiList = () => {
-        let account = this.getAccount(this.props.accountId);
-        if (account && !account.loaded) {
-            this.props.accountActions.fetchApiList(this.props.accountId, account.credentials);
-        }
+        this.props.accountActions.fetchApiList(this.props.accountId);
     };
 
     /**

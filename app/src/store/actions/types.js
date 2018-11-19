@@ -17,3 +17,12 @@ export const ACTION_SET_RESOURCE_ENTRIES = 'SET_RESOURCE_ENTRIES';
 export const ACTION_REQUEST_ERROR = 'request_error';
 export const ACTION_REQUEST_PROCESSING = 'request_processing';
 export const ACTION_REQUEST_SUCCESS = 'request_success';
+
+
+// API actions
+export const ACTION_AWS_API_CALL = 'AWS_API_CALL';
+
+
+// APP params
+export const ACTION_SET_LOADING_TRUE = 'SET_LOADING_TRUE';
+export const ACTION_SET_LOADING_FALSE = 'SET_LOADING_FALSE';

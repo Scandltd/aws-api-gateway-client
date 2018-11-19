@@ -1,26 +1,48 @@
-import {ACTION_SET_API_LIST} from './types';
-import ApiGateway from '../../services/aws/AwsApiGateway';
+import { ACTION_SET_API_LIST, ACTION_AWS_API_CALL } from './types';
 import {setAccountLoaded} from './accountActions';
 
 /**
  * 
- * @param {*} accountId 
- * @param {*} credentials 
+ * @param {*} accountId
  */
-export const loadApiList = (accountId, credentials) => {
-        
-    let client = new ApiGateway(credentials.accessKeyId, credentials.secretAccessKey, credentials.region);
-
+export const loadApiList = (accountId) => {
     return dispatch => {
-        client.fetchApiList()
-            .then((response) => {
+        dispatch(apiCall(
+            accountId,
+            'fetchApiList',
+            {},
+            response => {
                 dispatch(setAccountLoaded(accountId));
                 dispatch(setApiList(accountId, response.items));
-            })
-            .catch((err) => {
+            },
+            err => {
                 console.log('api_action_err', err);
-            });
+            }
+        ));
     };
+};
+
+/**
+ *
+ * @param accountId
+ * @param method
+ * @param data
+ * @param onSuccess
+ * @param onError
+ *
+ * @returns {{type: string, payload: {accountId: *, method: *, data, onSuccess: *, onError: *}}}
+ */
+export const apiCall = (accountId, method, data = {}, onSuccess = null, onError = null) => {
+    return {
+        type: ACTION_AWS_API_CALL,
+        payload: {
+            accountId: accountId,
+            method: method,
+            data: data,
+            onSuccess: onSuccess,
+            onError: onError,
+        }
+    }
 };
 
 /**

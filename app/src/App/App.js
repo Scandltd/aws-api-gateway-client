@@ -12,16 +12,17 @@ import CssBaseline from '@material-ui/core/CssBaseline';
  * App component
  */
 class App extends Component {
+
     /**
      *
+     * @param props
      */
-    componentDidMount() {
+    constructor (props) {
+        super(props);
         if(!this.props.loaded) {
             this.props.accountActions.loadAccounts();
         }
     }
-
-
 
     /**
     *
@@ -31,7 +32,7 @@ class App extends Component {
             <BrowserRouter>
                 <div className="App">
                     <CssBaseline />
-                    <Header />
+                    <Header isLoading={this.props.isLoading} />
                     <Main />
                     <Footer />
                 </div>
@@ -48,7 +49,8 @@ class App extends Component {
 const mapStateToProps = (state) => {
     return {
         accounts: state.account.accounts,
-        loaded: state.account.loaded
+        loaded: state.account.loaded,
+        isLoading: state.appParams.isLoading
     }
 };
 
