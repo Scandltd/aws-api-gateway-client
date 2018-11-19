@@ -17,7 +17,7 @@ const accountReducer = (state = defaultState, action) => {
                 ...state,
                 accounts: accounts,
                 loaded: true,
-            }
+            };
 
         case ACTION_SET_ACCOUNT_LOADED:
             const updatedItems = state.accounts.map(item => {
@@ -26,7 +26,7 @@ const accountReducer = (state = defaultState, action) => {
                 }
 
                 return item
-            })
+            });
 
             return {
                 ...state,

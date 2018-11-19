@@ -27,7 +27,7 @@ class EntriesTree extends Component
                 id={item.id}
                 path={item.path}
                 parentId={item.parentId}
-                resourceMethods={item.resourceMethods}
+                resourceMethods={item.resourceMethods ? item.resourceMethods : {}}
                 nested={nested}
                 expanded={0 === level}
             />
