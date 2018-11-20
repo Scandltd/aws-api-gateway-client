@@ -1,4 +1,4 @@
-import {ACTION_SET_API_LIST} from '../actions/types';
+import {ACTION_ADD_API, ACTION_SET_API_LIST} from '../actions/types';
 import dotProp from 'dot-prop-immutable';
 
 /**
@@ -21,6 +21,10 @@ const apiReducer = (state = defaultState, action) => {
             }
 
             return dotProp.set(state, `apiList.${action.payload.accountId}`, action.payload.apiList);
+
+        case ACTION_ADD_API:
+
+            return dotProp.merge(state, `apiList.${action.payload.accountId}`, [action.payload.data]);
 
         default:
             return state;

@@ -10,6 +10,8 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import DialogFormComponent from '../../components/dialog/DialogFormComponent';
 
+import RestApiForm from '../form/restApi/RestApiForm';
+
 /**
  *
  */
@@ -49,17 +51,11 @@ class AccountApi extends Component
         this.setState({ open: true });
     };
 
-    /**
-     *
-     */
-    handleSaveForm = () => {
-      this.setState({ open: false });
-    };
 
     /**
      *
      */
-    handleCancel = () => {
+    handleClose = () => {
         this.setState({ open: false });
     };
 
@@ -69,8 +65,6 @@ class AccountApi extends Component
      */
     render() {
         let apiList = this.props.apiList && Array.isArray(this.props.apiList[this.props.accountId]) ? this.props.apiList[this.props.accountId] : [];
-
-        console.log('open state', this.state);
 
         return (
             <div className="account-api-container">
@@ -85,10 +79,13 @@ class AccountApi extends Component
 
                 <ApiListComponent items={apiList} accountId={this.props.accountId} />
 
-                <DialogFormComponent onSave={this.handleSaveForm} onClose={this.handleCancel} open={this.state.open} title="Add a new API">
-                    form goes here
+                <DialogFormComponent open={this.state.open} title="Add a new API">
+                    <RestApiForm
+                        accountId={this.props.accountId}
+                        onCancel={this.handleClose}
+                        onSuccess={this.handleClose}
+                    />
                 </DialogFormComponent>
-
             </div>
         );
     }

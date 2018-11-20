@@ -1,0 +1,25 @@
+.base-form-container {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 500px;
+
+    .form-control {
+      margin: 12px;
+      min-width: 120px;
+    }
+
+    .select-empty {
+      margin-top: 12px;
+    }
+
+    .form-buttons {
+      display: flex;
+      padding-top: 12px;
+      justify-content: flex-end;
+      width: 100%;
+
+      button {
+        margin-right: 12px;
+      }
+    }
+}
