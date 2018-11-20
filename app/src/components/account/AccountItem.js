@@ -6,6 +6,7 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import SettingsIcon from '@material-ui/icons/Settings';
 import Button from '@material-ui/core/Button';
 import { Redirect } from 'react-router';
 
@@ -52,7 +53,7 @@ class AccountItem extends Component
             <ExpansionPanel onChange={this.handleLoadApi}>
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                     <Typography>
-                        <Button onClick={this.handleAccountBtn}>{this.props.accountTitle}</Button>
+                        <Button onClick={this.handleAccountBtn} variant="outlined" color="primary" >{this.props.accountTitle} <SettingsIcon className="rightBtnIcon"/></Button>
                     </Typography>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
