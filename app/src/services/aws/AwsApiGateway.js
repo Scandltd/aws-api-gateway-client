@@ -27,7 +27,7 @@ class AwsApiGateway
      *
      * @returns {Promise<PromiseResult<D, E>>}
      */
-    fetchApiResorces = (params) => {
+    fetchApiResources = (params) => {
         return this._client.getResources(params).promise();
     };
 

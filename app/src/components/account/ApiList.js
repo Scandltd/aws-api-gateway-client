@@ -16,8 +16,7 @@ class ApiList extends Component
                 description={u.description}
                 apiId={u.id}
                 accountId={this.props.accountId}
-                
-                />;
+            />;
         });
 
         return (

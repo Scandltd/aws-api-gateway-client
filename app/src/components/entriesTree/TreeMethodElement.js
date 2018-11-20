@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import TreeMethodHeader from './TreeMethodHeader';
-import TreeMethodBody from './TreeMethodBody';
 
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';

@@ -1,30 +1,33 @@
-import ApiGateway from '../../services/aws/AwsApiGateway';
 import {ACTION_SET_RESOURCE_ENTRIES} from './types';
+import { apiCall } from './apiActions';
 
 /**
+ *
+ * @param accountId
  * @param apiId
- * @param credentials
  *
  * @returns {Function}
  */
-export const loadResorces = (apiId, credentials) => {
-    var params = {
+export const loadResources = (accountId, apiId) => {
+    const params = {
         restApiId: apiId, /* required */
         embed: ['methods'],
         limit: 500,
         //position: 0               //@todo realize paginate or load all entries
     };
 
-    let client = new ApiGateway(credentials.accessKeyId, credentials.secretAccessKey, credentials.region);
-
     return dispatch => {
-        client.fetchApiResorces(params)
-            .then((response) => {
+        dispatch(apiCall(
+            accountId,
+            'fetchApiResources',
+            params,
+            response => {
                 dispatch(setEntriesResources(apiId, response.items));
-            })
-            .catch((err) => {
+            },
+            err => {
                 console.log('load_resources_action_err', err);
-            });
+            }
+        ));
     };
 };
 

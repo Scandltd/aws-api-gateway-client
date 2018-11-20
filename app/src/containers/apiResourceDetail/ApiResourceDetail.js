@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
-import { find } from 'lodash';
-import { loadResorces } from '../../store/actions/entriesActions';
+import { loadResources } from '../../store/actions/entriesActions';
 import EntriesTree from '../../components/entriesTree/EntriesTree';
 import arrayToTree from 'array-to-tree';
 
@@ -18,8 +17,7 @@ class ApiResourceDetail extends Component
         super(props);
         this.state = {
             accountId: props.match.params.accountId,
-            apiId: props.match.params.apiId,
-            loadedResources : false,
+            apiId: props.match.params.apiId
         };
     }
 
@@ -27,41 +25,10 @@ class ApiResourceDetail extends Component
      *
      */
     componentDidMount() {
-        let account = this.getAccount();
-        if (account) {
-            this.loadResources(account);
+        if (!this.props.entries[this.state.apiId]) {
+            this.props.actions.loadResources(this.state.accountId, this.state.apiId);
         }
     }
-
-    /**
-     *
-     */
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        if (!this.state.loadedResources) {
-            let account = this.getAccount();
-            if (account) {
-                this.loadResources(account);
-            }
-        }
-    }
-
-    /**
-     *
-     * @param account
-     */
-    loadResources(account) {
-        this.setState({loadedResources: true});
-        this.props.actions.loadResources(this.state.apiId, this.getAccount().credentials);
-    }
-
-
-    /**
-     *
-     * @returns {*}
-     */
-    getAccount = () => {
-       return find(this.props.accounts, {id: this.state.accountId});
-    };
 
     /**
      *
@@ -82,11 +49,11 @@ class ApiResourceDetail extends Component
         });
     };
 
+    /**
+     *
+     * @returns {*}
+     */
     render() {
-
-        const tree = this.buildTree();
-        console.log(tree);
-
         return (
             <div>
                 API detail page. Account id: {this.props.match.params.accountId} | Api id: {this.props.match.params.apiId}
@@ -103,7 +70,6 @@ class ApiResourceDetail extends Component
 const mapStateToProps = (state) => {
     return {
         entries: state.entries.entries,
-        accounts: state.account.accounts,
         loaded: false
     }
 };
@@ -115,7 +81,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         actions: {
-            loadResources: (apiId, credentials) => dispatch(loadResorces(apiId, credentials))
+            loadResources: (accountId, apiId) => dispatch(loadResources(accountId, apiId))
         }
     }
 };

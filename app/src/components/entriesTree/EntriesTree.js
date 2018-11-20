@@ -8,10 +8,10 @@ import './entriesTree.scss';
  */
 class EntriesTree extends Component
 {
-
     /**
      *
      * @param resource
+     * @param level         -- used to open first tab
      *
      * @returns {*}
      */
@@ -47,7 +47,6 @@ class EntriesTree extends Component
      * @returns {*}
      */
     render() {
-
         return (
             <div className="entries-tree">
                 {this.renderTree()}

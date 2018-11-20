@@ -5,7 +5,7 @@ import accounts from '../../config/aws_config';
  */
 class AccountLoader
 {
-    fecthAccounts() {
+    fetchAccounts() {
         return accounts.accounts;
     }
 }

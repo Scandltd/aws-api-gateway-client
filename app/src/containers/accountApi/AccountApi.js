@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { find } from "lodash";
 import {loadApiList} from "../../store/actions/apiActions";
 import { connect } from "react-redux";
 import ApiListComponent from '../../components/account/ApiList';
@@ -31,31 +30,16 @@ class AccountApi extends Component
      *
      */
     componentDidMount() {
-        this.fetchApiList();
+        if (!this.props.apiList[this.props.accountId]) {
+            this.fetchApiList();
+        }
     }
-
-    /**
-     *
-     * @param prevProps
-     * @param prevState
-     * @param snapshot
-     */
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        //this.fetchApiList();
-    };
 
     /**
      *
      */
     fetchApiList = () => {
         this.props.accountActions.fetchApiList(this.props.accountId);
-    };
-
-    /**
-     *
-     */
-    getAccount = (id) => {
-        return find(this.props.accounts, {id: id});
     };
 
     /**
@@ -116,7 +100,6 @@ class AccountApi extends Component
  */
 const mapStateToProps = (state) => {
     return {
-        accounts: state.account.accounts,
         apiList: state.api.apiList,
         loaded: state.account.loaded
     }
@@ -138,7 +121,6 @@ export default connect(mapStateToProps, mapDispatchToProps) (AccountApi);
 
 AccountApi.propTypes = {
     accountId: PropTypes.any.isRequired,
-    accounts: PropTypes.array.isRequired,
     apiList: PropTypes.object.isRequired,
     loaded: PropTypes.bool.isRequired
 };

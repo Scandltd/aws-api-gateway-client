@@ -8,9 +8,9 @@ export const loadAccountList = () => {
     const service = new AccountService();
 
     return dispatch => {
-        dispatch(setAccounts(service.fecthAccounts()));
+        dispatch(setAccounts(service.fetchAccounts()));
     };
-}
+};
 
 /**
  * 

@@ -13,6 +13,10 @@ import Typography from '@material-ui/core/Typography';
  */
 class ApiItem extends Component
 {
+    /**
+     *
+     * @param props
+     */
     constructor(props) {
         super(props);
         this.state = {
@@ -20,16 +24,26 @@ class ApiItem extends Component
         };
     }
 
+    /**
+     *
+     */
     handleMangeBtn = () => {
         this.setState({
             redirect: true
         });
     };
 
+    /**
+     *
+     */
     handleDeleteBtn = () => {
         console.log('delete', this.props.apiId);
     };
 
+    /**
+     *
+     * @returns {*}
+     */
     render() {
         if (this.state.redirect) {
             return <Redirect push to={`/account/${this.props.accountId}/api/${this.props.apiId}/resource`} />;
