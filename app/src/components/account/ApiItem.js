@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import { Redirect } from 'react-router';
 import PropTypes from 'prop-types';
+import AlertDialogComponent from '../dialog/AlertDialogComponent';
+
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -20,7 +22,8 @@ class ApiItem extends Component
     constructor(props) {
         super(props);
         this.state = {
-            redirect: false
+            redirect: false,
+            isDeleteDialogOpened: false,
         };
     }
 
@@ -37,7 +40,24 @@ class ApiItem extends Component
      *
      */
     handleDeleteBtn = () => {
-        console.log('delete', this.props.apiId);
+        this.setState({isDeleteDialogOpened: true});
+    };
+
+    /**
+     *
+     */
+    handleDeleteDialogCancel = () => {
+        this.setState({isDeleteDialogOpened: false});
+    };
+
+    /**
+     *
+     */
+    handleDeleteDialogAgree = () => {
+        this.setState({isDeleteDialogOpened: false});
+        if (this.props.onDelete) {
+            this.props.onDelete(this.props.apiId);
+        }
     };
 
     /**
@@ -48,6 +68,22 @@ class ApiItem extends Component
         if (this.state.redirect) {
             return <Redirect push to={`/account/${this.props.accountId}/api/${this.props.apiId}/resource`} />;
         }
+
+        const deleteBtn = this.props.onDelete ?
+            <React.Fragment>
+                <Button size="small" color="primary" onClick={this.handleDeleteBtn}>
+                    Delete
+                </Button>
+                <AlertDialogComponent
+                    title={`You are trying to delete REST API: ${this.props.name}`}
+                    description="delete description goes here"
+                    open={this.state.isDeleteDialogOpened}
+                    handleCancel={this.handleDeleteDialogCancel}
+                    handleAgree={this.handleDeleteDialogAgree}
+
+                />
+            </React.Fragment>
+            : null;
 
         return (
             <Grid item sm={6} md={4} lg={4}>
@@ -64,9 +100,7 @@ class ApiItem extends Component
                         <Button size="small" color="primary" onClick={this.handleMangeBtn}>
                             Resources
                         </Button>
-                        <Button size="small" color="primary" onClick={this.handleDeleteBtn}>
-                            Delete
-                        </Button>
+                        { deleteBtn }
                     </CardActions>
                 </Card>
             </Grid>
@@ -80,5 +114,6 @@ ApiItem.propTypes = {
     accountId: PropTypes.any.isRequired,
     apiId: PropTypes.any.isRequired,
     name: PropTypes.string.isRequired,
-    description: PropTypes.string
+    description: PropTypes.string,
+    onDelete: PropTypes.func
 };

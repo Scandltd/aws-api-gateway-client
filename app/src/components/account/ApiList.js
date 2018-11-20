@@ -16,6 +16,7 @@ class ApiList extends Component
                 description={u.description}
                 apiId={u.id}
                 accountId={this.props.accountId}
+                onDelete={this.props.onDeleteApi}
             />;
         });
 
@@ -30,5 +31,6 @@ class ApiList extends Component
 export default ApiList;
 
 ApiList.propTypes = {
-    accountId: PropTypes.any.isRequired
+    accountId: PropTypes.any.isRequired,
+    onDeleteApi: PropTypes.func
 };

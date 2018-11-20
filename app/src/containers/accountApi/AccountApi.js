@@ -24,7 +24,7 @@ class AccountApi extends Component
     constructor(props) {
         super(props);
         this.state = {
-            open:false
+            open: false
         };
     }
 
@@ -59,6 +59,10 @@ class AccountApi extends Component
         this.setState({ open: false });
     };
 
+    handleDelete = (apiId) => {
+        console.log('handle delete', apiId);
+    };
+
     /**
      *
      * @returns {*}
@@ -77,7 +81,11 @@ class AccountApi extends Component
                     </Toolbar>
                 </AppBar>
 
-                <ApiListComponent items={apiList} accountId={this.props.accountId} />
+                <ApiListComponent
+                    items={apiList}
+                    accountId={this.props.accountId}
+                    onDeleteApi={this.handleDelete}
+                />
 
                 <DialogFormComponent open={this.state.open} title="Add a new API">
                     <RestApiForm
@@ -109,7 +117,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         accountActions: {
-            fetchApiList: (accountId, credentials) => dispatch(loadApiList(accountId, credentials))
+            fetchApiList: (accountId, credentials) => dispatch(loadApiList(accountId, credentials)),
+            //deleteRestApi: (accountId, apiId) =>
         }
     }
 };
