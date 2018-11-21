@@ -24,11 +24,11 @@ class RestApiForm extends BaseFormContainer
      */
     constructor(props) {
         super(props);
-        this.state.data = {
+        this.state.data = this.initData({
             name: '',
             description: '',
             type: ''
-        };
+        });
 
         this.setValidationRules({
             name: {
@@ -72,11 +72,11 @@ class RestApiForm extends BaseFormContainer
     onSubmitValid = () => {
         if (this.props.isUpdateAction) {
             if (!this.props.entityId) {
-                throw new Error('Please provide a entityId property!');
+                throw new Error('Please provide an entityId property!');
             }
 
             this.setState({isProcessing: true});
-            this.props.actions.updateRestAPi(this.props.accountId, this.props.entityId, this.state.data, this.onRequestSuccess, this.onRequestError);
+            this.props.actions.updateRestAPi(this.props.accountId, this.props.entityId, this.state.data, this.props.initialData, this.onRequestSuccess, this.onRequestError);
         } else {
             this.setState({isProcessing: true});
             this.props.actions.createRestApi(this.props.accountId, this.state.data, this.onRequestSuccess, this.onRequestError);
@@ -99,7 +99,6 @@ class RestApiForm extends BaseFormContainer
                     id="standard-full-width"
                     label="Rest API name"
                     name="name"
-                    style={{ margin: 8 }}
                     placeholder="Name"
                     helperText="Enter name of REST API"
                     fullWidth
@@ -116,7 +115,6 @@ class RestApiForm extends BaseFormContainer
                     id="standard-full-width"
                     label="Description"
                     name="description"
-                    style={{ margin: 8 }}
                     placeholder="Description"
                     helperText="Enter description"
                     fullWidth
@@ -156,7 +154,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         actions: {
             createRestApi: (accountId, data, onSuccess = null, onError = null) => dispatch(createRestApiRequest(accountId, data, onSuccess, onError)),
-            updateRestAPi: (accountId, apiId, data, onSuccess = null, onError = null) => dispatch(updateRestApiRequest(accountId, apiId, data, onSuccess, onError))
+            updateRestAPi: (accountId, apiId, data, oldData, onSuccess = null, onError = null) => dispatch(updateRestApiRequest(accountId, apiId, data, oldData, onSuccess, onError))
         }
     }
 };

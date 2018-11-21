@@ -2,14 +2,12 @@ import React, {Component} from 'react';
 import { Redirect } from 'react-router';
 import PropTypes from 'prop-types';
 import AlertDialogComponent from '../dialog/AlertDialogComponent';
-
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
@@ -30,7 +28,7 @@ class ApiItem extends Component
         this.state = {
             redirect: false,
             isDeleteDialogOpened: false,
-            isActionMenuOpened: false,
+            anchorEl: null,
         };
     }
 
@@ -72,20 +70,21 @@ class ApiItem extends Component
      *
      */
     handleCloseActionMenu = () => {
-        this.setState({isActionMenuOpened: false});
+        this.setState({ anchorEl: null });
     };
 
     /**
      *
      */
-    handleOpenMenuClick = () => {
-        this.setState({isActionMenuOpened: true});
+    handleOpenMenuClick = (event) => {
+        this.setState({ anchorEl: event.currentTarget });
     };
 
     /**
      *
      */
     handleUpdate = () => {
+        this.handleCloseActionMenu();
         if (this.props.onUpdate) {
             this.props.onUpdate(this.props.apiId);
         }
@@ -121,7 +120,12 @@ class ApiItem extends Component
         let actionMenu = '';
         if (0 !== menuItems.length) {
             actionMenu = (
-                <Menu open={this.state.isActionMenuOpened} onClose={this.handleCloseActionMenu}>
+                <Menu
+                    open={Boolean(this.state.anchorEl)}
+                    onClose={this.handleCloseActionMenu}
+                    id={`action-menu-${this.props.apiId}`}
+                    anchorEl={this.state.anchorEl}
+                >
                     { menuItems }
                 </Menu>
             );
@@ -146,7 +150,6 @@ class ApiItem extends Component
                     open={this.state.isDeleteDialogOpened}
                     handleCancel={this.handleDeleteDialogCancel}
                     handleAgree={this.handleDeleteDialogAgree}
-
                 />
             : null;
 
@@ -173,7 +176,6 @@ class ApiItem extends Component
                         <Button size="small" color="primary" onClick={this.handleResourceBtn}>
                             Resources
                         </Button>
-
                         { this.getActionMenu() }
                     </CardActions>
                 </Card>

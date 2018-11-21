@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {loadRestApiListRequest, deleteRestApiRequest } from "../../store/actions/apiActions";
+import {loadRestApiListRequest, deleteRestApiRequest, getRestApiRequest } from "../../store/actions/apiActions";
 import { connect } from "react-redux";
 import ApiListComponent from '../../components/account/ApiList';
 import AccountApiHeader from '../../components/account/AccountApiHeader';
 import './accoutApiContainer.scss';
 import DialogFormComponent from '../../components/dialog/DialogFormComponent';
-
 import RestApiForm from '../form/restApi/RestApiForm';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 /**
  *
@@ -25,6 +25,7 @@ class AccountApi extends Component
             isUpdateAction: false,
             entityId: null,
             initialData: {},
+            isDataLoading: false
         };
     }
 
@@ -76,12 +77,26 @@ class AccountApi extends Component
      * @param apiId
      */
     handleUpdate = (apiId) => {
-        this.setState({
-            open: true,
-            isUpdateAction: false,
-            entityId: apiId,
-            initialData: {}
-        });
+        this.setState({open:true, isDataLoading: true});
+        this.props.actions.getRestApi(
+            this.props.accountId,
+            apiId,
+            (response) => {
+                this.setState({
+                    open: true,
+                    isUpdateAction: true,
+                    entityId: apiId,
+                    isDataLoading: false,
+                    initialData: {
+                        name: response.name,
+                        description: response.description,
+                        type: response.endpointConfiguration.types[0] || ''
+                    }
+                });
+            },
+            (err) => {
+                console.log('error. Unable to fetch rest api data', err);
+            });
     };
 
     /**
@@ -102,15 +117,19 @@ class AccountApi extends Component
                     onUpdateApi={this.handleUpdate}
                 />
 
-                <DialogFormComponent open={this.state.open} title="Add a new API">
-                    <RestApiForm
-                        accountId={this.props.accountId}
-                        onCancel={this.handleClose}
-                        onSuccess={this.handleClose}
-                        isUpdateAction={this.state.isUpdateAction}
-                        entityId={this.state.entityId}
-                        initialData={this.state.initialData}
-                    />
+                <DialogFormComponent open={this.state.open} title={this.state.isUpdateAction ? 'Update REST API' : 'Create REST API'}>
+                    {this.state.isDataLoading ?
+                        <CircularProgress />
+                        :
+                        <RestApiForm
+                            accountId={this.props.accountId}
+                            onCancel={this.handleClose}
+                            onSuccess={this.handleClose}
+                            isUpdateAction={this.state.isUpdateAction}
+                            entityId={this.state.entityId}
+                            initialData={this.state.initialData}
+                        />
+                    }
                 </DialogFormComponent>
             </div>
         );
@@ -136,7 +155,8 @@ const mapDispatchToProps = (dispatch) => {
     return {
         actions: {
             fetchApiList: (accountId) => dispatch(loadRestApiListRequest(accountId)),
-            deleteRestApi: (accountId, apiId) => dispatch(deleteRestApiRequest(accountId, apiId))
+            deleteRestApi: (accountId, apiId) => dispatch(deleteRestApiRequest(accountId, apiId)),
+            getRestApi: (accountId, apiId, onSuccess = null, onError = null) => dispatch(getRestApiRequest(accountId, apiId, onSuccess, onError))
         }
     }
 };

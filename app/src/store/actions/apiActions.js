@@ -1,4 +1,4 @@
-import { ACTION_SET_API_LIST, ACTION_AWS_API_CALL, ACTION_ADD_API, ACTION_DELETE_API } from './types';
+import { ACTION_SET_API_LIST, ACTION_AWS_API_CALL, ACTION_ADD_API, ACTION_DELETE_API, ACTION_UPDATE_API } from './types';
 import {setAccountLoaded} from './accountActions';
 import { forIn } from 'lodash';
 
@@ -116,34 +116,30 @@ export const deleteRestApiRequest = (accountId, apiId, onSuccess = null, onError
  * @param accountId
  * @param apiId
  * @param data
+ * @param oldData
  * @param onSuccess
  * @param onError
  */
-export const updateRestApiRequest = (accountId, apiId, data, onSuccess = null, onError = null) => {
+export const updateRestApiRequest = (accountId, apiId, data, oldData, onSuccess = null, onError = null) => {
     const path = {
         name: '/name',
         description: '/description',
-        type: '/endpointConfiguration/types'
+        type: '/endpointConfiguration/types/'
     };
 
     const patchOperations = [];
     forIn(data, function(value, key) {
-        if (path[key]) {
+        if (path[key] && value !== oldData[key]) {
             patchOperations.push({
                 "op" : "replace",
-                "path" : path[key],
-                "value" : 'type' === key ? JSON.stringify([value]) : value
+                "path" : 'type' === key ? path[key] + oldData[key] : path[key],
+                "value" : value
             });
         }
     });
-    console.log('patchOperations', patchOperations);
-
-    if (0 === patchOperations.length) {
-        throw new Error('empty path operations list');
-    }
 
     const params = {
-        restApiId: apiId, /* required */
+        restApiId: apiId,
         patchOperations: patchOperations
     };
 
@@ -152,7 +148,37 @@ export const updateRestApiRequest = (accountId, apiId, data, onSuccess = null, o
         'updateRestApi',
         params,
         response => {
-            dispatch(removeApi(accountId, apiId));
+            dispatch(updateApi(accountId, response));
+            if (onSuccess) {
+                onSuccess(response);
+            }
+        },
+        err => {
+            if (onError) {
+                onError(err);
+            }
+        }
+    ))}
+};
+/**
+ *
+ * @param accountId
+ * @param apiId
+ * @param onSuccess
+ * @param onError
+ *
+ * @returns {Function}
+ */
+export const getRestApiRequest = (accountId, apiId, onSuccess = null, onError = null) => {
+    const params = {
+        restApiId: apiId
+    };
+
+    return dispatch => {dispatch(apiCall(
+        accountId,
+        'getRestApi',
+        params,
+        response => {
             if (onSuccess) {
                 onSuccess(response);
             }
@@ -234,6 +260,22 @@ export const removeApi = (accountId, apiId) => {
         payload: {
             accountId: accountId,
             apiId: apiId
+        }
+    };
+};
+
+/**
+ *
+ * @param accountId
+ * @param data
+ * @returns {{type: string, payload: {accountId: *, data: *}}}
+ */
+export const updateApi = (accountId, data) => {
+    return {
+        type: ACTION_UPDATE_API,
+        payload: {
+            accountId: accountId,
+            data: data
         }
     };
 };

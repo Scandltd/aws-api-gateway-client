@@ -69,6 +69,16 @@ class AwsApiGateway
     updateRestApi = (params) => {
         return this._client.updateRestApi(params).promise();
     };
+
+    /**
+     *
+     * @param params
+     *
+     * @returns {Promise<ManagedUpload.SendData> | Promise<PromiseResult<D, E>> | string | Promise<any> | *}
+     */
+    getRestApi = (params) => {
+        return this._client.getRestApi(params).promise();
+    }
 }
 
 export default AwsApiGateway;

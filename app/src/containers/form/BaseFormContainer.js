@@ -27,11 +27,21 @@ class BaseFormContainer extends Component
         this.validationRules = {};
     }
 
-    populateWithInitialData() {
+    /**
+     *
+     * @param params
+     * @returns {*}
+     */
+    initData = (params) => {
         if (this.props.initialData) {
-            
+            const initialData = this.props.initialData;
+            return mapValues(params, (item, key) => {
+                return initialData[key] !== undefined ? initialData[key] : item;
+            });
         }
-    }
+
+        return params;
+    };
 
     /**
      *

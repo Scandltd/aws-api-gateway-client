@@ -1,5 +1,6 @@
-import {ACTION_ADD_API, ACTION_SET_API_LIST, ACTION_DELETE_API } from '../actions/types';
+import {ACTION_ADD_API, ACTION_SET_API_LIST, ACTION_DELETE_API, ACTION_UPDATE_API } from '../actions/types';
 import dotProp from 'dot-prop-immutable';
+import { findIndex } from 'lodash';
 
 /**
  * 
@@ -30,6 +31,18 @@ const apiReducer = (state = defaultState, action) => {
             const updatedList = state.apiList[action.payload.accountId].filter(item => item.id !== action.payload.apiId);
 
             return dotProp.set(state, `apiList.${action.payload.accountId}`, updatedList);
+
+        case ACTION_UPDATE_API:
+            if (!Array.isArray(state.apiList[action.payload.accountId])) {
+                return state;
+            }
+
+            const index = findIndex(state.apiList[action.payload.accountId], {id: action.payload.data.id});
+            if (-1 === index) {
+                return state;
+            }
+
+            return dotProp.set(state, `apiList.${action.payload.accountId}.${index}`, action.payload.data);
 
         default:
             return state;
