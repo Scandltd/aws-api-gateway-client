@@ -1,11 +1,12 @@
-import { ACTION_SET_API_LIST, ACTION_AWS_API_CALL, ACTION_ADD_API } from './types';
+import { ACTION_SET_API_LIST, ACTION_AWS_API_CALL, ACTION_ADD_API, ACTION_DELETE_API } from './types';
 import {setAccountLoaded} from './accountActions';
+import { forIn } from 'lodash';
 
 /**
  * 
  * @param {*} accountId
  */
-export const loadApiList = (accountId) => {
+export const loadRestApiListRequest = (accountId) => {
     return dispatch => {
         dispatch(apiCall(
             accountId,
@@ -31,7 +32,7 @@ export const loadApiList = (accountId) => {
  *
  * @returns {Function}
  */
-export const createApi = (accountId, data, onSuccess = null, onError = null) => {
+export const createRestApiRequest = (accountId, data, onSuccess = null, onError = null) => {
 
     const types = [];
     if (data.type) {
@@ -74,6 +75,94 @@ export const createApi = (accountId, data, onSuccess = null, onError = null) => 
             }
         ))
     };
+};
+
+/**
+ *
+ * @param accountId
+ * @param apiId
+ * @param onSuccess
+ * @param onError
+ *
+ * @returns {Function}
+ */
+export const deleteRestApiRequest = (accountId, apiId, onSuccess = null, onError = null) => {
+    const params = {
+        restApiId: apiId
+    };
+
+    return dispatch => {
+        dispatch(apiCall(
+            accountId,
+            'deleteRestApi',
+            params,
+            response => {
+                dispatch(removeApi(accountId, apiId));
+                if (onSuccess) {
+                    onSuccess(response);
+                }
+            },
+            err => {
+                if (onError) {
+                    onError(err);
+                }
+            }
+        ))
+    };
+};
+
+/**
+ *
+ * @param accountId
+ * @param apiId
+ * @param data
+ * @param onSuccess
+ * @param onError
+ */
+export const updateRestApiRequest = (accountId, apiId, data, onSuccess = null, onError = null) => {
+    const path = {
+        name: '/name',
+        description: '/description',
+        type: '/endpointConfiguration/types'
+    };
+
+    const patchOperations = [];
+    forIn(data, function(value, key) {
+        if (path[key]) {
+            patchOperations.push({
+                "op" : "replace",
+                "path" : path[key],
+                "value" : 'type' === key ? JSON.stringify([value]) : value
+            });
+        }
+    });
+    console.log('patchOperations', patchOperations);
+
+    if (0 === patchOperations.length) {
+        throw new Error('empty path operations list');
+    }
+
+    const params = {
+        restApiId: apiId, /* required */
+        patchOperations: patchOperations
+    };
+
+    return dispatch => {dispatch(apiCall(
+        accountId,
+        'updateRestApi',
+        params,
+        response => {
+            dispatch(removeApi(accountId, apiId));
+            if (onSuccess) {
+                onSuccess(response);
+            }
+        },
+        err => {
+            if (onError) {
+                onError(err);
+            }
+        }
+    ))}
 };
 
 /**
@@ -122,14 +211,29 @@ export const setApiList = (accountId, apiList) => {
  * @returns {{type: string, payload: {data: *, accountId: *}}}
  */
 export const addApi = (accountId, data) => {
-    console.log('addApi', accountId, data);
-
 
     return {
         type: ACTION_ADD_API,
         payload: {
             data: data,
             accountId: accountId
+        }
+    };
+};
+
+/**
+ *
+ * @param accountId
+ * @param apiId
+ *
+ * @returns {{type: string, payload: {accountId: *, apiId: *}}}
+ */
+export const removeApi = (accountId, apiId) => {
+    return {
+        type: ACTION_DELETE_API,
+        payload: {
+            accountId: accountId,
+            apiId: apiId
         }
     };
 };

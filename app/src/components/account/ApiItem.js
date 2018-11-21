@@ -10,6 +10,12 @@ import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
+import MenuItem from '@material-ui/core/MenuItem';
+import Menu from '@material-ui/core/Menu';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import IconButton from '@material-ui/core/IconButton';
+import CardHeader from '@material-ui/core/CardHeader';
+
 /**
  * 
  */
@@ -24,13 +30,14 @@ class ApiItem extends Component
         this.state = {
             redirect: false,
             isDeleteDialogOpened: false,
+            isActionMenuOpened: false,
         };
     }
 
     /**
      *
      */
-    handleMangeBtn = () => {
+    handleResourceBtn = () => {
         this.setState({
             redirect: true
         });
@@ -40,6 +47,7 @@ class ApiItem extends Component
      *
      */
     handleDeleteBtn = () => {
+        this.handleCloseActionMenu();
         this.setState({isDeleteDialogOpened: true});
     };
 
@@ -62,6 +70,68 @@ class ApiItem extends Component
 
     /**
      *
+     */
+    handleCloseActionMenu = () => {
+        this.setState({isActionMenuOpened: false});
+    };
+
+    /**
+     *
+     */
+    handleOpenMenuClick = () => {
+        this.setState({isActionMenuOpened: true});
+    };
+
+    /**
+     *
+     */
+    handleUpdate = () => {
+        if (this.props.onUpdate) {
+            this.props.onUpdate(this.props.apiId);
+        }
+    };
+
+    /**
+     *
+     * @returns {Array}
+     */
+    getMenuItems = () => {
+        const menuItems = [];
+        if (this.props.onDelete) {
+            menuItems.push(
+                <MenuItem onClick={this.handleDeleteBtn} key={`${this.props.apiId}_delete`}>Delete</MenuItem>
+            );
+        }
+
+        if (this.props.onUpdate) {
+            menuItems.push(
+                <MenuItem onClick={this.handleUpdate} key={`${this.props.apiId}_update`}>Update</MenuItem>
+            );
+        }
+
+        return menuItems;
+    };
+
+    /**
+     *
+     * @returns {string}
+     */
+    getActionMenu = () => {
+        const menuItems = this.getMenuItems();
+        let actionMenu = '';
+        if (0 !== menuItems.length) {
+            actionMenu = (
+                <Menu open={this.state.isActionMenuOpened} onClose={this.handleCloseActionMenu}>
+                    { menuItems }
+                </Menu>
+            );
+        }
+
+        return actionMenu;
+    };
+
+    /**
+     *
      * @returns {*}
      */
     render() {
@@ -69,11 +139,7 @@ class ApiItem extends Component
             return <Redirect push to={`/account/${this.props.accountId}/api/${this.props.apiId}/resource`} />;
         }
 
-        const deleteBtn = this.props.onDelete ?
-            <React.Fragment>
-                <Button size="small" color="primary" onClick={this.handleDeleteBtn}>
-                    Delete
-                </Button>
+        const deleteDialog = this.props.onDelete ?
                 <AlertDialogComponent
                     title={`You are trying to delete REST API: ${this.props.name}`}
                     description="delete description goes here"
@@ -82,27 +148,37 @@ class ApiItem extends Component
                     handleAgree={this.handleDeleteDialogAgree}
 
                 />
-            </React.Fragment>
             : null;
+
+        const actionMenu = this.getActionMenu();
 
         return (
             <Grid item sm={6} md={4} lg={4}>
                 <Card>
+                    <CardHeader
+                        action={ actionMenu ?
+                            <IconButton onClick={this.handleOpenMenuClick}>
+                                <MoreVertIcon />
+                            </IconButton>
+                            : null
+                        }
+                        title={this.props.name}
+                    />
                     <CardContent>
-                        <Typography gutterBottom variant="h5" component="h2">
-                            {this.props.name}
-                        </Typography>
                         <Typography>
                             {this.props.description}
                         </Typography>
                     </CardContent>
                     <CardActions>
-                        <Button size="small" color="primary" onClick={this.handleMangeBtn}>
+                        <Button size="small" color="primary" onClick={this.handleResourceBtn}>
                             Resources
                         </Button>
-                        { deleteBtn }
+
+                        { this.getActionMenu() }
                     </CardActions>
                 </Card>
+                { actionMenu }
+                { deleteDialog }
             </Grid>
         );
     }
@@ -115,5 +191,6 @@ ApiItem.propTypes = {
     apiId: PropTypes.any.isRequired,
     name: PropTypes.string.isRequired,
     description: PropTypes.string,
-    onDelete: PropTypes.func
+    onDelete: PropTypes.func,
+    onUpdate: PropTypes.func
 };

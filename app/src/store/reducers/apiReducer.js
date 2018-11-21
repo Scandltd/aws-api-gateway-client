@@ -1,4 +1,4 @@
-import {ACTION_ADD_API, ACTION_SET_API_LIST} from '../actions/types';
+import {ACTION_ADD_API, ACTION_SET_API_LIST, ACTION_DELETE_API } from '../actions/types';
 import dotProp from 'dot-prop-immutable';
 
 /**
@@ -25,6 +25,11 @@ const apiReducer = (state = defaultState, action) => {
         case ACTION_ADD_API:
 
             return dotProp.merge(state, `apiList.${action.payload.accountId}`, [action.payload.data]);
+
+        case ACTION_DELETE_API:
+            const updatedList = state.apiList[action.payload.accountId].filter(item => item.id !== action.payload.apiId);
+
+            return dotProp.set(state, `apiList.${action.payload.accountId}`, updatedList);
 
         default:
             return state;

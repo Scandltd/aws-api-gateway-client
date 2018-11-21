@@ -18,9 +18,7 @@ const ApiCallMiddleware = ({dispatch, getState}) => next => action => {
         //@todo add error!
     }
 
-
     const client = new AwsApiGateway(account.credentials.accessKeyId, account.credentials.secretAccessKey, account.credentials.region);
-
 
     dispatch(setLoadingTrue());
     const response = client[action.payload.method](action.payload.data);

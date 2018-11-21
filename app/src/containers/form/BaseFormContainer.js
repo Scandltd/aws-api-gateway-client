@@ -27,6 +27,12 @@ class BaseFormContainer extends Component
         this.validationRules = {};
     }
 
+    populateWithInitialData() {
+        if (this.props.initialData) {
+            
+        }
+    }
+
     /**
      *
      * @param event
@@ -128,6 +134,10 @@ class BaseFormContainer extends Component
         this.setState({data: data, errors: {}});
     };
 
+    /**
+     *
+     * @param e
+     */
     handleCancel = (e) => {
         this.handleClearForm(e);
         if (typeof this.props.onCancel === "function") {
@@ -179,4 +189,5 @@ export default BaseFormContainer;
 BaseFormContainer.propTypes = {
     onCancel: PropTypes.func,
     onSuccess: PropTypes.func,
+    initialData: PropTypes.object
 };

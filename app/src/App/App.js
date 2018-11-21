@@ -20,7 +20,7 @@ class App extends Component {
     constructor (props) {
         super(props);
         if(!this.props.loaded) {
-            this.props.accountActions.loadAccounts();
+            this.props.actions.loadAccounts();
         }
     }
 
@@ -60,7 +60,7 @@ const mapStateToProps = (state) => {
  */
 const mapDispatchToProps = (dispatch) => {
     return {
-        accountActions: {
+        actions: {
             loadAccounts: () => dispatch(loadAccountList())
         }
     }

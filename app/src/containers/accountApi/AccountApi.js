@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {loadApiList} from "../../store/actions/apiActions";
+import {loadRestApiListRequest, deleteRestApiRequest } from "../../store/actions/apiActions";
 import { connect } from "react-redux";
 import ApiListComponent from '../../components/account/ApiList';
-import Button from '@material-ui/core/Button';
+import AccountApiHeader from '../../components/account/AccountApiHeader';
 import './accoutApiContainer.scss';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
 import DialogFormComponent from '../../components/dialog/DialogFormComponent';
 
 import RestApiForm from '../form/restApi/RestApiForm';
@@ -24,7 +21,10 @@ class AccountApi extends Component
     constructor(props) {
         super(props);
         this.state = {
-            open: false
+            open: false,
+            isUpdateAction: false,
+            entityId: null,
+            initialData: {},
         };
     }
 
@@ -41,16 +41,20 @@ class AccountApi extends Component
      *
      */
     fetchApiList = () => {
-        this.props.accountActions.fetchApiList(this.props.accountId);
+        this.props.actions.fetchApiList(this.props.accountId);
     };
 
     /**
      *
      */
-    handleClickOpen = () => {
-        this.setState({ open: true });
+    handleAddClick = () => {
+        this.setState({
+            open: true,
+            isUpdateAction: false,
+            entityId: null,
+            initialData: {}
+        });
     };
-
 
     /**
      *
@@ -59,8 +63,25 @@ class AccountApi extends Component
         this.setState({ open: false });
     };
 
+    /**
+     *
+     * @param apiId
+     */
     handleDelete = (apiId) => {
-        console.log('handle delete', apiId);
+        this.props.actions.deleteRestApi(this.props.accountId, apiId);
+    };
+
+    /**
+     *
+     * @param apiId
+     */
+    handleUpdate = (apiId) => {
+        this.setState({
+            open: true,
+            isUpdateAction: false,
+            entityId: apiId,
+            initialData: {}
+        });
     };
 
     /**
@@ -72,19 +93,13 @@ class AccountApi extends Component
 
         return (
             <div className="account-api-container">
-                <AppBar position="static" className="app-bar-account-api" color="default">
-                    <Toolbar>
-                        <Typography variant="h6" color="inherit" className="text-grow">
-                            APIs
-                        </Typography>
-                        <Button color="inherit" onClick={this.handleClickOpen}>Add</Button>
-                    </Toolbar>
-                </AppBar>
+                <AccountApiHeader title="APIs" buttonTitle="Add" onButtonClick={this.handleAddClick} />
 
                 <ApiListComponent
                     items={apiList}
                     accountId={this.props.accountId}
                     onDeleteApi={this.handleDelete}
+                    onUpdateApi={this.handleUpdate}
                 />
 
                 <DialogFormComponent open={this.state.open} title="Add a new API">
@@ -92,6 +107,9 @@ class AccountApi extends Component
                         accountId={this.props.accountId}
                         onCancel={this.handleClose}
                         onSuccess={this.handleClose}
+                        isUpdateAction={this.state.isUpdateAction}
+                        entityId={this.state.entityId}
+                        initialData={this.state.initialData}
                     />
                 </DialogFormComponent>
             </div>
@@ -116,9 +134,9 @@ const mapStateToProps = (state) => {
  */
 const mapDispatchToProps = (dispatch) => {
     return {
-        accountActions: {
-            fetchApiList: (accountId, credentials) => dispatch(loadApiList(accountId, credentials)),
-            //deleteRestApi: (accountId, apiId) =>
+        actions: {
+            fetchApiList: (accountId) => dispatch(loadRestApiListRequest(accountId)),
+            deleteRestApi: (accountId, apiId) => dispatch(deleteRestApiRequest(accountId, apiId))
         }
     }
 };

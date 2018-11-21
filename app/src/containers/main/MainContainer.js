@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import './MainContainer.scss';
 import AccountItem from '../../components/account/AccountItem';
 import { connect } from 'react-redux';
-import { loadApiList } from '../../store/actions/apiActions';
+import { loadRestApiListRequest } from '../../store/actions/apiActions';
 import PropTypes from 'prop-types';
 import { find } from 'lodash';
 import Typography from '@material-ui/core/Typography';
@@ -24,7 +24,7 @@ class MainContainer extends Component
             return ;
         }
         
-        this.props.accountActions.fetchApiList(id, account.credentials);
+        this.props.actions.fetchApiList(id, account.credentials);
     };
 
     /**
@@ -81,8 +81,8 @@ const mapStateToProps = (state) => {
  */
 const mapDispatchToProps = (dispatch) => {
     return {
-        accountActions: {
-            fetchApiList: (accountId, credentials) => dispatch(loadApiList(accountId, credentials))
+        actions: {
+            fetchApiList: (accountId, credentials) => dispatch(loadRestApiListRequest(accountId, credentials))
         }
     }
 };

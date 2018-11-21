@@ -1,7 +1,7 @@
 import React from 'react';
 import BaseFormContainer from '../BaseFormContainer';
 import { forIn } from 'lodash';
-import { createApi } from '../../../store/actions/apiActions';
+import { createRestApiRequest, updateRestApiRequest } from '../../../store/actions/apiActions';
 import {connect} from "react-redux";
 import PropTypes from 'prop-types';
 
@@ -70,8 +70,17 @@ class RestApiForm extends BaseFormContainer
      *
      */
     onSubmitValid = () => {
-        this.setState({isProcessing: true});
-        this.props.actions.createRestApi(this.props.accountId, this.state.data, this.onRequestSuccess, this.onRequestError);
+        if (this.props.isUpdateAction) {
+            if (!this.props.entityId) {
+                throw new Error('Please provide a entityId property!');
+            }
+
+            this.setState({isProcessing: true});
+            this.props.actions.updateRestAPi(this.props.accountId, this.props.entityId, this.state.data, this.onRequestSuccess, this.onRequestError);
+        } else {
+            this.setState({isProcessing: true});
+            this.props.actions.createRestApi(this.props.accountId, this.state.data, this.onRequestSuccess, this.onRequestError);
+        }
     };
 
     /**
@@ -146,7 +155,8 @@ class RestApiForm extends BaseFormContainer
 const mapDispatchToProps = (dispatch) => {
     return {
         actions: {
-            createRestApi: (accountId, data, onSuccess = null, onError = null) => dispatch(createApi(accountId, data, onSuccess, onError))
+            createRestApi: (accountId, data, onSuccess = null, onError = null) => dispatch(createRestApiRequest(accountId, data, onSuccess, onError)),
+            updateRestAPi: (accountId, apiId, data, onSuccess = null, onError = null) => dispatch(updateRestApiRequest(accountId, apiId, data, onSuccess, onError))
         }
     }
 };
@@ -155,5 +165,7 @@ export default connect(null, mapDispatchToProps)(RestApiForm);
 
 RestApiForm.propTypes = {
     accountId: PropTypes.any.isRequired,
-    initialData: PropTypes.object
+    initialData: PropTypes.object,
+    isUpdateAction: PropTypes.bool.isRequired,
+    entityId: PropTypes.any
 };
