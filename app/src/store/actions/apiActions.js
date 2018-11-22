@@ -1,6 +1,7 @@
 import { ACTION_SET_API_LIST, ACTION_AWS_API_CALL, ACTION_ADD_API, ACTION_DELETE_API, ACTION_UPDATE_API } from './types';
 import {setAccountLoaded} from './accountActions';
 import { forIn } from 'lodash';
+import { addErrorNotification, addSuccessNotification } from './notificationActions';
 
 /**
  * 
@@ -17,7 +18,7 @@ export const loadRestApiListRequest = (accountId) => {
                 dispatch(setApiList(accountId, response.items));
             },
             err => {
-                console.log('api_action_err', err);
+                dispatch(addErrorNotification(err.message));
             }
         ));
     };
@@ -66,12 +67,13 @@ export const createRestApiRequest = (accountId, data, onSuccess = null, onError 
                 if (onSuccess) {
                     onSuccess(response);
                 }
+                dispatch(addSuccessNotification('A new REST API instance has been created'));
             },
             err => {
                 if (onError) {
                     onError(err);
                 }
-                console.log('api_create_rest_api_err', err);
+                dispatch(addErrorNotification('Unable to create REST API. ' + err.message));
             }
         ))
     };
@@ -101,11 +103,13 @@ export const deleteRestApiRequest = (accountId, apiId, onSuccess = null, onError
                 if (onSuccess) {
                     onSuccess(response);
                 }
+                dispatch(addSuccessNotification('The REST API instance has been deleted'));
             },
             err => {
                 if (onError) {
                     onError(err);
                 }
+                dispatch(addErrorNotification('Unable to delete REST API. ' + err.message));
             }
         ))
     };
@@ -152,11 +156,13 @@ export const updateRestApiRequest = (accountId, apiId, data, oldData, onSuccess 
             if (onSuccess) {
                 onSuccess(response);
             }
+            dispatch(addSuccessNotification('The REST API instance has been updated'));
         },
         err => {
             if (onError) {
                 onError(err);
             }
+            dispatch(addErrorNotification('Unable to update REST API. ' + err.message));
         }
     ))}
 };
@@ -187,6 +193,7 @@ export const getRestApiRequest = (accountId, apiId, onSuccess = null, onError = 
             if (onError) {
                 onError(err);
             }
+            dispatch(addErrorNotification('Unable to fetch REST API data. ' + err.message));
         }
     ))}
 };

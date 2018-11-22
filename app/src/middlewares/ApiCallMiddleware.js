@@ -2,6 +2,7 @@ import { ACTION_AWS_API_CALL } from '../store/actions/types';
 import { find } from 'lodash';
 import AwsApiGateway from "../services/aws/AwsApiGateway";
 import { setLoadingTrue, setLoadingFalse } from '../store/actions/appParamsActions';
+import { addErrorNotification } from '../store/actions/notificationActions';
 
 /**
  *
@@ -14,8 +15,9 @@ const ApiCallMiddleware = ({dispatch, getState}) => next => action => {
     const state = getState();
     const account = find(state.account.accounts, {id: action.payload.accountId});
     if (!account) {
-        console.error('api call middleware. Account not found', action.payload.accountId);
-        //@todo add error!
+        dispatch(addErrorNotification('Account not found'));
+
+        return next(action);
     }
 
     const client = new AwsApiGateway(account.credentials.accessKeyId, account.credentials.secretAccessKey, account.credentials.region);
@@ -40,7 +42,6 @@ const ApiCallMiddleware = ({dispatch, getState}) => next => action => {
     if (typeof action.payload.onSuccess === "function") {
         response.then(action.payload.onSuccess);
     }
-
 
     return next(action);
 };

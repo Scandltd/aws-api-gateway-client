@@ -7,6 +7,7 @@ import Main from '../components/main/Main';
 import {loadAccountList} from "../store/actions/accountActions";
 import { connect } from 'react-redux';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import NotificationContainer from '../containers/notification/NotificationContainer';
 
 /**
  * App component
@@ -35,6 +36,7 @@ class App extends Component {
                     <Header isLoading={this.props.isLoading} />
                     <Main />
                     <Footer />
+                    <NotificationContainer />
                 </div>
             </BrowserRouter>
         );
@@ -65,6 +67,5 @@ const mapDispatchToProps = (dispatch) => {
         }
     }
 };
-
 
 export default connect(mapStateToProps, mapDispatchToProps) (App);

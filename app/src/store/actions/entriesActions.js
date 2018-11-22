@@ -1,5 +1,6 @@
 import {ACTION_SET_RESOURCE_ENTRIES} from './types';
 import { apiCall } from './apiActions';
+import { addErrorNotification } from './notificationActions';
 
 /**
  *
@@ -25,7 +26,7 @@ export const loadResources = (accountId, apiId) => {
                 dispatch(setEntriesResources(apiId, response.items));
             },
             err => {
-                console.log('load_resources_action_err', err);
+                dispatch(addErrorNotification('Unable to fetch resources data. ' + err.message));
             }
         ));
     };
