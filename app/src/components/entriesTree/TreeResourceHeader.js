@@ -40,8 +40,7 @@ class TreeResourceHeader extends Component
      */
     handleCreateResource = (event) => {
         this.handleClose(event);
-        console.log('action create resource', this.props.resourceId);
-
+        this.props.onCreateResource();
     };
 
     /**
@@ -50,8 +49,7 @@ class TreeResourceHeader extends Component
      */
     handleCreateMethod = (event) => {
         this.handleClose(event);
-        console.log('action create method ', this.props.resourceId);
-
+        this.props.onCreateMethod();
     };
 
     /**
@@ -60,10 +58,13 @@ class TreeResourceHeader extends Component
      */
     handleDeleteResource = (event) => {
         this.handleClose(event);
-        console.log('action delete handleDeleteResource ', this.props.resourceId);
-
+        this.props.onDeleteResource();
     };
 
+    /**
+     *
+     * @returns {*}
+     */
     render() {
         const { anchorEl } = this.state;
 
@@ -101,5 +102,8 @@ export default TreeResourceHeader;
 
 TreeResourceHeader.propTypes = {
     path: PropTypes.string.isRequired,
-    resourceId: PropTypes.any.isRequired
+    resourceId: PropTypes.any.isRequired,
+    onCreateMethod:PropTypes.func,
+    onDeleteResource:PropTypes.func,
+    onCreateResource:PropTypes.func
 };

@@ -12,6 +12,7 @@ export const ACTION_LOAD_ROUTE_LIST = 'LOAD_ROUTE_LIST';
 
 // entries list
 export const ACTION_SET_RESOURCE_ENTRIES = 'SET_RESOURCE_ENTRIES';
+export const ACTION_DELETE_RESOURCE = 'DELETE_RESOURCE';
 
 // API actions
 export const ACTION_AWS_API_CALL = 'AWS_API_CALL';

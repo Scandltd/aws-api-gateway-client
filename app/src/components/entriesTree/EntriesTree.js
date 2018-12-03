@@ -30,6 +30,7 @@ class EntriesTree extends Component
                 resourceMethods={item.resourceMethods ? item.resourceMethods : {}}
                 nested={nested}
                 expanded={0 === level}
+                handleInitResourceAction={this.props.handleInitResourceAction}
             />
         });
     }
@@ -58,5 +59,6 @@ class EntriesTree extends Component
 export default EntriesTree;
 
 EntriesTree.propsTypes = {
-    treeEntries: PropTypes.array.isRequired
+    treeEntries: PropTypes.array.isRequired,
+    handleInitResourceAction: PropTypes.func.isRequired
 };

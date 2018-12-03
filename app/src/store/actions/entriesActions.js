@@ -1,4 +1,4 @@
-import {ACTION_SET_RESOURCE_ENTRIES} from './types';
+import { ACTION_SET_RESOURCE_ENTRIES, ACTION_DELETE_RESOURCE } from './types';
 import { apiCall } from './apiActions';
 import { addErrorNotification } from './notificationActions';
 
@@ -29,6 +29,54 @@ export const loadResources = (accountId, apiId) => {
                 dispatch(addErrorNotification('Unable to fetch resources data. ' + err.message));
             }
         ));
+    };
+};
+
+/**
+ *
+ * @param accountId
+ * @param apiId
+ * @param resourceId
+ *
+ * @returns {Function}
+ */
+export const deleteResourceApiRequest = (accountId, apiId, resourceId) => {
+    const params = {
+        resourceId: resourceId, /* required */
+        restApiId: apiId /* required */
+    };
+
+    return dispatch => {
+        dispatch(apiCall(
+            accountId,
+            'deleteResource',
+            params,
+            response => {
+                dispatch(deleteResource(accountId, apiId, resourceId));
+            },
+            err => {
+                dispatch(addErrorNotification('Unable to fetch resources data. ' + err.message));
+            }
+        ));
+    };
+};
+
+/**
+ *
+ * @param accountId
+ * @param apiId
+ * @param resourceId
+ *
+ * @returns {{type: string, payload: {accountId: *, apiId: *, resourceId: *}}}
+ */
+export const deleteResource = (accountId, apiId, resourceId) => {
+    return {
+        type: ACTION_DELETE_RESOURCE,
+        payload: {
+            accountId: accountId,
+            apiId: apiId,
+            resourceId: resourceId,
+        }
     };
 };
 
