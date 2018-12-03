@@ -1,11 +1,13 @@
 .entries-tree {
     .tree-source-element-details {
         flex-direction: column;
-        padding: 0 0 0 24px;
+        padding: 0 0 5px 24px;
 
         .tree-method {
+            margin: 5px 0 5px 0;
+
             .method-head-first {
-                flex-basis: 20%;
+                flex-basis: 10%;
                 flex-shrink: 0;
 
                 p {
@@ -24,9 +26,13 @@
                 }
             }
 
-            .smethod-head-first {
-                color: grey,
+            .method-head-first {
+                color: grey;
             }
+        }
+
+        .tree-method-type-GET {
+            border: 1px solid #5DADE2;
         }
 
         .tree-method-header-type-GET {
@@ -39,6 +45,10 @@
             }
         }
 
+        .tree-method-type-POST {
+            border: 1px solid #48C9B0;
+        }
+
         .tree-method-header-type-POST {
             background-color: #E8F8F5;
 
@@ -49,14 +59,22 @@
             }
         }
 
+        .tree-method-type-PATCH {
+            border: 1px solid #F4D03F;
+        }
+
         .tree-method-header-type-PATCH {
             background-color: #EFEF9E;
 
             .method-head-first {
                 p {
-                    background-color:  #F4D03F;
+                    background-color: #F4D03F;
                 }
             }
+        }
+
+        .tree-method-type-PUT {
+            border: 1px solid #DC7633;
         }
 
         .tree-method-header-type-PUT {
@@ -69,6 +87,10 @@
             }
         }
 
+        .tree-method-type-DELETE {
+            border: 1px solid #EC7063;
+        }
+
         .tree-method-header-type-DELETE {
             background-color: #FDEDEC;
 
@@ -79,6 +101,10 @@
             }
         }
 
+        .tree-method-type-HEAD {
+            border: 1px solid #5D6D7E;
+        }
+
         .tree-method-header-type-HEAD {
             background-color: #EBEDEF;
 
@@ -87,6 +113,10 @@
                     background-color: #5D6D7E;
                 }
             }
+        }
+
+        .tree-method-type-OPTIONS {
+            border: 1px solid #D0D3D4;
         }
 
         .tree-method-header-type-OPTIONS {
@@ -101,7 +131,7 @@
     }
 
     .tree-resource-expanded { 
-        margin: 0; 
+        margin: 0;
     }
 
     .tree-resource-header {

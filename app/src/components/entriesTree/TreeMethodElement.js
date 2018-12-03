@@ -13,7 +13,7 @@ class TreeMethodElement extends Component
 {
     render() {
         return (
-            <div className="tree-method">
+            <div className={`tree-method tree-method-type-${this.props.type}`}>
                 <ExpansionPanel>
                     <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />} className={`tree-method-header tree-method-header-type-${this.props.type}`}>
                         <div className="method-head-first">

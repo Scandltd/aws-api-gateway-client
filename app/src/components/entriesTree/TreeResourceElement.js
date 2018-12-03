@@ -33,7 +33,7 @@ class TreeResourceElement extends Component
      */
     render() {
         return (
-            <ExpansionPanel classes={{expanded: "tree-resource-expanded"}} defaultExpanded={this.props.expanded}>
+            <ExpansionPanel classes={{expanded: "tree-resource-expanded"}} className="tree-resource-container" defaultExpanded={this.props.expanded}>
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />} className="tree-resource-header">
                     <Typography >{this.props.path}</Typography>
                 </ExpansionPanelSummary>
