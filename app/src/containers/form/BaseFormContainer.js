@@ -85,7 +85,7 @@ class BaseFormContainer extends Component
      * @returns {boolean}
      */
     validateForm = () => {
-        const validationErrors = validate(this.state.data, this.validationRules);
+        const validationErrors = validate(this.state.data, this.validationRules, {fullMessages: false});
 
         if (validationErrors) {
             this.setState({errors: validationErrors});
@@ -104,9 +104,9 @@ class BaseFormContainer extends Component
      */
     validateField = (name, value) => {
         if (this.validationRules[name]) {
-            const errors = validate.single(value, this.validationRules[name]);
+            const errors = validate.single(value, this.validationRules[name], {fullMessages: false});
             if (errors) {
-                this.setState({errors: {...this.state.errors, [name]: errors[0]}});
+                this.setState({errors: {...this.state.errors, [name]: errors}});
             } else {
                 this.setState({errors: {...this.state.errors, [name]: null}});
             }

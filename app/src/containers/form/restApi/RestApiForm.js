@@ -5,6 +5,7 @@ import { createRestApiRequest, updateRestApiRequest } from '../../../store/actio
 import {connect} from "react-redux";
 import PropTypes from 'prop-types';
 
+import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import TextField from '@material-ui/core/TextField';
@@ -32,19 +33,26 @@ class RestApiForm extends BaseFormContainer
 
         this.setValidationRules({
             name: {
-                presence: {allowEmpty: false},
+                presence: {
+                    allowEmpty: false
+                },
                 length: {
                     minimum: 3,
                     maximum: 40
                 },
             },
             description:{
+                presence: {
+                    allowEmpty: false
+                },
                 length: {
                     maximum: 200
-                }
+                },
             },
             type: {
-                presence: {allowEmpty: false},
+                presence: {
+                    allowEmpty: false,
+                },
             }
         });
     }
@@ -100,10 +108,11 @@ class RestApiForm extends BaseFormContainer
                     label="Rest API name"
                     name="name"
                     placeholder="Name"
-                    helperText="Enter name of REST API"
+                    helperText={Boolean(this.state.errors.name) ? this.state.errors.name[0] : ''}
                     fullWidth
                     margin="normal"
                     multiline={true}
+                    error={Boolean(this.state.errors.name)}
                     InputLabelProps={{
                         shrink: true,
                     }}
@@ -116,9 +125,10 @@ class RestApiForm extends BaseFormContainer
                     label="Description"
                     name="description"
                     placeholder="Description"
-                    helperText="Enter description"
+                    helperText={Boolean(this.state.errors.description) ? this.state.errors.description[0] : ''}
                     fullWidth
                     margin="normal"
+                    error={Boolean(this.state.errors.description)}
                     multiline={true}
                     InputLabelProps={{
                         shrink: true,
@@ -127,24 +137,25 @@ class RestApiForm extends BaseFormContainer
                     value={this.state.data.description}
                 />
 
-                <FormControl fullWidth className="form-control">
+                <FormControl fullWidth error={Boolean(this.state.errors.type)} className="form-control">
                     <InputLabel htmlFor="name-error">Endpoint Type</InputLabel>
                     <Select
                         value={this.state.data.type}
                         onChange={this.handleChange}
                         name="type"
+                        error={Boolean(this.state.errors.type)}
                     >
                         <MenuItem value="" default className="select-empty">
                             <em>None</em>
                         </MenuItem>
                         {menuOptions}
                     </Select>
+                    <FormHelperText>{Boolean(this.state.errors.type) ? this.state.errors.type[0] : ''}</FormHelperText>
                 </FormControl>
             </React.Fragment>
         );
     };
 }
-
 
 /**
  *

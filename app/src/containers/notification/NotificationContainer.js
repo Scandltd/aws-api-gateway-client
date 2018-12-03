@@ -8,7 +8,6 @@ import SnackbarCustom from '../../components/snackbar/SnackbarCustom';
  */
 class NotificationContainer extends Component
 {
-
     /**
      *
      * @param notificationId
