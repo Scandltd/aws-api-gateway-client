@@ -1,6 +1,6 @@
 import { ACTION_SET_RESOURCE_ENTRIES, ACTION_DELETE_RESOURCE } from './types';
 import { apiCall } from './apiActions';
-import { addErrorNotification } from './notificationActions';
+import { addErrorNotification, addSuccessNotification } from './notificationActions';
 
 /**
  *
@@ -53,6 +53,7 @@ export const deleteResourceApiRequest = (accountId, apiId, resourceId) => {
             params,
             response => {
                 dispatch(deleteResource(accountId, apiId, resourceId));
+                dispatch(addSuccessNotification('Resource has been deleted'));
             },
             err => {
                 dispatch(addErrorNotification('Unable to fetch resources data. ' + err.message));

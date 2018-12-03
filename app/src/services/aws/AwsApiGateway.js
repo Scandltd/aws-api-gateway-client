@@ -79,6 +79,13 @@ class AwsApiGateway
     getRestApi = (params) => {
         return this._client.getRestApi(params).promise();
     }
+
+    /**
+     * 
+     */
+    deleteResource = (params) => {
+        return this._client.deleteResource(params).promise();
+    }
 }
 
 export default AwsApiGateway;

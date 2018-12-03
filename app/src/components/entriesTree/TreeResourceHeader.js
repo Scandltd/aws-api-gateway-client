@@ -70,7 +70,7 @@ class TreeResourceHeader extends Component
 
         return (
             <React.Fragment>
-                <Typography >{this.props.path}</Typography>
+                <Typography className="tree-resource-header-first">{this.props.path}</Typography>
                 <div className="tree-resource-action">
                     <div>
                         <Button

@@ -57,15 +57,9 @@ class ApiResourceDetail extends Component
      * @param action
      */
     handleInitResourceAction = (resourceId, action) => {
-        console.log('handle init resource action', resourceId, action);
-
-
         if ('delete_resource' === action) {
-            this.props.actions.deleteResource(resourceId);
+            this.deleteResource(resourceId);
         }
-
-
-
     };
 
     /**
@@ -73,7 +67,7 @@ class ApiResourceDetail extends Component
      * @param resourceId
      */
     deleteResource = (resourceId) => {
-        this.props.deleteResource(this.state.accountId, this.state.apiId, resourceId);
+        this.props.actions.deleteResource(this.state.accountId, this.state.apiId, resourceId);
     };
 
     /**

@@ -1,4 +1,9 @@
 .entries-tree {
+    .tree-resource-header-first {
+        align-items: center;
+        display: flex;
+    }
+
     .tree-source-element-details {
         flex-direction: column;
         padding: 0 0 5px 24px;
@@ -136,5 +141,9 @@
 
     .tree-resource-header {
         background: rgba(0, 0, 0, .05);
+        &>div {
+            justify-content: space-between;
+        }
+
     }
 }
