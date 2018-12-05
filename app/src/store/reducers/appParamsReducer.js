@@ -4,7 +4,11 @@ import { ACTION_SET_LOADING_TRUE, ACTION_SET_LOADING_FALSE } from '../actions/ty
  *
  */
 const defaultState = {
-    isLoading: false
+    isLoading: false,
+    awsRegions: {
+        loaded: false,
+        list: []
+    }
 };
 
 /**

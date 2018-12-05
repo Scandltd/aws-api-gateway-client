@@ -7,6 +7,7 @@ import AuthorizationTypeEnum from '../../../enum/authorizationTypeEnum';
 import { createMethodApiRequest } from "../../../store/actions/entriesActions";
 import { connect } from "react-redux";
 import TextField from '@material-ui/core/TextField';
+import { omit, keys } from 'lodash';
 
 /**
  *
@@ -24,12 +25,21 @@ class RestApiMethodForm extends BaseFormContainer {
             authorizerId: ''
         });
 
+        this.constData = {
+            httpMethodOptions: HttpMethodEnum,
+        };
+
+        const existsHttpMethods = this.props.resource.resourceMethods;
+        if (existsHttpMethods) {
+            this.constData.httpMethodOptions = omit(this.constData.httpMethodOptions, keys(existsHttpMethods));
+        }
+
         this.setValidationRules({
             httpMethod: {
                 presence: {
                     allowEmpty: false
                 },
-                inclusion: Object.values(HttpMethodEnum)
+                inclusion: Object.values(this.constData.httpMethodOptions)
             },
             authorizationType: {
                 presence: {
@@ -66,7 +76,7 @@ class RestApiMethodForm extends BaseFormContainer {
      */
     onSubmitValid = () => {
         this.setState({isProcessing: true});
-        this.props.actions.createHttpMethod(this.props.accountId, this.props.restApiId, this.props.resourceId, this.state.data, this.onRequestSuccess, this.onRequestError);
+        this.props.actions.createHttpMethod(this.props.accountId, this.props.restApiId, this.props.resource.id, this.state.data, this.onRequestSuccess, this.onRequestError);
     };
 
     /**
@@ -77,7 +87,8 @@ class RestApiMethodForm extends BaseFormContainer {
         return this.renderForm(
             <React.Fragment>
                 <SelectField
-                    options={HttpMethodEnum}
+                    required
+                    options={this.constData.httpMethodOptions}
                     name="httpMethod"
                     label="Http method"
                     value={this.state.data.httpMethod}
@@ -134,7 +145,7 @@ export default connect(null, mapDispatchToProps)(RestApiMethodForm);
 RestApiMethodForm.propTypes = {
     accountId: PropTypes.any.isRequired,
     restApiId: PropTypes.any.isRequired,
-    resourceId: PropTypes.any.isRequired,
+    resource: PropTypes.object.isRequired,
     initialData: PropTypes.object,
     isUpdateAction: PropTypes.bool.isRequired,
     entityId: PropTypes.any,

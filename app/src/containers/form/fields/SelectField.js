@@ -18,7 +18,7 @@ class SelectField extends Component {
 
         return (
             <FormControl fullWidth error={Boolean(this.props.error)} className="form-control">
-                <InputLabel htmlFor={`${this.props.name}`}>{this.props.label}</InputLabel>
+                <InputLabel htmlFor={`${this.props.name}`} required={Boolean(this.props.required)}>{this.props.label}</InputLabel>
                 <Select
                     value={this.props.value}
                     onChange={this.props.onChange}

@@ -123,7 +123,7 @@ export const createMethodApiRequest = (accountId, restApiId, resourceId, data, o
         //    'STRING_VALUE',
         //    /* more items */
         //],
-        //authorizerId: 'STRING_VALUE',
+        authorizerId: data.authorizerId || null,
         //operationName: 'STRING_VALUE',
         //requestModels: {
         //    '<String>': 'STRING_VALUE',
@@ -136,8 +136,6 @@ export const createMethodApiRequest = (accountId, restApiId, resourceId, data, o
         //requestValidatorId: 'STRING_VALUE'
     };
 
-
-
     return dispatch => {
         dispatch(apiCall(
             accountId,
@@ -145,13 +143,13 @@ export const createMethodApiRequest = (accountId, restApiId, resourceId, data, o
             params,
             response => {
                 dispatch(putHttpMethod(accountId, restApiId, resourceId, response));
-                dispatch(addSuccessNotification('Http method has been created'));
+                dispatch(addSuccessNotification(`Http method ${response.httpMethod} has been created`));
                 if (onSuccess) {
                     onSuccess(response);
                 }
             },
             err => {
-                dispatch(addErrorNotification('Unable to create http method. ' + err.message));
+                dispatch(addErrorNotification(`Unable to create http method ${data.httpMethod}.  ${err.message}`));
                 if (onError) {
                     onError(err);
                 }

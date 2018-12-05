@@ -144,6 +144,7 @@ class ApiResourceDetail extends Component
                         parentResourceId={resource.id}
                         isUpdateAction={false}
                         onSuccess={this.flushResourceAction}
+                        onCancel={this.flushResourceAction}
                     />;
                     title = 'Create a new resource';
                 break;
@@ -152,7 +153,9 @@ class ApiResourceDetail extends Component
                 form = <StepperRestApiMethodForm
                     accountId={this.state.accountId}
                     restApiId={this.state.apiId}
-                    resourceId={resource.id}
+                    resource={resource}
+                    onCancel={this.flushResourceAction}
+                    onSuccess={this.flushResourceAction}
                 />;
                 title = 'Create a new method';
                 break;

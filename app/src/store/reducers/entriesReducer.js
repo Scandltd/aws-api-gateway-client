@@ -1,6 +1,6 @@
 import dotProp from "dot-prop-immutable";
 import { ACTION_SET_RESOURCE_ENTRIES, ACTION_DELETE_RESOURCE, ACTION_ADD_RESOURCE, ACTION_PUT_HTTP_METHOD } from '../actions/types';
-import {forEach, concat, indexOf, has, findIndex} from "lodash";
+import { forEach, concat, indexOf, findIndex } from "lodash";
 
 /**
  *

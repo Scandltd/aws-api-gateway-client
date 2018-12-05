@@ -1,10 +1,8 @@
-import React, {Component} from 'react';
+import React from 'react';
 
 import BaseFormContainer from '../BaseFormContainer';
-
-import { forIn } from 'lodash';
 import { createResourceApiRequest } from '../../../store/actions/entriesActions';
-import {connect} from "react-redux";
+import { connect } from "react-redux";
 import PropTypes from 'prop-types';
 import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -68,6 +66,7 @@ class RestApiResourceForm extends BaseFormContainer {
         return this.renderForm(
             <React.Fragment>
                 <TextField
+                    required
                     label="Path"
                     name="path"
                     placeholder="Path"

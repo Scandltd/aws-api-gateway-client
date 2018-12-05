@@ -10,6 +10,7 @@ import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import RestApiMethodForm from './RestApiMethodForm';
+import IntegrationForm from './IntegrationForm';
 
 /**
  *
@@ -64,6 +65,13 @@ class StepperRestApiMethodForm extends Component {
         });
     };
 
+    handleCancel = () => {
+        this.handleReset();
+        if (this.props.onCancel) {
+            this.props.onCancel();
+        }
+    };
+
     /**
      *
      * @param index
@@ -77,15 +85,25 @@ class StepperRestApiMethodForm extends Component {
                     return <RestApiMethodForm
                         accountId={this.props.accountId}
                         restApiId={this.props.restApiId}
-                        resourceId={this.props.resourceId}
+                        resource={this.props.resource}
                         isUpdateAction={false}
                         onSuccess={this.handleNext}
+                        onCancel={this.handleCancel}
+                    />;
+
+                case 1:
+                    return <IntegrationForm
+                        accountId={this.props.accountId}
+                        restApiId={this.props.restApiId}
+                        resource={this.props.resource}
+                        isUpdateAction={false}
+                        onSuccess={this.handleNext}
+                        onCancel={this.handleCancel}
                     />;
 
                 default:
                     break;
             }
-
         }
 
         return null;
@@ -116,9 +134,6 @@ class StepperRestApiMethodForm extends Component {
                 {activeStep === STEPS.length && (
                     <Paper square elevation={0} className={classes.resetContainer}>
                         <Typography>All steps completed - you&apos;re finished</Typography>
-                        <Button onClick={this.handleReset} className={classes.button}>
-                            Reset
-                        </Button>
                     </Paper>
                 )}
             </div>
@@ -135,5 +150,6 @@ export default withStyles(styles)(StepperRestApiMethodForm);
 StepperRestApiMethodForm.propTypes = {
     accountId: PropTypes.any.isRequired,
     restApiId: PropTypes.any.isRequired,
-    resourceId: PropTypes.any.isRequired,
+    resource: PropTypes.object.isRequired,
+    onCancel: PropTypes.func
 };

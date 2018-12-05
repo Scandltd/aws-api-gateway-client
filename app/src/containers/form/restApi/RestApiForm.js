@@ -1,7 +1,7 @@
 import React from 'react';
 import BaseFormContainer from '../BaseFormContainer';
 import { createRestApiRequest, updateRestApiRequest } from '../../../store/actions/apiActions';
-import {connect} from "react-redux";
+import { connect } from "react-redux";
 import PropTypes from 'prop-types';
 
 import TextField from '@material-ui/core/TextField';
@@ -95,6 +95,7 @@ class RestApiForm extends BaseFormContainer
                 <TextField
                     id="standard-full-width"
                     label="Rest API name"
+                    required
                     name="name"
                     placeholder="Name"
                     helperText={Boolean(this.state.errors.name) ? this.state.errors.name[0] : ''}
@@ -113,6 +114,7 @@ class RestApiForm extends BaseFormContainer
                     id="standard-full-width"
                     label="Description"
                     name="description"
+                    required
                     placeholder="Description"
                     helperText={Boolean(this.state.errors.description) ? this.state.errors.description[0] : ''}
                     fullWidth
@@ -129,6 +131,7 @@ class RestApiForm extends BaseFormContainer
                 <SelectField
                     options={RestApiEndpointType}
                     name="type"
+                    required
                     label="Endpoint Type"
                     value={this.state.data.type}
                     error={Boolean(this.state.errors.type) ? this.state.errors.type[0] : ''}
