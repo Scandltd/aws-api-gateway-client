@@ -34,6 +34,7 @@ class RadioButtonsGroupField extends Component {
         const options = [];
         forIn(this.props.options, (value, key) => {
             options.push(<FormControlLabel
+                key={key}
                 value={key}
                 control={<Radio color="primary" />}
                 label={value}

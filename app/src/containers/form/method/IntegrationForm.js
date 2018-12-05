@@ -2,6 +2,7 @@ import React from 'react';
 import BaseFormContainer from '../BaseFormContainer';
 import { connect } from "react-redux";
 import RadioButtonsGroupField from '../fields/RadioButtonsGroupField';
+import IntegrationTypeEnum from '../../../enum/integrationTypeEnum';
 
 /**
  *
@@ -18,7 +19,7 @@ class IntegrationForm extends BaseFormContainer {
         });
 
         this.setValidationRules({
-            
+
         });
     }
 
@@ -26,7 +27,7 @@ class IntegrationForm extends BaseFormContainer {
         return this.renderForm(
             <React.Fragment>
                 <RadioButtonsGroupField
-                    options={{}}
+                    options={IntegrationTypeEnum}
                 value={this.state.data.type}
                 onChange={this.handleChange}
                 label="Integration type"
