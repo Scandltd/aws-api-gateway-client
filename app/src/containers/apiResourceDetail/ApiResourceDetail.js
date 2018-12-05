@@ -1,10 +1,13 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
+import { find } from 'lodash';
 import { loadResources, deleteResourceApiRequest } from '../../store/actions/entriesActions';
 import { addErrorNotification } from '../../store/actions/notificationActions';
 import EntriesTree from '../../components/entriesTree/EntriesTree';
 import arrayToTree from 'array-to-tree';
 import DialogFormComponent from '../../components/dialog/DialogFormComponent';
+import RestApiResourceForm from '../form/restApiResource/RestApiResourceForm';
+import RestApiMethodForm from '../../containers/form/method/RestApiMethodForm';
 
 /**
  * 
@@ -20,7 +23,8 @@ class ApiResourceDetail extends Component
         this.state = {
             accountId: props.match.params.accountId,
             apiId: props.match.params.apiId,
-            resourceAction: null
+            resourceAction: null,
+            activeResourceId: null
         };
     }
 
@@ -54,6 +58,16 @@ class ApiResourceDetail extends Component
 
     /**
      *
+     */
+    flushResourceAction = () => {
+        this.setState({
+            resourceAction: null,
+            activeResourceId: null
+        });
+    };
+
+    /**
+     *
      * @param resourceId
      * @param action
      */
@@ -66,7 +80,10 @@ class ApiResourceDetail extends Component
 
             case 'create_method':
             case 'create_resource':
-                this.setState({resourceAction: action});
+                this.setState({
+                    resourceAction: action,
+                    activeResourceId: resourceId
+                });
                 break;
 
             default:
@@ -83,19 +100,54 @@ class ApiResourceDetail extends Component
         this.props.actions.deleteResource(this.state.accountId, this.state.apiId, resourceId);
     };
 
+    /**
+     *
+     */
+    onCloseDialog = () => {
+        this.flushResourceAction();
+    };
+
+    /**
+     *
+     * @param resourceId
+     *
+     * @returns {*}
+     */
+    findResourceById = (resourceId) => {
+        return find(this.props.entries[this.state.apiId], {id: resourceId});
+    };
+
+    /**
+     *
+     * @returns {*}
+     */
     renderForm = () => {
         if (!Boolean(this.state.resourceAction)) {
             return null;
         }
 
         let form = null;
+        let title = '';
         switch (this.state.resourceAction) {
             case 'create_resource':
-                //form =
+                const resource = this.findResourceById(this.state.activeResourceId);
+                if (resource) {
+                    form = <RestApiResourceForm
+                        basePath={resource.path}
+                        accountId={this.state.accountId}
+                        restApiId={this.state.apiId}
+                        parentResourceId={resource.id}
+                        isUpdateAction={false}
+                        onSuccess={this.flushResourceAction}
+                    />;
+                    title = 'Create a new resource';
+                }
+
                 break;
 
             case 'create_method':
-
+                form = <RestApiMethodForm />;
+                title = 'Create a new method';
                 break;
 
             default:
@@ -103,7 +155,7 @@ class ApiResourceDetail extends Component
         }
 
         return (
-            <DialogFormComponent open={true}>
+            <DialogFormComponent open={true} title={title} onClose={this.onCloseDialog}>
                 {form}
             </DialogFormComponent>
         );

@@ -15,7 +15,7 @@ class DialogFormComponent extends Component
      */
     render () {
       return (
-          <Dialog open={this.props.open} aria-labelledby="form-dialog-title">
+          <Dialog open={this.props.open} onClose={this.props.onClose} aria-labelledby="form-dialog-title">
               <DialogTitle id="form-dialog-title">{this.props.title}</DialogTitle>
               <DialogContent>
                   {this.props.children}
@@ -29,4 +29,6 @@ export default DialogFormComponent;
 
 DialogFormComponent.propTypes = {
     open: PropTypes.bool.isRequired,
+    title: PropTypes.string.isRequired,
+    onClose: PropTypes.func
 };

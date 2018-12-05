@@ -1,4 +1,4 @@
-import { ACTION_SET_RESOURCE_ENTRIES, ACTION_DELETE_RESOURCE } from './types';
+import { ACTION_SET_RESOURCE_ENTRIES, ACTION_DELETE_RESOURCE, ACTION_ADD_RESOURCE } from './types';
 import { apiCall } from './apiActions';
 import { addErrorNotification, addSuccessNotification } from './notificationActions';
 
@@ -65,6 +65,45 @@ export const deleteResourceApiRequest = (accountId, apiId, resourceId) => {
 /**
  *
  * @param accountId
+ * @param restApiId
+ * @param data
+ * @param onSuccess
+ * @param onError
+ *
+ * @returns {Function}
+ */
+export const createResourceApiRequest = (accountId, restApiId, data, onSuccess = null, onError = null) => {
+    const params = {
+        parentId: data.parentId || null, /* required */
+        pathPart: data.path || null,     /* required */
+        restApiId: restApiId            /* required */
+    };
+
+    return dispatch => {
+        dispatch(apiCall(
+            accountId,
+            'createRestApiResource',
+            params,
+            response => {
+                dispatch(addEntriesResource(accountId, restApiId, response));
+                dispatch(addSuccessNotification('Resource has been created'));
+                if (onSuccess) {
+                    onSuccess(response);
+                }
+            },
+            err => {
+                dispatch(addErrorNotification('Unable to create REST API resource. ' + err.message));
+                if (onError) {
+                    onError(err);
+                }
+            }
+        ));
+    };
+};
+
+/**
+ *
+ * @param accountId
  * @param apiId
  * @param resourceId
  *
@@ -93,6 +132,25 @@ export const setEntriesResources = (apiId, entries) => {
         payload: {
             apiId: apiId,
             entries: entries
+        }
+    };
+};
+
+/**
+ *
+ * @param accountId
+ * @param apiId
+ * @param entry
+ *
+ * @returns {{type: string, payload: {apiId: *, entry: *}}}
+ */
+export const addEntriesResource = (accountId, apiId, entry) => {
+    return {
+        type: ACTION_ADD_RESOURCE,
+        payload: {
+            accountId: accountId,
+            apiId: apiId,
+            entry: entry
         }
     };
 };

@@ -1,6 +1,5 @@
 import React from 'react';
 import BaseFormContainer from '../BaseFormContainer';
-import { forIn } from 'lodash';
 import { createRestApiRequest, updateRestApiRequest } from '../../../store/actions/apiActions';
 import {connect} from "react-redux";
 import PropTypes from 'prop-types';
