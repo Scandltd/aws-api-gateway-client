@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { loadResources, deleteResourceApiRequest } from '../../store/actions/entriesActions';
+import { addErrorNotification } from '../../store/actions/notificationActions';
 import EntriesTree from '../../components/entriesTree/EntriesTree';
 import arrayToTree from 'array-to-tree';
 import DialogFormComponent from '../../components/dialog/DialogFormComponent';
@@ -57,8 +58,20 @@ class ApiResourceDetail extends Component
      * @param action
      */
     handleInitResourceAction = (resourceId, action) => {
-        if ('delete_resource' === action) {
-            this.deleteResource(resourceId);
+        console.log('resource init', resourceId, action);       //@todo remove it
+        switch (action) {
+            case 'delete_resource':
+                this.deleteResource(resourceId);
+                break;
+
+            case 'create_method':
+            case 'create_resource':
+                this.setState({resourceAction: action});
+                break;
+
+            default:
+                this.props.actions.addErrorNotification('Unknown action');
+                break;
         }
     };
 
@@ -70,6 +83,32 @@ class ApiResourceDetail extends Component
         this.props.actions.deleteResource(this.state.accountId, this.state.apiId, resourceId);
     };
 
+    renderForm = () => {
+        if (!Boolean(this.state.resourceAction)) {
+            return null;
+        }
+
+        let form = null;
+        switch (this.state.resourceAction) {
+            case 'create_resource':
+                //form =
+                break;
+
+            case 'create_method':
+
+                break;
+
+            default:
+                break;
+        }
+
+        return (
+            <DialogFormComponent open={true}>
+                {form}
+            </DialogFormComponent>
+        );
+    };
+
     /**
      *
      * @returns {*}
@@ -79,10 +118,7 @@ class ApiResourceDetail extends Component
             <div>
                 API detail page. Account id: {this.props.match.params.accountId} | Api id: {this.props.match.params.apiId}
                 <EntriesTree treeEntries={this.buildTree()} handleInitResourceAction={this.handleInitResourceAction}/>
-
-                <DialogFormComponent open={Boolean(this.state.resourceAction)}>
-
-                </DialogFormComponent>
+                {this.renderForm()}
             </div>
         );
     }
@@ -108,6 +144,7 @@ const mapDispatchToProps = (dispatch) => {
         actions: {
             loadResources: (accountId, apiId) => dispatch(loadResources(accountId, apiId)),
             deleteResource: (accountId, apiId, resourceId) => dispatch(deleteResourceApiRequest(accountId, apiId, resourceId)),
+            addErrorNotification: (message) => dispatch(addErrorNotification(message))
         }
     }
 };

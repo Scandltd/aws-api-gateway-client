@@ -5,14 +5,9 @@ import { createRestApiRequest, updateRestApiRequest } from '../../../store/actio
 import {connect} from "react-redux";
 import PropTypes from 'prop-types';
 
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
 import TextField from '@material-ui/core/TextField';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
-
 import RestApiEndpointType from '../../../enum/restApiEndpointType';
+import SelectField from '../fields/SelectField';
 
 /**
  *
@@ -96,11 +91,6 @@ class RestApiForm extends BaseFormContainer
      * @returns {*}
      */
     render() {
-        const menuOptions = [];
-        forIn(RestApiEndpointType, (value, key) => {
-            menuOptions.push(<MenuItem value={value} key={key}>{value}</MenuItem>);
-        });
-
         return this.renderForm(
             <React.Fragment>
                 <TextField
@@ -137,21 +127,15 @@ class RestApiForm extends BaseFormContainer
                     value={this.state.data.description}
                 />
 
-                <FormControl fullWidth error={Boolean(this.state.errors.type)} className="form-control">
-                    <InputLabel htmlFor="name-error">Endpoint Type</InputLabel>
-                    <Select
-                        value={this.state.data.type}
-                        onChange={this.handleChange}
-                        name="type"
-                        error={Boolean(this.state.errors.type)}
-                    >
-                        <MenuItem value="" default className="select-empty">
-                            <em>None</em>
-                        </MenuItem>
-                        {menuOptions}
-                    </Select>
-                    <FormHelperText>{Boolean(this.state.errors.type) ? this.state.errors.type[0] : ''}</FormHelperText>
-                </FormControl>
+                <SelectField
+                    options={RestApiEndpointType}
+                    name="type"
+                    label="Endpoint Type"
+                    value={this.state.data.type}
+                    error={Boolean(this.state.errors.type) ? this.state.errors.type[0] : ''}
+                    onChange={this.handleChange}
+                />
+
             </React.Fragment>
         );
     };
