@@ -1,15 +1,39 @@
 import React from 'react';
 import BaseFormContainer from '../BaseFormContainer';
 import { connect } from "react-redux";
+import RadioButtonsGroupField from '../fields/RadioButtonsGroupField';
 
 /**
  *
  */
 class IntegrationForm extends BaseFormContainer {
+    /**
+     *
+     * @param props
+     */
+    constructor(props) {
+        super(props);
+        this.state.data = this.initData({
+            type: ''
+        });
+
+        this.setValidationRules({
+            
+        });
+    }
+
     render() {
         return this.renderForm(
             <React.Fragment>
-                The form goes here
+                <RadioButtonsGroupField
+                    options={{}}
+                value={this.state.data.type}
+                onChange={this.handleChange}
+                label="Integration type"
+                name="name"
+                error={Boolean(this.state.errors.type) ? this.state.errors.type[0] : ''}
+                helperText="Integration point for HTTP method"
+                />
             </React.Fragment>
         );
     }
