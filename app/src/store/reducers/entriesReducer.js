@@ -1,6 +1,6 @@
 import dotProp from "dot-prop-immutable";
-import { ACTION_SET_RESOURCE_ENTRIES, ACTION_DELETE_RESOURCE, ACTION_ADD_RESOURCE } from '../actions/types';
-import { forEach, concat, indexOf } from "lodash";
+import { ACTION_SET_RESOURCE_ENTRIES, ACTION_DELETE_RESOURCE, ACTION_ADD_RESOURCE, ACTION_PUT_HTTP_METHOD } from '../actions/types';
+import {forEach, concat, indexOf, has, findIndex} from "lodash";
 
 /**
  *
@@ -48,6 +48,19 @@ const entriesReducer = (state = defaultState, action) => {
         case ACTION_ADD_RESOURCE:
 
             return dotProp.merge(state, `entries.${action.payload.apiId}`, [action.payload.entry]);
+
+
+        case ACTION_PUT_HTTP_METHOD:
+            const resourceIndex = findIndex(dotProp.get(state, `entries.${action.payload.apiId}`), {id: action.payload.resourceId});
+
+            if (-1 === resourceIndex) {
+                return state;
+            }
+
+            const methods = dotProp.get(state, `entries.${action.payload.apiId}.${resourceIndex}.resourceMethods`, {});
+            methods[action.payload.entity.httpMethod]=action.payload.entity;
+
+            return dotProp.set(state, `entries.${action.payload.apiId}.${resourceIndex}.resourceMethods`, methods);
 
         default:
             return state;

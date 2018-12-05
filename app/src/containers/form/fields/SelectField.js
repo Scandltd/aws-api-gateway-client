@@ -8,12 +8,11 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
-import RestApiEndpointType from "../../../enum/restApiEndpointType";
 
 class SelectField extends Component {
     render() {
         const menuOptions = [];
-        forIn(RestApiEndpointType, (value, key) => {
+        forIn(this.props.options, (value, key) => {
             menuOptions.push(<MenuItem value={value} key={key}>{value}</MenuItem>);
         });
 
@@ -32,7 +31,7 @@ class SelectField extends Component {
 
                     {menuOptions}
                 </Select>
-                <FormHelperText>{Boolean(this.props.error) ? this.props.error : ''}</FormHelperText>
+                <FormHelperText>{Boolean(this.props.error) ? this.props.error : this.props.helperText}</FormHelperText>
             </FormControl>
         );
     }
@@ -44,6 +43,7 @@ SelectField.propTypes = {
     options: PropTypes.object.isRequired,
     name: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
+    helperText: PropTypes.string,
     value: PropTypes.any.isRequired,
     error: PropTypes.string,
     onChange: PropTypes.func.isRequired

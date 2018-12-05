@@ -7,7 +7,7 @@ import EntriesTree from '../../components/entriesTree/EntriesTree';
 import arrayToTree from 'array-to-tree';
 import DialogFormComponent from '../../components/dialog/DialogFormComponent';
 import RestApiResourceForm from '../form/restApiResource/RestApiResourceForm';
-import RestApiMethodForm from '../../containers/form/method/RestApiMethodForm';
+import StepperRestApiMethodForm from '../../containers/form/method/StepperRestApiMethodForm';
 
 /**
  * 
@@ -128,10 +128,15 @@ class ApiResourceDetail extends Component
 
         let form = null;
         let title = '';
+        const resource = this.findResourceById(this.state.activeResourceId);
+        if (!resource) {
+            this.props.actions.addErrorNotification('Unknown resource');
+
+            return null;
+        }
+
         switch (this.state.resourceAction) {
             case 'create_resource':
-                const resource = this.findResourceById(this.state.activeResourceId);
-                if (resource) {
                     form = <RestApiResourceForm
                         basePath={resource.path}
                         accountId={this.state.accountId}
@@ -141,12 +146,14 @@ class ApiResourceDetail extends Component
                         onSuccess={this.flushResourceAction}
                     />;
                     title = 'Create a new resource';
-                }
-
                 break;
 
             case 'create_method':
-                form = <RestApiMethodForm />;
+                form = <StepperRestApiMethodForm
+                    accountId={this.state.accountId}
+                    restApiId={this.state.apiId}
+                    resourceId={resource.id}
+                />;
                 title = 'Create a new method';
                 break;
 

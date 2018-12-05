@@ -1,4 +1,4 @@
-import { ACTION_SET_RESOURCE_ENTRIES, ACTION_DELETE_RESOURCE, ACTION_ADD_RESOURCE } from './types';
+import { ACTION_SET_RESOURCE_ENTRIES, ACTION_DELETE_RESOURCE, ACTION_ADD_RESOURCE, ACTION_PUT_HTTP_METHOD } from './types';
 import { apiCall } from './apiActions';
 import { addErrorNotification, addSuccessNotification } from './notificationActions';
 
@@ -76,7 +76,7 @@ export const createResourceApiRequest = (accountId, restApiId, data, onSuccess =
     const params = {
         parentId: data.parentId || null, /* required */
         pathPart: data.path || null,     /* required */
-        restApiId: restApiId            /* required */
+        restApiId: restApiId             /* required */
     };
 
     return dispatch => {
@@ -93,6 +93,65 @@ export const createResourceApiRequest = (accountId, restApiId, data, onSuccess =
             },
             err => {
                 dispatch(addErrorNotification('Unable to create REST API resource. ' + err.message));
+                if (onError) {
+                    onError(err);
+                }
+            }
+        ));
+    };
+};
+
+/**
+ *
+ * @param accountId
+ * @param restApiId
+ * @param resourceId
+ * @param data
+ * @param onSuccess
+ * @param onError
+ *
+ * @returns {Function}
+ */
+export const createMethodApiRequest = (accountId, restApiId, resourceId, data, onSuccess = null, onError = null) => {
+    const params = {
+        authorizationType: 'NONE',      /* required */
+        httpMethod: data.httpMethod,    /* required */
+        resourceId: resourceId,         /* required */
+        restApiId: restApiId,           /* required */
+        //apiKeyRequired: true || false,
+        //authorizationScopes: [
+        //    'STRING_VALUE',
+        //    /* more items */
+        //],
+        //authorizerId: 'STRING_VALUE',
+        //operationName: 'STRING_VALUE',
+        //requestModels: {
+        //    '<String>': 'STRING_VALUE',
+        //    /* '<String>': ... */
+        //},
+        //requestParameters: {
+        //    '<String>': true || false,
+            /* '<String>': ... */
+        //},
+        //requestValidatorId: 'STRING_VALUE'
+    };
+
+
+
+    return dispatch => {
+        dispatch(apiCall(
+            accountId,
+            'createRestApiMethod',
+            params,
+            response => {
+                dispatch(putHttpMethod(accountId, restApiId, resourceId, response));
+                dispatch(addSuccessNotification('Http method has been created'));
+                if (onSuccess) {
+                    onSuccess(response);
+                }
+            },
+            err => {
+                dispatch(addErrorNotification('Unable to create http method. ' + err.message));
                 if (onError) {
                     onError(err);
                 }
@@ -151,6 +210,27 @@ export const addEntriesResource = (accountId, apiId, entry) => {
             accountId: accountId,
             apiId: apiId,
             entry: entry
+        }
+    };
+};
+
+/**
+ *
+ * @param accountId
+ * @param apiId
+ * @param resourceId
+ * @param entity
+ *
+ * @returns {{type: string, payload: {accountId: *, apiId: *, resourceId: *, entity: *}}}
+ */
+export const putHttpMethod = (accountId, apiId, resourceId, entity) => {
+    return {
+        type: ACTION_PUT_HTTP_METHOD,
+        payload: {
+            accountId: accountId,
+            apiId,
+            resourceId,
+            entity: entity
         }
     };
 };

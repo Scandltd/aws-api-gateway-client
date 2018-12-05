@@ -15,7 +15,7 @@ class DialogFormComponent extends Component
      */
     render () {
       return (
-          <Dialog open={this.props.open} onClose={this.props.onClose} aria-labelledby="form-dialog-title">
+          <Dialog open={this.props.open} onClose={this.props.onClose} aria-labelledby="form-dialog-title" maxWidth="lg">
               <DialogTitle id="form-dialog-title">{this.props.title}</DialogTitle>
               <DialogContent>
                   {this.props.children}

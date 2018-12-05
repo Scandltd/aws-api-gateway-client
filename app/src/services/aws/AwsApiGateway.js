@@ -99,6 +99,16 @@ class AwsApiGateway
     createRestApiResource = (params) => {
         return this._client.createResource(params).promise();
     };
+
+    /**
+     *
+     * @param params
+     *
+     * @returns {Promise<PromiseResult<APIGateway.Method, AWSError>>}
+     */
+    createRestApiMethod = (params) => {
+        return this._client.putMethod(params).promise();
+    };
 }
 
 export default AwsApiGateway;
