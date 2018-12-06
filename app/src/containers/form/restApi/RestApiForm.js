@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 
 import TextField from '@material-ui/core/TextField';
 import RestApiEndpointType from '../../../enum/restApiEndpointType';
-import SelectField from '../fields/SelectField';
+import SelectField from '../../../components/form/fields/SelectField';
 
 /**
  *

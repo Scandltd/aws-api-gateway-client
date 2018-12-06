@@ -6,7 +6,6 @@ import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import StepContent from '@material-ui/core/StepContent';
-import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import RestApiMethodForm from './RestApiMethodForm';
@@ -37,14 +36,15 @@ const styles = theme => ({
  *
  * @type {string[]}
  */
-const STEPS = ['Create Http method', 'Integration'];
+const STEPS = ['HTTP method', 'Integration'];
 
 /**
  *
  */
 class StepperRestApiMethodForm extends Component {
     state = {
-        activeStep: 0,
+        activeStep: 1,
+        httpMethod: ''
     };
 
     /**
@@ -65,11 +65,23 @@ class StepperRestApiMethodForm extends Component {
         });
     };
 
+    /**
+     *
+     */
     handleCancel = () => {
         this.handleReset();
         if (this.props.onCancel) {
             this.props.onCancel();
         }
+    };
+
+    /**
+     *
+     * @param httpMethod
+     */
+    handleOnSuccessMethodCreate = (httpMethod) => {
+        this.setState({httpMethod: httpMethod});
+        this.handleNext();
     };
 
     /**
@@ -87,7 +99,7 @@ class StepperRestApiMethodForm extends Component {
                         restApiId={this.props.restApiId}
                         resource={this.props.resource}
                         isUpdateAction={false}
-                        onSuccess={this.handleNext}
+                        onSuccess={this.handleOnSuccessMethodCreate}
                         onCancel={this.handleCancel}
                     />;
 
@@ -99,6 +111,7 @@ class StepperRestApiMethodForm extends Component {
                         isUpdateAction={false}
                         onSuccess={this.handleNext}
                         onCancel={this.handleCancel}
+                        initData={{httpMethod: this.state.httpMethod}}
                     />;
 
                 default:

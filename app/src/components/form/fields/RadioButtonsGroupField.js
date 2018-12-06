@@ -59,7 +59,7 @@ class RadioButtonsGroupField extends Component {
                         name={this.props.name}
                         className={classes.group}
                         value={this.props.value}
-                        onChange={this.handleChange}
+                        onChange={this.props.onChange}
                     >
                         {this.renderOptions()}
                     </RadioGroup>

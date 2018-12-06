@@ -1,6 +1,6 @@
 import React from 'react';
 import BaseFormContainer from '../BaseFormContainer';
-import SelectField from '../fields/SelectField';
+import SelectField from '../../../components/form/fields/SelectField';
 import PropTypes from 'prop-types';
 import HttpMethodEnum from '../../../enum/httpMethodTypeEnum';
 import AuthorizationTypeEnum from '../../../enum/authorizationTypeEnum';
@@ -60,7 +60,7 @@ class RestApiMethodForm extends BaseFormContainer {
      */
     onRequestSuccess = (response) => {
         this.setState({isProcessing: false});
-        this.props.onSuccess();
+        this.props.onSuccess(response.httpMethod);
     };
 
     /**
@@ -90,7 +90,7 @@ class RestApiMethodForm extends BaseFormContainer {
                     required
                     options={this.constData.httpMethodOptions}
                     name="httpMethod"
-                    label="Http method"
+                    label="HTTP method"
                     value={this.state.data.httpMethod}
                     error={Boolean(this.state.errors.httpMethod) ? this.state.errors.httpMethod[0] : ''}
                     onChange={this.handleChange}
