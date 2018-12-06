@@ -13,7 +13,7 @@ import HttpMethodEnum from '../../../enum/httpMethodTypeEnum';
 import ContentHandlingTypeEnum, { CONTENT_HANDLING_OPTIONS_LIST } from '../../../enum/contentHandlingTypeEnum';
 import ServiceActionTypeEnum, { SERVICE_ACTION_TYPE_LIST } from '../../../enum/serviceActionTypeEnum';
 import PropTypes from 'prop-types';
-import { putMethodIntegration } from '../../../store/actions/entriesActions';
+import { putMethodIntegrationApiRequest } from '../../../store/actions/entriesActions';
 
 /**
  *
@@ -566,7 +566,7 @@ class IntegrationForm extends BaseFormContainer {
 const mapDispatchToProps = (dispatch) => {
     return {
         actions: {
-            putMethodIntegration: (accountId, data, onSuccess = null, onError = null) => dispatch(putMethodIntegration(accountId, data, onSuccess, onError)),
+            putMethodIntegration: (accountId, data, onSuccess = null, onError = null) => dispatch(putMethodIntegrationApiRequest(accountId, data, onSuccess, onError)),
         }
     }
 };

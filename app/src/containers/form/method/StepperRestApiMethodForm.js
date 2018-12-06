@@ -10,6 +10,7 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import RestApiMethodForm from './RestApiMethodForm';
 import IntegrationForm from './IntegrationForm';
+import ResponseForm from './ResponseForm';
 
 /**
  *
@@ -36,7 +37,7 @@ const styles = theme => ({
  *
  * @type {string[]}
  */
-const STEPS = ['HTTP method', 'Integration'];
+const STEPS = ['HTTP method', 'Response configuration', 'Integration'];
 
 /**
  *
@@ -104,6 +105,17 @@ class StepperRestApiMethodForm extends Component {
                     />;
 
                 case 1:
+                    return <ResponseForm
+                        accountId={this.props.accountId}
+                        restApiId={this.props.restApiId}
+                        resourceId={this.props.resource.id}
+                        isUpdateAction={false}
+                        onSuccess={this.handleNext}
+                        onCancel={this.handleCancel}
+                        httpMethod = {this.state.httpMethod}
+                    />;
+
+                case 2:
                     return <IntegrationForm
                         accountId={this.props.accountId}
                         restApiId={this.props.restApiId}

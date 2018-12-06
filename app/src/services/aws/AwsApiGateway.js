@@ -113,11 +113,22 @@ class AwsApiGateway
     /**
      *
      * @param params
+     *
      * @returns {Promise<PromiseResult<D, E>>}
      */
     putIntegration = (params) => {
         return this._client.putIntegration(params).promise();
-    }
+    };
+
+    /**
+     *
+     * @param params
+     *
+     * @returns {Promise<PromiseResult<D, E>>}
+     */
+    putMethodResponse = (params) => {
+        return this._client.putMethodResponse(params).promise();
+    };
 }
 
 export default AwsApiGateway;

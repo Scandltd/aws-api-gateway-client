@@ -1,4 +1,11 @@
-import { ACTION_SET_RESOURCE_ENTRIES, ACTION_DELETE_RESOURCE, ACTION_ADD_RESOURCE, ACTION_PUT_HTTP_METHOD, ACTION_PUT_INTEGRATION } from './types';
+import {
+    ACTION_SET_RESOURCE_ENTRIES,
+    ACTION_DELETE_RESOURCE,
+    ACTION_ADD_RESOURCE,
+    ACTION_PUT_HTTP_METHOD,
+    ACTION_PUT_INTEGRATION,
+    ACTION_PUT_RESPONSE
+} from './types';
 import { apiCall } from './apiActions';
 import { addErrorNotification, addSuccessNotification } from './notificationActions';
 import IntegrationTypeEnum from '../../enum/integrationTypeEnum';
@@ -168,7 +175,7 @@ export const createMethodApiRequest = (accountId, restApiId, resourceId, data, o
  *
  * @returns {Function}
  */
-export const putMethodIntegration = (accountId, data, onSuccess = null, onError = null) => {
+export const putMethodIntegrationApiRequest = (accountId, data, onSuccess = null, onError = null) => {
 
     let type = null;
     switch (data.type) {
@@ -223,6 +230,45 @@ export const putMethodIntegration = (accountId, data, onSuccess = null, onError 
             },
             err => {
                 dispatch(addErrorNotification(`Unable to put method integration.  ${err.message}`));
+                if (onError) {
+                    onError(err);
+                }
+            }
+        ));
+    };
+};
+
+/**
+ *
+ * @param accountId
+ * @param data
+ * @param onSuccess
+ * @param onError
+ *
+ * @returns {Function}
+ */
+export const putMethodResponseApirequest = (accountId, data, onSuccess = null, onError = null) => {
+    const params = {
+        httpMethod: data.constData.httpMethod, /* required */
+        resourceId: data.constData.resourceId, /* required */
+        restApiId: data.constData.restApiId,   /* required */
+        statusCode: data.status,                /* required */
+    };
+
+    return dispatch => {
+        dispatch(apiCall(
+            accountId,
+            'putMethodResponse',
+            params,
+            response => {
+                dispatch(addSuccessNotification(`Response parameters for ${data.constData.httpMethod} method has been set`));
+                dispatch(putResponse(accountId, data.constData.restApiId, data.constData.resourceId, data.constData.httpMethod, response));
+                if (onSuccess) {
+                    onSuccess(response);
+                }
+            },
+            err => {
+                dispatch(addErrorNotification(`Unable to put method response.  ${err.message}`));
                 if (onError) {
                     onError(err);
                 }
@@ -298,21 +344,50 @@ export const putHttpMethod = (accountId, apiId, resourceId, entity) => {
     return {
         type: ACTION_PUT_HTTP_METHOD,
         payload: {
-            accountId: accountId,
+            accountId,
             apiId,
             resourceId,
-            entity: entity
+            entity
         }
     };
 };
 
 /**
  *
- * @returns {{type: string, payload: {}}}
+ * @param accountId
+ * @param restApiId
+ * @param resourceId
+ * @param httpMethod
+ * @param entity
+ *
+ * @returns {{type: string, payload: {accountId: *, restApiId: *, resourceId: *, httpMethod: *, entity: *}}}
  */
 export const putIntegration = (accountId, restApiId, resourceId, httpMethod, entity) => {
     return {
         type: ACTION_PUT_INTEGRATION,
+        payload: {
+            accountId,
+            restApiId,
+            resourceId,
+            httpMethod,
+            entity
+        }
+    };
+};
+
+/**
+ *
+ * @param accountId
+ * @param restApiId
+ * @param resourceId
+ * @param httpMethod
+ * @param entity
+ *
+ * @returns {{type: string, payload: {accountId: *, restApiId: *, resourceId: *, httpMethod: *, entity: *}}}
+ */
+export const putResponse = (accountId, restApiId, resourceId, httpMethod, entity) => {
+    return {
+        type: ACTION_PUT_RESPONSE,
         payload: {
             accountId,
             restApiId,
