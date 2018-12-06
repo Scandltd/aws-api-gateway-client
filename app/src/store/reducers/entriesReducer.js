@@ -57,7 +57,7 @@ const entriesReducer = (state = defaultState, action) => {
             return dotProp.merge(state, `entries.${action.payload.apiId}`, [action.payload.entry]);
 
 
-        case ACTION_PUT_HTTP_METHOD:
+        case ACTION_PUT_HTTP_METHOD: {
             const resourceIndex = findIndex(dotProp.get(state, `entries.${action.payload.apiId}`), {id: action.payload.resourceId});
 
             if (-1 === resourceIndex) {
@@ -65,18 +65,38 @@ const entriesReducer = (state = defaultState, action) => {
             }
 
             const methods = dotProp.get(state, `entries.${action.payload.apiId}.${resourceIndex}.resourceMethods`, {});
-            methods[action.payload.entity.httpMethod]=action.payload.entity;
+            methods[action.payload.entity.httpMethod] = action.payload.entity;
 
             return dotProp.set(state, `entries.${action.payload.apiId}.${resourceIndex}.resourceMethods`, methods);
+        }
 
-        case ACTION_PUT_RESPONSE:
-            const httpMethod = dotProp.get(state, `entries.${action.payload.apiId}.${resourceIndex}.resourceMethods.${this.payload.httpMethod}`);
+        case ACTION_PUT_RESPONSE: {
+            const resourceIndex = findIndex(dotProp.get(state, `entries.${action.payload.restApiId}`), {id: action.payload.resourceId});
+            const httpMethod = dotProp.get(state, `entries.${action.payload.restApiId}.${resourceIndex}.resourceMethods.${action.payload.httpMethod}`);
             if (!httpMethod) {
                 return state;
             }
+            if (!httpMethod.methodResponses) {
+                httpMethod.methodResponses = {
+                    [action.payload.entity.statusCode]: action.payload.entity
+                };
+            } else {
+                httpMethod.methodResponses[action.payload.entity.statusCode] = action.payload.entity;
+            }
 
-            //@todo modify response
-            return state;
+            return dotProp.set(state, `entries.${action.payload.restApiId}.${resourceIndex}.resourceMethods.${action.payload.httpMethod}`, httpMethod);
+        }
+
+        case ACTION_PUT_INTEGRATION: {
+            const resourceIndex = findIndex(dotProp.get(state, `entries.${action.payload.restApiId}`), {id: action.payload.resourceId});
+            const httpMethod = dotProp.get(state, `entries.${action.payload.restApiId}.${resourceIndex}.resourceMethods.${action.payload.httpMethod}`);
+            if (!httpMethod) {
+                return state;
+            }
+            httpMethod.methodIntegration = action.payload.entity;
+
+            return dotProp.set(state, `entries.${action.payload.restApiId}.${resourceIndex}.resourceMethods.${action.payload.httpMethod}`, httpMethod);
+        }
 
         default:
             return state;
