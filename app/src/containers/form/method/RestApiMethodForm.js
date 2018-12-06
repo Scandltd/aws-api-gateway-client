@@ -59,6 +59,7 @@ class RestApiMethodForm extends BaseFormContainer {
      *
      */
     onRequestSuccess = (response) => {
+        console.log('response', response);
         this.setState({isProcessing: false});
         this.props.onSuccess(response.httpMethod);
     };

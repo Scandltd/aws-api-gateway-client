@@ -43,7 +43,7 @@ const STEPS = ['HTTP method', 'Integration'];
  */
 class StepperRestApiMethodForm extends Component {
     state = {
-        activeStep: 1,
+        activeStep: 0,
         httpMethod: ''
     };
 
@@ -107,11 +107,11 @@ class StepperRestApiMethodForm extends Component {
                     return <IntegrationForm
                         accountId={this.props.accountId}
                         restApiId={this.props.restApiId}
-                        resource={this.props.resource}
+                        resourceId={this.props.resource.id}
                         isUpdateAction={false}
                         onSuccess={this.handleNext}
                         onCancel={this.handleCancel}
-                        initData={{httpMethod: this.state.httpMethod}}
+                        httpMethod = {this.state.httpMethod}
                     />;
 
                 default:
@@ -162,7 +162,7 @@ export default withStyles(styles)(StepperRestApiMethodForm);
 
 StepperRestApiMethodForm.propTypes = {
     accountId: PropTypes.any.isRequired,
-    restApiId: PropTypes.any.isRequired,
+    restApiId: PropTypes.string.isRequired,
     resource: PropTypes.object.isRequired,
     onCancel: PropTypes.func
 };

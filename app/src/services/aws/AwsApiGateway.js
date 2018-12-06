@@ -109,6 +109,15 @@ class AwsApiGateway
     createRestApiMethod = (params) => {
         return this._client.putMethod(params).promise();
     };
+
+    /**
+     *
+     * @param params
+     * @returns {Promise<PromiseResult<D, E>>}
+     */
+    putIntegration = (params) => {
+        return this._client.putIntegration(params).promise();
+    }
 }
 
 export default AwsApiGateway;

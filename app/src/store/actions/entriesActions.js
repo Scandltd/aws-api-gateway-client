@@ -1,6 +1,7 @@
-import { ACTION_SET_RESOURCE_ENTRIES, ACTION_DELETE_RESOURCE, ACTION_ADD_RESOURCE, ACTION_PUT_HTTP_METHOD } from './types';
+import { ACTION_SET_RESOURCE_ENTRIES, ACTION_DELETE_RESOURCE, ACTION_ADD_RESOURCE, ACTION_PUT_HTTP_METHOD, ACTION_PUT_INTEGRATION } from './types';
 import { apiCall } from './apiActions';
 import { addErrorNotification, addSuccessNotification } from './notificationActions';
+import IntegrationTypeEnum from '../../enum/integrationTypeEnum';
 
 /**
  *
@@ -161,6 +162,78 @@ export const createMethodApiRequest = (accountId, restApiId, resourceId, data, o
 /**
  *
  * @param accountId
+ * @param data
+ * @param onSuccess
+ * @param onError
+ *
+ * @returns {Function}
+ */
+export const putMethodIntegration = (accountId, data, onSuccess = null, onError = null) => {
+
+    let type = null;
+    switch (data.type) {
+        case IntegrationTypeEnum.Mock:
+            type = 'MOCK';
+            break;
+
+        default:
+            type = data.type;
+            break;
+    }
+
+    const params = {
+        httpMethod: data.constData.httpMethod, /* required */
+        resourceId: data.constData.resourceId, /* required */
+        restApiId: data.constData.restApiId,   /* required */
+        type: type,                       /* required */
+
+        /*
+        cacheKeyParameters: [
+            'STRING_VALUE',
+        ],
+        cacheNamespace: 'STRING_VALUE',
+        connectionId: 'STRING_VALUE',
+        connectionType: INTERNET | VPC_LINK,
+        contentHandling: CONVERT_TO_BINARY | CONVERT_TO_TEXT,
+        credentials: 'STRING_VALUE',
+        integrationHttpMethod: 'STRING_VALUE',
+        passthroughBehavior: 'STRING_VALUE',
+        requestParameters: {
+            '<String>': 'STRING_VALUE',
+        },
+        requestTemplates: {
+            '<String>': 'STRING_VALUE',
+        },
+        timeoutInMillis: 0,
+        uri: 'STRING_VALUE'
+        */
+    };
+
+    return dispatch => {
+        dispatch(apiCall(
+            accountId,
+            'putIntegration',
+            params,
+            response => {
+                dispatch(addSuccessNotification(`Integration for ${data.constData.httpMethod} method has been applied`));
+                dispatch(putIntegration(accountId, data.constData.restApiId, data.constData.resourceId, data.constData.httpMethod, response));
+                if (onSuccess) {
+                    onSuccess(response);
+                }
+            },
+            err => {
+                dispatch(addErrorNotification(`Unable to put method integration.  ${err.message}`));
+                if (onError) {
+                    onError(err);
+                }
+            }
+        ));
+    };
+};
+
+/**
+ *
+ * @param accountId
  * @param apiId
  * @param resourceId
  *
@@ -229,6 +302,23 @@ export const putHttpMethod = (accountId, apiId, resourceId, entity) => {
             apiId,
             resourceId,
             entity: entity
+        }
+    };
+};
+
+/**
+ *
+ * @returns {{type: string, payload: {}}}
+ */
+export const putIntegration = (accountId, restApiId, resourceId, httpMethod, entity) => {
+    return {
+        type: ACTION_PUT_INTEGRATION,
+        payload: {
+            accountId,
+            restApiId,
+            resourceId,
+            httpMethod,
+            entity
         }
     };
 };

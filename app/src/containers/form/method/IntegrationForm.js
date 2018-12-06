@@ -12,6 +12,8 @@ import SelectField from '../../../components/form/fields/SelectField';
 import HttpMethodEnum from '../../../enum/httpMethodTypeEnum';
 import ContentHandlingTypeEnum, { CONTENT_HANDLING_OPTIONS_LIST } from '../../../enum/contentHandlingTypeEnum';
 import ServiceActionTypeEnum, { SERVICE_ACTION_TYPE_LIST } from '../../../enum/serviceActionTypeEnum';
+import PropTypes from 'prop-types';
+import { putMethodIntegration } from '../../../store/actions/entriesActions';
 
 /**
  *
@@ -48,9 +50,144 @@ class IntegrationForm extends BaseFormContainer {
         });
 
         this.setValidationRules({
-
+            [IntegrationTypeEnum.LambdaFunction]: {
+                lambdaFunctionName: {
+                    presence: {
+                        allowEmpty: false
+                    }
+                },
+                lambdaFunctionRegion: {
+                    presence: {
+                        allowEmpty: false
+                    }
+                }
+            },
+            [IntegrationTypeEnum.HTTP]: {
+                httpMethod: {
+                    presence: {
+                        allowEmpty: false
+                    },
+                    inclusion: Object.values(HttpMethodEnum)
+                },
+                httpEndpointUrl: {
+                    presence: {
+                        allowEmpty: false
+                    },
+                    url: {
+                        allowLocal: true
+                    }
+                },
+                httpContentHandling: {
+                    presence: {
+                        allowEmpty: false
+                    },
+                    inclusion: Object.values(ContentHandlingTypeEnum)
+                }
+            },
+            [IntegrationTypeEnum.AWSService]: {
+                serviceRegion: {
+                    presence: {
+                        allowEmpty: false
+                    },
+                },
+                serviceName: {
+                    presence: {
+                        allowEmpty: false
+                    }
+                },
+                serviceSubdomain: {},
+                serviceHttpMethod: {
+                    presence: {
+                        allowEmpty: false
+                    },
+                    inclusion: Object.values(HttpMethodEnum)
+                },
+                serviceActionType: {
+                    inclusion: Object.values(ServiceActionTypeEnum)
+                },
+                serviceAction: {},
+                serviceExecutionRole: {},
+                serviceContentHandling: {
+                    presence: {
+                        allowEmpty: false
+                    },
+                    inclusion: Object.values(ContentHandlingTypeEnum)
+                }
+            },
+            [IntegrationTypeEnum.VPCLink]: {
+                vpcProxyIntegration: {},
+                vpcHttpMethod: {
+                    presence: {
+                        allowEmpty: false
+                    },
+                    inclusion: Object.values(HttpMethodEnum)
+                },
+                vpcEndpointUrl: {
+                    presence: {
+                        allowEmpty: false
+                    },
+                    url: {
+                        allowLocal: true
+                    }
+                }
+            },
+            common: {
+                customTimeout: {
+                    numericality: {
+                        onlyInteger: true,
+                        greaterThanOrEqualTo: 50,
+                        lessThanOrEqualTo: 29000
+                    }
+                },
+            }
         });
     }
+
+    /**
+     *
+     * @returns {*|{}}
+     */
+    getValidationRules  ()  {
+        const rules = super.getValidationRules();
+        let dynamicRules = rules[this.state.data.type] || {};
+
+        if (IntegrationTypeEnum.Mock !== this.state.data.type && !this.state.data.defaultTimeout) {
+            dynamicRules.customTimeout = rules.common.customTimeout;
+        }
+
+        return dynamicRules;
+    };
+
+    /**
+     *
+     */
+    onRequestSuccess = (response) => {
+        this.setState({isProcessing: false});
+        this.props.onSuccess();
+    };
+
+    /**
+     *
+     * @param err
+     */
+    onRequestError = (err) => {
+        this.setState({isProcessing: false});
+    };
+
+    /**
+     *
+     */
+    onSubmitValid = () => {
+        this.setState({isProcessing: true});
+        let data = this.state.data;
+        data.constData = {
+            restApiId: this.props.restApiId,
+            resourceId: this.props.resourceId,
+            httpMethod: this.props.httpMethod,
+        };
+
+        this.props.actions.putMethodIntegration(this.props.accountId, data, this.onRequestSuccess, this.onRequestError);
+    };
 
     /**
      *
@@ -80,7 +217,7 @@ class IntegrationForm extends BaseFormContainer {
                     label="Lambda Region"
                     helperText=""
                     value={this.state.data.lambdaFunctionRegion}
-                    error={this.state.errors.lambdaFunctionRegion}
+                    error={Boolean(this.state.errors.lambdaFunctionRegion) ? this.state.errors.lambdaFunctionRegion[0] : ''}
                     onChange={this.handleChange}
                 />
 
@@ -176,7 +313,7 @@ class IntegrationForm extends BaseFormContainer {
                     label="Service Region"
                     helperText=""
                     value={this.state.data.serviceRegion}
-                    error={this.state.errors.serviceRegion}
+                    error={Boolean(this.state.errors.serviceRegion) ? this.state.errors.serviceRegion[0] : ''}
                     onChange={this.handleChange}
                 />
 
@@ -186,7 +323,7 @@ class IntegrationForm extends BaseFormContainer {
                     label="Service"
                     helperText=""
                     value={this.state.data.serviceName}
-                    error={this.state.errors.serviceName}
+                    error={Boolean(this.state.errors.serviceName) ? this.state.errors.serviceName[0] : ''}
                     onChange={this.handleChange}
                 />
 
@@ -429,11 +566,19 @@ class IntegrationForm extends BaseFormContainer {
 const mapDispatchToProps = (dispatch) => {
     return {
         actions: {
-            //createHttpMethod: (accountId, restApiId, resourceId, data, onSuccess = null, onError = null) => dispatch(createMethodApiRequest(accountId, restApiId, resourceId, data, onSuccess, onError)),
+            putMethodIntegration: (accountId, data, onSuccess = null, onError = null) => dispatch(putMethodIntegration(accountId, data, onSuccess, onError)),
         }
     }
 };
 
 export default connect(null, mapDispatchToProps)(IntegrationForm);
 
-IntegrationForm.propTypes = {};
+IntegrationForm.propTypes = {
+    httpMethod: PropTypes.oneOf(Object.values(HttpMethodEnum)).isRequired,
+    restApiId: PropTypes.string.isRequired,
+    resourceId: PropTypes.string.isRequired,
+    accountId: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number
+    ]).isRequired
+};

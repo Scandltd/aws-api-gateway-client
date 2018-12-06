@@ -60,6 +60,14 @@ class BaseFormContainer extends Component
 
     /**
      *
+     * @returns {{}|*}
+     */
+    getValidationRules () {
+        return this.validationRules;
+    };
+
+    /**
+     *
      * @param rules
      */
     setValidationRules(rules = {}) {
@@ -85,7 +93,7 @@ class BaseFormContainer extends Component
      * @returns {boolean}
      */
     validateForm = () => {
-        const validationErrors = validate(this.state.data, this.validationRules, {fullMessages: false});
+        const validationErrors = validate(this.state.data, this.getValidationRules(), {fullMessages: false});
 
         if (validationErrors) {
             this.setState({errors: validationErrors});
@@ -103,8 +111,10 @@ class BaseFormContainer extends Component
      * @param value
      */
     validateField = (name, value) => {
-        if (this.validationRules[name]) {
-            const errors = validate.single(value, this.validationRules[name], {fullMessages: false});
+        const validationRules = this.getValidationRules();
+
+        if (validationRules[name]) {
+            const errors = validate.single(value, validationRules[name], {fullMessages: false});
             if (errors) {
                 this.setState({errors: {...this.state.errors, [name]: errors}});
             } else {
