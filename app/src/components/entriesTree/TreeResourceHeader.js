@@ -6,6 +6,7 @@ import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import AlertDialogComponent from '../dialog/AlertDialogComponent';
 
 /**
  *
@@ -14,6 +15,7 @@ class TreeResourceHeader extends Component
 {
     state = {
         anchorEl: null,
+        isDeleteDialogOpened: false
     };
 
     /**
@@ -58,6 +60,21 @@ class TreeResourceHeader extends Component
      */
     handleDeleteResource = (event) => {
         this.handleClose(event);
+        this.setState({isDeleteDialogOpened: true});
+    };
+
+    /**
+     *
+     */
+    handleDeleteDismiss = () => {
+        this.setState({isDeleteDialogOpened: false});
+    };
+
+    /**
+     *
+     */
+    handleDeleteConfirm = () => {
+        this.setState({isDeleteDialogOpened: false});
         this.props.onDeleteResource();
     };
 
@@ -67,6 +84,16 @@ class TreeResourceHeader extends Component
      */
     render() {
         const { anchorEl } = this.state;
+
+        const deleteDialog = this.state.isDeleteDialogOpened ?
+            <AlertDialogComponent
+                title={`You are trying to delete resource ${this.props.path}`}
+                description="delete description goes here"
+                open={true}
+                handleCancel={this.handleDeleteDismiss}
+                handleAgree={this.handleDeleteConfirm}
+            />
+            : null;
 
         return (
             <React.Fragment>
@@ -93,6 +120,7 @@ class TreeResourceHeader extends Component
                         </Menu>
                     </div>
                 </div>
+                { deleteDialog }
             </React.Fragment>
         );
     };

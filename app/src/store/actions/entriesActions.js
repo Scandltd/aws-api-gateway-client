@@ -4,7 +4,8 @@ import {
     ACTION_ADD_RESOURCE,
     ACTION_PUT_HTTP_METHOD,
     ACTION_PUT_INTEGRATION,
-    ACTION_PUT_RESPONSE
+    ACTION_PUT_RESPONSE,
+    ACTION_DELETE_HTTP_METHOD
 } from './types';
 import { apiCall } from './apiActions';
 import { addErrorNotification, addSuccessNotification } from './notificationActions';
@@ -247,7 +248,7 @@ export const putMethodIntegrationApiRequest = (accountId, data, onSuccess = null
  *
  * @returns {Function}
  */
-export const putMethodResponseApirequest = (accountId, data, onSuccess = null, onError = null) => {
+export const putMethodResponseApiRequest = (accountId, data, onSuccess = null, onError = null) => {
     const params = {
         httpMethod: data.constData.httpMethod, /* required */
         resourceId: data.constData.resourceId, /* required */
@@ -269,6 +270,46 @@ export const putMethodResponseApirequest = (accountId, data, onSuccess = null, o
             },
             err => {
                 dispatch(addErrorNotification(`Unable to put method response.  ${err.message}`));
+                if (onError) {
+                    onError(err);
+                }
+            }
+        ));
+    };
+};
+
+/**
+ *
+ * @param accountId
+ * @param restApiId
+ * @param resourceId
+ * @param httpMethod
+ * @param onSuccess
+ * @param onError
+ *
+ * @returns {Function}
+ */
+export const deleteMethodApiRequest = (accountId, restApiId, resourceId, httpMethod, onSuccess = null, onError = null) => {
+    const params = {
+        httpMethod: httpMethod,     /* required */
+        resourceId: resourceId,     /* required */
+        restApiId: restApiId        /* required */
+    };
+
+    return dispatch => {
+        dispatch(apiCall(
+            accountId,
+            'deleteMethod',
+            params,
+            response => {
+                dispatch(addSuccessNotification(`Http method ${httpMethod} has been deleted`));
+                dispatch(deleteHttpMethod(accountId, restApiId, resourceId, httpMethod));
+                if (onSuccess) {
+                    onSuccess(response);
+                }
+            },
+            err => {
+                dispatch(addErrorNotification(`Unable to delete ${httpMethod} method.  ${err.message}`));
                 if (onError) {
                     onError(err);
                 }
@@ -394,6 +435,27 @@ export const putResponse = (accountId, restApiId, resourceId, httpMethod, entity
             resourceId,
             httpMethod,
             entity
+        }
+    };
+};
+
+/**
+ *
+ * @param accountId
+ * @param restApiId
+ * @param resourceId
+ * @param httpMethod
+ *
+ * @returns {{type: string, payload: {accountId: *, restApiId: *, resourceId: *, httpMethod: *}}}
+ */
+export const deleteHttpMethod = (accountId, restApiId, resourceId, httpMethod) => {
+    return {
+        type: ACTION_DELETE_HTTP_METHOD,
+        payload: {
+            accountId,
+            restApiId,
+            resourceId,
+            httpMethod
         }
     };
 };

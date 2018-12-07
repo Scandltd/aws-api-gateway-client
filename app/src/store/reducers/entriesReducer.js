@@ -5,7 +5,8 @@ import {
     ACTION_ADD_RESOURCE,
     ACTION_PUT_HTTP_METHOD,
     ACTION_PUT_INTEGRATION,
-    ACTION_PUT_RESPONSE
+    ACTION_PUT_RESPONSE,
+    ACTION_DELETE_HTTP_METHOD
 } from '../actions/types';
 import { forEach, concat, indexOf, findIndex } from "lodash";
 
@@ -96,6 +97,16 @@ const entriesReducer = (state = defaultState, action) => {
             httpMethod.methodIntegration = action.payload.entity;
 
             return dotProp.set(state, `entries.${action.payload.restApiId}.${resourceIndex}.resourceMethods.${action.payload.httpMethod}`, httpMethod);
+        }
+
+        case ACTION_DELETE_HTTP_METHOD: {
+            const resourceIndex = findIndex(dotProp.get(state, `entries.${action.payload.restApiId}`), {id: action.payload.resourceId});
+
+            if (-1 === resourceIndex) {
+                return state;
+            }
+
+            return dotProp.delete(state, `entries.${action.payload.restApiId}.${resourceIndex}.resourceMethods.${action.payload.httpMethod}`);
         }
 
         default:

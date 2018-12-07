@@ -4,7 +4,7 @@ import HttpMethodEnum from "../../../enum/httpMethodTypeEnum";
 import PropTypes from 'prop-types';
 import { connect } from "react-redux";
 import TextField from '@material-ui/core/TextField';
-import { putMethodResponseApirequest } from "../../../store/actions/entriesActions";
+import { putMethodResponseApiRequest } from "../../../store/actions/entriesActions";
 
 /**
  *
@@ -104,7 +104,7 @@ class ResponseForm extends BaseFormContainer {
 const mapDispatchToProps = (dispatch) => {
     return {
         actions: {
-            putMethodResponseApirequest: (accountId, data, onSuccess = null, onError = null) => dispatch(putMethodResponseApirequest(accountId, data, onSuccess, onError)),
+            putMethodResponseApirequest: (accountId, data, onSuccess = null, onError = null) => dispatch(putMethodResponseApiRequest(accountId, data, onSuccess, onError)),
         }
     }
 };

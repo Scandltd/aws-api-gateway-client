@@ -1,13 +1,14 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { find } from 'lodash';
-import { loadResources, deleteResourceApiRequest } from '../../store/actions/entriesActions';
+import { loadResources, deleteResourceApiRequest, deleteMethodApiRequest } from '../../store/actions/entriesActions';
 import { addErrorNotification } from '../../store/actions/notificationActions';
 import EntriesTree from '../../components/entriesTree/EntriesTree';
 import arrayToTree from 'array-to-tree';
 import DialogFormComponent from '../../components/dialog/DialogFormComponent';
 import RestApiResourceForm from '../form/restApiResource/RestApiResourceForm';
 import StepperRestApiMethodForm from '../../containers/form/method/StepperRestApiMethodForm';
+import ResourceActionEnum from '../../enum/resourceActionsEnum';
 
 /**
  * 
@@ -72,18 +73,35 @@ class ApiResourceDetail extends Component
      * @param action
      */
     handleInitResourceAction = (resourceId, action) => {
-        console.log('resource init', resourceId, action);       //@todo remove it
         switch (action) {
-            case 'delete_resource':
+            case ResourceActionEnum.DELETE_RESOURCE:
                 this.deleteResource(resourceId);
                 break;
 
-            case 'create_method':
-            case 'create_resource':
+            case ResourceActionEnum.CREATE_HTTP_METHOD:
+            case ResourceActionEnum.CREATE_RESOURCE:
                 this.setState({
                     resourceAction: action,
                     activeResourceId: resourceId
                 });
+                break;
+
+            default:
+                this.props.actions.addErrorNotification('Unknown action');
+                break;
+        }
+    };
+
+    /**
+     *
+     * @param resourceId
+     * @param httpMethod
+     * @param action
+     */
+    handleInitHttpMethodAction = (resourceId, httpMethod, action) => {
+        switch (action) {
+            case ResourceActionEnum.DELETE_HTTP_METHOD:
+                this.props.actions.deleteMethodApiRequest(this.state.accountId, this.state.apiId, resourceId, httpMethod);
                 break;
 
             default:
@@ -136,7 +154,7 @@ class ApiResourceDetail extends Component
         }
 
         switch (this.state.resourceAction) {
-            case 'create_resource':
+            case ResourceActionEnum.CREATE_RESOURCE:
                     form = <RestApiResourceForm
                         basePath={resource.path}
                         accountId={this.state.accountId}
@@ -149,7 +167,7 @@ class ApiResourceDetail extends Component
                     title = 'Create a new resource';
                 break;
 
-            case 'create_method':
+            case ResourceActionEnum.CREATE_HTTP_METHOD:
                 form = <StepperRestApiMethodForm
                     accountId={this.state.accountId}
                     restApiId={this.state.apiId}
@@ -157,7 +175,7 @@ class ApiResourceDetail extends Component
                     onCancel={this.flushResourceAction}
                     onSuccess={this.flushResourceAction}
                 />;
-                title = 'Create a new method';
+                title = 'Create a new HTTP method';
                 break;
 
             default:
@@ -179,7 +197,11 @@ class ApiResourceDetail extends Component
         return (
             <div>
                 API detail page. Account id: {this.props.match.params.accountId} | Api id: {this.props.match.params.apiId}
-                <EntriesTree treeEntries={this.buildTree()} handleInitResourceAction={this.handleInitResourceAction}/>
+                <EntriesTree
+                    treeEntries={this.buildTree()}
+                    handleInitResourceAction={this.handleInitResourceAction}
+                    handleInitHttpMethodAction={this.handleInitHttpMethodAction}
+                />
                 {this.renderForm()}
             </div>
         );
@@ -206,7 +228,8 @@ const mapDispatchToProps = (dispatch) => {
         actions: {
             loadResources: (accountId, apiId) => dispatch(loadResources(accountId, apiId)),
             deleteResource: (accountId, apiId, resourceId) => dispatch(deleteResourceApiRequest(accountId, apiId, resourceId)),
-            addErrorNotification: (message) => dispatch(addErrorNotification(message))
+            addErrorNotification: (message) => dispatch(addErrorNotification(message)),
+            deleteMethodApiRequest: (accountId, apiId, resourceId, httpMethod) => dispatch(deleteMethodApiRequest(accountId, apiId, resourceId, httpMethod))
         }
     }
 };

@@ -129,6 +129,16 @@ class AwsApiGateway
     putMethodResponse = (params) => {
         return this._client.putMethodResponse(params).promise();
     };
+
+    /**
+     *
+     * @param params
+     *
+     * @returns {Promise<PromiseResult<D, E>>}
+     */
+    deleteMethod = (params) => {
+        return this._client.deleteMethod(params).promise();
+    };
 }
 
 export default AwsApiGateway;

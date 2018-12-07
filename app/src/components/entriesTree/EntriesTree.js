@@ -31,6 +31,7 @@ class EntriesTree extends Component
                 nested={nested}
                 expanded={0 === level}
                 handleInitResourceAction={this.props.handleInitResourceAction}
+                handleInitHttpMethodAction={this.props.handleInitHttpMethodAction}
             />
         });
     }
@@ -60,5 +61,6 @@ export default EntriesTree;
 
 EntriesTree.propsTypes = {
     treeEntries: PropTypes.array.isRequired,
-    handleInitResourceAction: PropTypes.func.isRequired
+    handleInitResourceAction: PropTypes.func.isRequired,
+    handleInitHttpMethodAction: PropTypes.func.isRequired
 };

@@ -7,6 +7,7 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import PropTypes from 'prop-types';
+import ResourceActionEnum from '../../enum/resourceActionsEnum';
 
 /**
  *
@@ -17,22 +18,29 @@ class TreeResourceElement extends Component
      *
      */
     onCreateResource = () => {
-        this.props.handleInitResourceAction(this.props.id, 'create_resource');
+        this.props.handleInitResourceAction(this.props.id, ResourceActionEnum.CREATE_RESOURCE);
     };
 
     /**
      *
      */
     onDeleteResource = () => {
-        //@todo add confirmation dialog
-        this.props.handleInitResourceAction(this.props.id, 'delete_resource');
+        this.props.handleInitResourceAction(this.props.id, ResourceActionEnum.DELETE_RESOURCE);
+    };
+
+    /**
+     *
+     * @param httpMethod
+     */
+    onDeleteHttpMethod = (httpMethod) => {
+        this.props.handleInitHttpMethodAction(this.props.id, httpMethod, ResourceActionEnum.DELETE_HTTP_METHOD);
     };
 
     /**
      *
      */
     onCreateMethod = () => {
-        this.props.handleInitResourceAction(this.props.id, 'create_method');
+        this.props.handleInitResourceAction(this.props.id, ResourceActionEnum.CREATE_HTTP_METHOD);
     };
 
     /**
@@ -43,7 +51,13 @@ class TreeResourceElement extends Component
         let i = 0;
         let elements = [];
         mapKeys(this.props.resourceMethods, (value, key) => {
-            elements.push(<TreeMethodElement type={key} key={i++} path={this.props.path}/>);
+            elements.push(<TreeMethodElement
+                type={key}
+                key={i++}
+                path={this.props.path}
+                httpResource={value}
+                onDelete={this.onDeleteHttpMethod}
+            />);
         });
 
         return elements;
@@ -80,6 +94,7 @@ TreeResourceElement.propTypes = {
     expanded: PropTypes.bool,
     id: PropTypes.any.isRequired,
     handleInitResourceAction: PropTypes.func.isRequired,
+    handleInitHttpMethodAction: PropTypes.func.isRequired
 };
 
 export default TreeResourceElement;
