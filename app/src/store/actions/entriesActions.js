@@ -252,7 +252,7 @@ export const putMethodResponseApirequest = (accountId, data, onSuccess = null, o
         httpMethod: data.constData.httpMethod, /* required */
         resourceId: data.constData.resourceId, /* required */
         restApiId: data.constData.restApiId,   /* required */
-        statusCode: data.status,                /* required */
+        statusCode: String(data.status),       /* required */
     };
 
     return dispatch => {

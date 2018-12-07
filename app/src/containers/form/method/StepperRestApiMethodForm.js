@@ -11,6 +11,24 @@ import Typography from '@material-ui/core/Typography';
 import RestApiMethodForm from './RestApiMethodForm';
 import IntegrationForm from './IntegrationForm';
 import ResponseForm from './ResponseForm';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
+import HttpMethodEnum from '../../../enum/httpMethodTypeEnum';
+
+/**
+ *
+ * @type {{[p: string]: number}}
+ */
+const defaultStatusCodeByMethod = {
+    [HttpMethodEnum.GET]: 200,
+    [HttpMethodEnum.HEAD]: 200,
+    [HttpMethodEnum.OPTIONS]: 200,
+    [HttpMethodEnum.PUT]: 204,
+    [HttpMethodEnum.PATCH]: 204,
+    [HttpMethodEnum.POST]: 201,
+    [HttpMethodEnum.ANY]: 200,
+    [HttpMethodEnum.DELETE]: 204
+};
 
 /**
  *
@@ -31,6 +49,10 @@ const styles = theme => ({
     resetContainer: {
         padding: theme.spacing.unit * 3,
     },
+    closeBlock: {
+        display: "flex",
+        justifyContent: "center"
+    }
 });
 
 /**
@@ -113,6 +135,7 @@ class StepperRestApiMethodForm extends Component {
                         onSuccess={this.handleNext}
                         onCancel={this.handleCancel}
                         httpMethod = {this.state.httpMethod}
+                        initialData = {{status: defaultStatusCodeByMethod[this.state.httpMethod] || ''}}
                     />;
 
                 case 2:
@@ -158,7 +181,12 @@ class StepperRestApiMethodForm extends Component {
                 </Stepper>
                 {activeStep === STEPS.length && (
                     <Paper square elevation={0} className={classes.resetContainer}>
-                        <Typography>All steps completed - you&apos;re finished</Typography>
+                        <Typography>All steps completed - method has been created</Typography>
+                        <div className={classes.closeBlock}>
+                            <IconButton aria-label="Close" onClick={this.handleCancel}>
+                                <CloseIcon />
+                            </IconButton>
+                        </div>
                     </Paper>
                 )}
             </div>
