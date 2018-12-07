@@ -59,7 +59,6 @@ class RestApiMethodForm extends BaseFormContainer {
      *
      */
     onRequestSuccess = (response) => {
-        console.log('response', response);
         this.setState({isProcessing: false});
         this.props.onSuccess(response.httpMethod);
     };
@@ -77,6 +76,11 @@ class RestApiMethodForm extends BaseFormContainer {
      */
     onSubmitValid = () => {
         this.setState({isProcessing: true});
+        let data = this.state.data;
+        data.constData = {
+            path: this.props.resource.path
+        };
+
         this.props.actions.createHttpMethod(this.props.accountId, this.props.restApiId, this.props.resource.id, this.state.data, this.onRequestSuccess, this.onRequestError);
     };
 

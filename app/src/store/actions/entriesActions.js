@@ -10,6 +10,7 @@ import {
 import { apiCall } from './apiActions';
 import { addErrorNotification, addSuccessNotification } from './notificationActions';
 import IntegrationTypeEnum from '../../enum/integrationTypeEnum';
+import { words, forEach, replace } from 'lodash';
 
 /**
  *
@@ -138,12 +139,21 @@ export const createMethodApiRequest = (accountId, restApiId, resourceId, data, o
         //    '<String>': 'STRING_VALUE',
         //    /* '<String>': ... */
         //},
-        //requestParameters: {
-        //    '<String>': true || false,
-            /* '<String>': ... */
-        //},
+        requestParameters: {}
         //requestValidatorId: 'STRING_VALUE'
     };
+
+    const reg = /{([\w._-]+)[+?]?}/gi;
+
+    const requestParams = words(data.constData.path, reg);
+    if (requestParams) {
+        forEach(requestParams, function(value) {
+            params.requestParameters[replace(value, '[{}]', '')] = true;
+        });
+    }
+
+    console.log(requestParams);
+    console.log(params);
 
     return dispatch => {
         dispatch(apiCall(

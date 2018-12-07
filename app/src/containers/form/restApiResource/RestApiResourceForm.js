@@ -29,6 +29,11 @@ class RestApiResourceForm extends BaseFormContainer {
                 length: {
                     maximum: 100
                 },
+                format: {
+                    pattern: "^{?[a-z0-9._-]+}?",
+                    flags: "i",
+                    message: "can only contain a-zA-Z0-9._- and curly braces at the beginning and the end"
+                }
             }
         });
     }
