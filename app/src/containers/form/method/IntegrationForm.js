@@ -603,7 +603,7 @@ class IntegrationForm extends BaseFormContainer {
                     value={this.state.data.type}
                     onChange={(event) => {
                             this.handleChange(event);
-                            this.checkAndLoadVpsLinksOptions(event.value);
+                            this.checkAndLoadVpsLinksOptions(event.target.value);
                         }
                     }
                     label="Integration type"
