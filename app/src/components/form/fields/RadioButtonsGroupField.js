@@ -39,6 +39,7 @@ class RadioButtonsGroupField extends Component {
                 control={<Radio color="primary" />}
                 label={value}
                 labelPlacement="start"
+                disabled={this.props.disabled}
             />);
         });
 
@@ -79,5 +80,6 @@ RadioButtonsGroupField.propTypes = {
     label: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     error: PropTypes.string,
-    helperText: PropTypes.string
+    helperText: PropTypes.string,
+    disabled: PropTypes.bool
 };

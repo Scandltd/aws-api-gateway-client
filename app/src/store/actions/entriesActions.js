@@ -5,7 +5,8 @@ import {
     ACTION_PUT_HTTP_METHOD,
     ACTION_PUT_INTEGRATION,
     ACTION_PUT_RESPONSE,
-    ACTION_DELETE_HTTP_METHOD
+    ACTION_DELETE_HTTP_METHOD,
+    ACTION_SET_VPS_LINKS
 } from './types';
 import { apiCall } from './apiActions';
 import { addErrorNotification, addSuccessNotification } from './notificationActions';
@@ -104,6 +105,41 @@ export const createResourceApiRequest = (accountId, restApiId, data, onSuccess =
             },
             err => {
                 dispatch(addErrorNotification('Unable to create REST API resource. ' + err.message));
+                if (onError) {
+                    onError(err);
+                }
+            }
+        ));
+    };
+};
+
+/**
+ *
+ * @param accountId
+ * @param onSuccess
+ * @param onError
+ *
+ * @returns {Function}
+ */
+export const loadVpsLinksApiRequest = (accountId, onSuccess = null, onError = null) => {
+    const params = {
+        limit: 500,
+        //position: 'STRING_VALUE'
+    };
+
+    return dispatch => {
+        dispatch(apiCall(
+            accountId,
+            'getVpcLinks',
+            params,
+            response => {
+                dispatch(setVpsLinks(accountId, response.items));
+                if (onSuccess) {
+                    onSuccess(response);
+                }
+            },
+            err => {
+                dispatch(addErrorNotification('Unable to load VPC links. ' + err.message));
                 if (onError) {
                     onError(err);
                 }
@@ -242,6 +278,12 @@ export const putMethodIntegrationApiRequest = (accountId, data, onSuccess = null
             params.uri = `arn:aws:apigateway:${data.serviceRegion}:${serviceName}:${pathAction}`;
 
             break;
+
+        case IntegrationTypeEnum.VPCLink:
+            params.type = '';
+
+            break;
+
 
         default:
             break;
@@ -488,6 +530,23 @@ export const deleteHttpMethod = (accountId, restApiId, resourceId, httpMethod) =
             restApiId,
             resourceId,
             httpMethod
+        }
+    };
+};
+
+/**
+ *
+ * @param accountId
+ * @param entities
+ *
+ * @returns {{type: string, payload: {accountId: *, entities: *}}}
+ */
+export const setVpsLinks = (accountId, entities) => {
+    return {
+        type: ACTION_SET_VPS_LINKS,
+        payload: {
+            accountId,
+            entities
         }
     };
 };

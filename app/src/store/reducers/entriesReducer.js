@@ -15,6 +15,7 @@ import { forEach, concat, indexOf, findIndex } from "lodash";
  */
 const defaultState = {
     entries: {},
+    vpcLinks: {}
 };
 
 /**

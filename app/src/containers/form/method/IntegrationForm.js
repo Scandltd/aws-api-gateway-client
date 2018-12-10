@@ -10,12 +10,13 @@ import FormGroup from '@material-ui/core/FormGroup';
 import Typography from '@material-ui/core/Typography'
 import SelectField from '../../../components/form/fields/SelectField';
 import HttpMethodEnum from '../../../enum/httpMethodTypeEnum';
-import ContentHandlingTypeEnum, { CONTENT_HANDLING_OPTIONS_LIST } from '../../../enum/contentHandlingTypeEnum';
+import ContentHandlingTypeEnum from '../../../enum/contentHandlingTypeEnum';
 import ServiceActionTypeEnum, { SERVICE_ACTION_TYPE_LIST } from '../../../enum/serviceActionTypeEnum';
 import PropTypes from 'prop-types';
-import { putMethodIntegrationApiRequest } from '../../../store/actions/entriesActions';
+import { putMethodIntegrationApiRequest, loadVpsLinksApiRequest } from '../../../store/actions/entriesActions';
 import { getAwsRegionsOptionsList } from '../../../enum/awsRegions';
 import AWS_SERVICES_ENUM, { AWS_SERVICES_OPTIONS } from '../../../enum/awsServices';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const AWS_REGIONS = getAwsRegionsOptionsList();
 
@@ -52,6 +53,7 @@ class IntegrationForm extends BaseFormContainer {
             vpcHttpMethod: '',
             vpcEndpointUrl: ''
         });
+        this.state.isLoading = false;
 
         this.setValidationRules({
             [IntegrationTypeEnum.LambdaFunction]: {
@@ -129,6 +131,11 @@ class IntegrationForm extends BaseFormContainer {
                     },
                     inclusion: Object.values(HttpMethodEnum)
                 },
+                vpcName: {
+                    presence: {
+                        allowEmpty: false
+                    },
+                },
                 vpcEndpointUrl: {
                     presence: {
                         allowEmpty: false
@@ -149,6 +156,20 @@ class IntegrationForm extends BaseFormContainer {
             }
         });
     }
+
+    /**
+     *
+     */
+    setLoadingTrue() {
+        this.setState({isLoading: true});
+    };
+
+    /**
+     *
+     */
+    setLoadingFalse() {
+        this.setState({isLoading: false});
+    };
 
     /**
      *
@@ -194,6 +215,27 @@ class IntegrationForm extends BaseFormContainer {
         };
 
         this.props.actions.putMethodIntegration(this.props.accountId, data, this.onRequestSuccess, this.onRequestError);
+    };
+
+    /**
+     *
+     */
+    checkAndLoadVpsLinksOptions = (value) => {
+        if (IntegrationTypeEnum.VPCLink !== value) {
+
+            return ;
+        }
+
+        if (undefined === this.props.vpcLinks[this.props.accountId]) {
+            this.setLoadingTrue();
+            this.props.actions.loadVpsLinksApiRequest(this.props.accountId,
+                (response) => {
+                    this.setLoadingFalse();
+                },
+                (err) => {
+                    this.setLoadingFalse();
+                });
+        }
     };
 
     /**
@@ -424,6 +466,12 @@ class IntegrationForm extends BaseFormContainer {
      * @returns {*}
      */
     getFormFragmentVPCLink = () => {
+        if (this.state.isLoading) {
+            return ( <React.Fragment>
+                <CircularProgress />
+            </React.Fragment>);
+        }
+
         return (
             <React.Fragment>
                 <FormGroup>
@@ -553,11 +601,16 @@ class IntegrationForm extends BaseFormContainer {
                 <RadioButtonsGroupField
                     options={INTEGRATION_TYPE_OPTIONS_LIST}
                     value={this.state.data.type}
-                    onChange={this.handleChange}
+                    onChange={(event) => {
+                            this.handleChange(event);
+                            this.checkAndLoadVpsLinksOptions(event.value);
+                        }
+                    }
                     label="Integration type"
                     name="type"
                     error={Boolean(this.state.errors.type) ? this.state.errors.type[0] : ''}
                     helperText="Integration point for HTTP method"
+                    disabled={this.state.isLoading}
                 />
 
                 { this.renderFormFragmentByType() }
@@ -575,11 +628,24 @@ const mapDispatchToProps = (dispatch) => {
     return {
         actions: {
             putMethodIntegration: (accountId, data, onSuccess = null, onError = null) => dispatch(putMethodIntegrationApiRequest(accountId, data, onSuccess, onError)),
+            loadVpsLinksApiRequest: (accountId, onSuccess = null, onError = null) => dispatch(loadVpsLinksApiRequest(accountId, onSuccess = null, onError = null))
         }
     }
 };
 
-export default connect(null, mapDispatchToProps)(IntegrationForm);
+/**
+ *
+ * @param state
+ *
+ * @returns {{vpcLinks: ({}|defaultState.vpcLinks)}}
+ */
+const mapStateToProps = (state) => {
+    return {
+        vpcLinks: state.entries.vpcLinks
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(IntegrationForm);
 
 IntegrationForm.propTypes = {
     httpMethod: PropTypes.oneOf(Object.values(HttpMethodEnum)).isRequired,

@@ -139,6 +139,16 @@ class AwsApiGateway
     deleteMethod = (params) => {
         return this._client.deleteMethod(params).promise();
     };
+
+    /**
+     *
+     * @param params
+     *
+     * @returns {Promise<PromiseResult<D, E>>}
+     */
+    getVpcLinks = (params) => {
+        return this._client.getVpcLinks(params).promise();
+    };
 }
 
 export default AwsApiGateway;
