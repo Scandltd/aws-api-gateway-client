@@ -10,7 +10,6 @@ import {
 import { apiCall } from './apiActions';
 import { addErrorNotification, addSuccessNotification } from './notificationActions';
 import IntegrationTypeEnum from '../../enum/integrationTypeEnum';
-import { words, forEach, replace } from 'lodash';
 
 /**
  *
@@ -128,32 +127,22 @@ export const createMethodApiRequest = (accountId, restApiId, resourceId, data, o
         httpMethod: data.httpMethod,    /* required */
         resourceId: resourceId,         /* required */
         restApiId: restApiId,           /* required */
-        //apiKeyRequired: true || false,
-        //authorizationScopes: [
-        //    'STRING_VALUE',
-        //    /* more items */
-        //],
         authorizerId: data.authorizerId || null,
-        //operationName: 'STRING_VALUE',
-        //requestModels: {
-        //    '<String>': 'STRING_VALUE',
-        //    /* '<String>': ... */
-        //},
         requestParameters: {}
-        //requestValidatorId: 'STRING_VALUE'
     };
 
-    const reg = /{([\w._-]+)[+?]?}/gi;
+    const regex = /{([\w._-]+)[+?]?}/gi;
+    let matchStep;
+    while ((matchStep = regex.exec(data.constData.path)) !== null) {
+        // This is necessary to avoid infinite loops with zero-width matches
+        if (matchStep.index === regex.lastIndex) {
+            regex.lastIndex++;
+        }
 
-    const requestParams = words(data.constData.path, reg);
-    if (requestParams) {
-        forEach(requestParams, function(value) {
-            params.requestParameters[replace(value, '[{}]', '')] = true;
-        });
+        if (matchStep[1]) {
+            params.requestParameters[`method.request.path.${matchStep[1]}`] = true;
+        }
     }
-
-    console.log(requestParams);
-    console.log(params);
 
     return dispatch => {
         dispatch(apiCall(
