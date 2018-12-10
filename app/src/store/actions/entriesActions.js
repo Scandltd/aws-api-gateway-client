@@ -177,22 +177,11 @@ export const createMethodApiRequest = (accountId, restApiId, resourceId, data, o
  */
 export const putMethodIntegrationApiRequest = (accountId, data, onSuccess = null, onError = null) => {
 
-    let type = null;
-    switch (data.type) {
-        case IntegrationTypeEnum.Mock:
-            type = 'MOCK';
-            break;
-
-        default:
-            type = data.type;
-            break;
-    }
-
     const params = {
         httpMethod: data.constData.httpMethod, /* required */
         resourceId: data.constData.resourceId, /* required */
         restApiId: data.constData.restApiId,   /* required */
-        type: type,                       /* required */
+        type: null,                            /* required */
 
         /*
         cacheKeyParameters: [
@@ -215,6 +204,23 @@ export const putMethodIntegrationApiRequest = (accountId, data, onSuccess = null
         uri: 'STRING_VALUE'
         */
     };
+
+    switch (data.type) {
+        case IntegrationTypeEnum.Mock:
+            params.type = 'MOCK';
+            break;
+
+        case IntegrationTypeEnum.LambdaFunction:
+            params.type = data.lambdaProxyIntegration ? 'AWS_PROXY' : 'AWS';
+            params.uri = `arn:aws:apigateway:${data.lambdaFunctionRegion}:lambda:path/2015-03-31/functions/${data.lambdaFunctionName}/invocations`;
+            params.integrationHttpMethod = data.constData.httpMethod;
+            break;
+
+        default:
+            break;
+    }
+
+
 
     return dispatch => {
         dispatch(apiCall(

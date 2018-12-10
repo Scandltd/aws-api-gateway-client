@@ -14,6 +14,9 @@ import ContentHandlingTypeEnum, { CONTENT_HANDLING_OPTIONS_LIST } from '../../..
 import ServiceActionTypeEnum, { SERVICE_ACTION_TYPE_LIST } from '../../../enum/serviceActionTypeEnum';
 import PropTypes from 'prop-types';
 import { putMethodIntegrationApiRequest } from '../../../store/actions/entriesActions';
+import { getAwsRegionsOptionsList } from '../../../enum/awsRegions';
+
+const AWS_REGIONS = getAwsRegionsOptionsList();
 
 /**
  *
@@ -59,7 +62,8 @@ class IntegrationForm extends BaseFormContainer {
                 lambdaFunctionRegion: {
                     presence: {
                         allowEmpty: false
-                    }
+                    },
+                    inclusion: Object.values(AWS_REGIONS)
                 }
             },
             [IntegrationTypeEnum.HTTP]: {
@@ -89,6 +93,7 @@ class IntegrationForm extends BaseFormContainer {
                     presence: {
                         allowEmpty: false
                     },
+                    inclusion: Object.values(AWS_REGIONS)
                 },
                 serviceName: {
                     presence: {
@@ -212,7 +217,7 @@ class IntegrationForm extends BaseFormContainer {
                 </FormGroup>
 
                 <SelectField
-                    options={{}}
+                    options={AWS_REGIONS}
                     name="lambdaFunctionRegion"
                     label="Lambda Region"
                     helperText=""
@@ -222,10 +227,10 @@ class IntegrationForm extends BaseFormContainer {
                 />
 
                 <TextField
-                    label="Lambda Function"
+                    label="Lambda Function ARN"
                     name="lambdaFunctionName"
                     placeholder=""
-                    helperText={Boolean(this.state.errors.lambdaFunctionName) ? this.state.errors.lambdaFunctionName[0] : ''}
+                    helperText={Boolean(this.state.errors.lambdaFunctionName) ? this.state.errors.lambdaFunctionName[0] : 'You should insert ARN of lambda function: E.g: arn:aws:lambda:eu-west-1:188280853789:function:test'}
                     fullWidth
                     margin="normal"
                     error={Boolean(this.state.errors.lambdaFunctionName)}
@@ -308,7 +313,7 @@ class IntegrationForm extends BaseFormContainer {
         return (
             <React.Fragment>
                 <SelectField
-                    options={{}}
+                    options={AWS_REGIONS}
                     name="serviceRegion"
                     label="Service Region"
                     helperText=""
