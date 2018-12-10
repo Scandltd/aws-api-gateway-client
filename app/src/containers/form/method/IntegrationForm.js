@@ -15,6 +15,7 @@ import ServiceActionTypeEnum, { SERVICE_ACTION_TYPE_LIST } from '../../../enum/s
 import PropTypes from 'prop-types';
 import { putMethodIntegrationApiRequest } from '../../../store/actions/entriesActions';
 import { getAwsRegionsOptionsList } from '../../../enum/awsRegions';
+import AWS_SERVICES_ENUM, { AWS_SERVICES_OPTIONS } from '../../../enum/awsServices';
 
 const AWS_REGIONS = getAwsRegionsOptionsList();
 
@@ -98,7 +99,8 @@ class IntegrationForm extends BaseFormContainer {
                 serviceName: {
                     presence: {
                         allowEmpty: false
-                    }
+                    },
+                    inclusion: Object.values(AWS_SERVICES_ENUM)
                 },
                 serviceSubdomain: {},
                 serviceHttpMethod: {
@@ -294,7 +296,7 @@ class IntegrationForm extends BaseFormContainer {
 
                 <SelectField
                     required
-                    options={CONTENT_HANDLING_OPTIONS_LIST}
+                    options={ContentHandlingTypeEnum}
                     name="httpContentHandling"
                     label="Content Handling"
                     value={this.state.data.httpContentHandling}
@@ -323,7 +325,8 @@ class IntegrationForm extends BaseFormContainer {
                 />
 
                 <SelectField
-                    options={{}}
+                    options={ AWS_SERVICES_OPTIONS }
+                    useKeyAsValue={true}
                     name="serviceName"
                     label="Service"
                     helperText=""
@@ -403,7 +406,7 @@ class IntegrationForm extends BaseFormContainer {
 
                 <SelectField
                     required
-                    options={CONTENT_HANDLING_OPTIONS_LIST}
+                    options={ContentHandlingTypeEnum}
                     name="serviceContentHandling"
                     label="Content Handling"
                     value={this.state.data.serviceContentHandling}

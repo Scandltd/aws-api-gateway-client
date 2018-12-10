@@ -13,7 +13,7 @@ class SelectField extends Component {
     render() {
         const menuOptions = [];
         forIn(this.props.options, (value, key) => {
-            menuOptions.push(<MenuItem value={value} key={key}>{value}</MenuItem>);
+            menuOptions.push(<MenuItem value={this.props.useKeyAsValue ? key : value} key={key}>{value}</MenuItem>);
         });
 
         return (
@@ -39,6 +39,10 @@ class SelectField extends Component {
 
 export default SelectField;
 
+SelectField.defaultProps = {
+    useKeyAsValue: false
+};
+
 SelectField.propTypes = {
     options: PropTypes.object.isRequired,
     name: PropTypes.string.isRequired,
@@ -46,5 +50,6 @@ SelectField.propTypes = {
     helperText: PropTypes.string,
     value: PropTypes.any.isRequired,
     error: PropTypes.string,
-    onChange: PropTypes.func.isRequired
+    onChange: PropTypes.func.isRequired,
+    useKeyAsValue: PropTypes.bool
 };

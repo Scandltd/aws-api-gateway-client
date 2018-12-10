@@ -10,6 +10,8 @@ import {
 import { apiCall } from './apiActions';
 import { addErrorNotification, addSuccessNotification } from './notificationActions';
 import IntegrationTypeEnum from '../../enum/integrationTypeEnum';
+import ContentHandlingTypeEnum from "../../enum/contentHandlingTypeEnum";
+import ServiceActionTypeEnum from "../../enum/serviceActionTypeEnum";
 
 /**
  *
@@ -214,6 +216,31 @@ export const putMethodIntegrationApiRequest = (accountId, data, onSuccess = null
             params.type = data.lambdaProxyIntegration ? 'AWS_PROXY' : 'AWS';
             params.uri = `arn:aws:apigateway:${data.lambdaFunctionRegion}:lambda:path/2015-03-31/functions/${data.lambdaFunctionName}/invocations`;
             params.integrationHttpMethod = data.constData.httpMethod;
+            params.contentHandling = ContentHandlingTypeEnum.CONVERT_TO_TEXT;
+            break;
+
+        case IntegrationTypeEnum.HTTP:
+            params.type = data.httpProxyIntegration ? 'HTTP_PROXY' : 'HTTP';
+            params.uri = data.httpEndpointUrl;
+            params.integrationHttpMethod = data.httpMethod;
+            if (ContentHandlingTypeEnum.PASSTHROUGH !== data.httpContentHandling) {
+                params.contentHandling = data.httpContentHandling;
+            }
+
+            break;
+
+        case IntegrationTypeEnum.AWSService:
+            params.type = 'AWS';
+            params.credentials = data.serviceExecutionRole;
+            params.integrationHttpMethod = data.serviceHttpMethod;
+            if (ContentHandlingTypeEnum.PASSTHROUGH !== data.httpContentHandling) {
+                params.contentHandling = data.httpContentHandling;
+            }
+
+            let serviceName = data.serviceSubdomain ? `${data.serviceSubdomain}.${data.serviceName}` : data.serviceName;
+            let pathAction = ServiceActionTypeEnum.PATH_OVERRIDE === data.serviceActionType ? `path/${data.serviceAction}` : `action/${data.serviceAction}`;
+            params.uri = `arn:aws:apigateway:${data.serviceRegion}:${serviceName}:${pathAction}`;
+
             break;
 
         default:
