@@ -222,6 +222,10 @@ export const putMethodIntegrationApiRequest = (accountId, data, onSuccess = null
         type: null,                            /* required */
     };
 
+    if (!data.defaultTimeout) {
+        params.timeoutInMillis = data.customTimeout;
+    }
+
     switch (data.type) {
         case IntegrationTypeEnum.Mock:
             params.type = 'MOCK';

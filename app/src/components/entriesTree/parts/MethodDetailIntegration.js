@@ -23,14 +23,6 @@ class MethodDetailIntegration extends Component {
                             {entity.type}
                         </TableCell>
                     </TableRow>
-                    <TableRow >
-                        <TableCell>
-                            Timeout (in millis)
-                        </TableCell>
-                        <TableCell>
-                            {entity.timeoutInMillis}
-                        </TableCell>
-                    </TableRow>
                     {entity.httpMethod && <TableRow >
                         <TableCell>
                             HTTP method
@@ -63,6 +55,32 @@ class MethodDetailIntegration extends Component {
                             {entity.passthroughBehavior}
                         </TableCell>
                     </TableRow>}
+                    {entity.connectionType && <TableRow >
+                        <TableCell>
+                            Connection Type
+                        </TableCell>
+                        <TableCell>
+                            {entity.connectionType}
+                        </TableCell>
+                    </TableRow>}
+                    {entity.contentHandling && <TableRow >
+                        <TableCell>
+                            Content Handling
+                        </TableCell>
+                        <TableCell>
+                            {entity.contentHandling}
+                        </TableCell>
+                    </TableRow>}
+                    <TableRow >
+                        <TableCell>
+                            Timeout (in millis)
+                        </TableCell>
+                        <TableCell>
+                            {entity.timeoutInMillis}
+                        </TableCell>
+                    </TableRow>
+
+
                 </TableBody>
             </Table>
         );
