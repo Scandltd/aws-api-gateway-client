@@ -6,7 +6,8 @@ import {
     ACTION_PUT_HTTP_METHOD,
     ACTION_PUT_INTEGRATION,
     ACTION_PUT_RESPONSE,
-    ACTION_DELETE_HTTP_METHOD
+    ACTION_DELETE_HTTP_METHOD,
+    ACTION_SET_VPS_LINKS
 } from '../actions/types';
 import { forEach, concat, indexOf, findIndex } from "lodash";
 
@@ -109,6 +110,10 @@ const entriesReducer = (state = defaultState, action) => {
 
             return dotProp.delete(state, `entries.${action.payload.restApiId}.${resourceIndex}.resourceMethods.${action.payload.httpMethod}`);
         }
+
+        case ACTION_SET_VPS_LINKS:
+
+            return dotProp.set(state, `vpcLinks.${action.payload.accountId}`, action.payload.entities);
 
         default:
             return state;

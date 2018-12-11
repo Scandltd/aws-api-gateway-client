@@ -17,6 +17,7 @@ import { putMethodIntegrationApiRequest, loadVpsLinksApiRequest } from '../../..
 import { getAwsRegionsOptionsList } from '../../../enum/awsRegions';
 import AWS_SERVICES_ENUM, { AWS_SERVICES_OPTIONS } from '../../../enum/awsServices';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { forEach } from 'lodash';
 
 const AWS_REGIONS = getAwsRegionsOptionsList();
 
@@ -51,7 +52,8 @@ class IntegrationForm extends BaseFormContainer {
             serviceContentHandling: ContentHandlingTypeEnum.PASSTHROUGH,
             vpcProxyIntegration: false,
             vpcHttpMethod: '',
-            vpcEndpointUrl: ''
+            vpcEndpointUrl: '',
+            vpcConnectId: ''
         });
         this.state.isLoading = false;
 
@@ -131,7 +133,7 @@ class IntegrationForm extends BaseFormContainer {
                     },
                     inclusion: Object.values(HttpMethodEnum)
                 },
-                vpcName: {
+                vpcConnectId: {
                     presence: {
                         allowEmpty: false
                     },
@@ -236,6 +238,22 @@ class IntegrationForm extends BaseFormContainer {
                     this.setLoadingFalse();
                 });
         }
+    };
+
+    /**
+     *
+     * @returns {{}}
+     */
+    getVpcLinkOptions() {
+        if(!this.props.vpcLinks[this.props.accountId]) {
+            return {};
+        }
+        let result = {};
+        forEach(this.props.vpcLinks[this.props.accountId], function(value, key) {
+            result[value.id] = `${value.name} (${value.status})`;
+        });
+
+        return result;
     };
 
     /**
@@ -467,9 +485,9 @@ class IntegrationForm extends BaseFormContainer {
      */
     getFormFragmentVPCLink = () => {
         if (this.state.isLoading) {
-            return ( <React.Fragment>
+            return ( <FormGroup>
                 <CircularProgress />
-            </React.Fragment>);
+            </FormGroup>);
         }
 
         return (
@@ -496,6 +514,18 @@ class IntegrationForm extends BaseFormContainer {
                     label="HTTP method"
                     value={this.state.data.vpcHttpMethod}
                     error={Boolean(this.state.errors.vpcHttpMethod) ? this.state.errors.vpcHttpMethod[0] : ''}
+                    onChange={this.handleChange}
+                    helperText=""
+                />
+
+                <SelectField
+                    required
+                    options={this.getVpcLinkOptions()}
+                    useKeyAsValue={true}
+                    name="vpcConnectId"
+                    label="VPC link"
+                    value={this.state.data.vpcConnectId}
+                    error={Boolean(this.state.errors.vpcConnectId) ? this.state.errors.vpcConnectId[0] : ''}
                     onChange={this.handleChange}
                     helperText=""
                 />
@@ -628,7 +658,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         actions: {
             putMethodIntegration: (accountId, data, onSuccess = null, onError = null) => dispatch(putMethodIntegrationApiRequest(accountId, data, onSuccess, onError)),
-            loadVpsLinksApiRequest: (accountId, onSuccess = null, onError = null) => dispatch(loadVpsLinksApiRequest(accountId, onSuccess = null, onError = null))
+            loadVpsLinksApiRequest: (accountId, onSuccess = null, onError = null) => dispatch(loadVpsLinksApiRequest(accountId, onSuccess, onError))
         }
     }
 };

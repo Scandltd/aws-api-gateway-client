@@ -220,27 +220,6 @@ export const putMethodIntegrationApiRequest = (accountId, data, onSuccess = null
         resourceId: data.constData.resourceId, /* required */
         restApiId: data.constData.restApiId,   /* required */
         type: null,                            /* required */
-
-        /*
-        cacheKeyParameters: [
-            'STRING_VALUE',
-        ],
-        cacheNamespace: 'STRING_VALUE',
-        connectionId: 'STRING_VALUE',
-        connectionType: INTERNET | VPC_LINK,
-        contentHandling: CONVERT_TO_BINARY | CONVERT_TO_TEXT,
-        credentials: 'STRING_VALUE',
-        integrationHttpMethod: 'STRING_VALUE',
-        passthroughBehavior: 'STRING_VALUE',
-        requestParameters: {
-            '<String>': 'STRING_VALUE',
-        },
-        requestTemplates: {
-            '<String>': 'STRING_VALUE',
-        },
-        timeoutInMillis: 0,
-        uri: 'STRING_VALUE'
-        */
     };
 
     switch (data.type) {
@@ -280,10 +259,13 @@ export const putMethodIntegrationApiRequest = (accountId, data, onSuccess = null
             break;
 
         case IntegrationTypeEnum.VPCLink:
-            params.type = '';
+            params.type = data.vpcProxyIntegration ? 'HTTP_PROXY' : 'HTTP';
+            params.connectionId = data.vpcConnectId;
+            params.connectionType = 'VPC_LINK';
+            params.uri = data.vpcEndpointUrl;
+            params.integrationHttpMethod = data.vpcHttpMethod;
 
             break;
-
 
         default:
             break;
