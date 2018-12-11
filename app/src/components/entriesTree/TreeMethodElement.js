@@ -83,7 +83,11 @@ class TreeMethodElement extends Component
                         <TreeMethodHeader httpMethod={this.props.type} path={this.props.path} />
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails >
-                        { this.state.expanded && <TreeMethodDetails entity={this.props.httpResource} /> }
+                        { this.state.expanded && <TreeMethodDetails
+                            entity={this.props.httpResource}
+                            onCreateHttpIntegration={ () => {this.props.onCreateHttpIntegration(this.props.type)} }
+                            onCreateHttpResponse={ () => {this.props.onCreateHttpResponse(this.props.type)} }
+                        /> }
                     </ExpansionPanelDetails>
                     <Divider />
                     <ExpansionPanelActions>
@@ -106,5 +110,7 @@ TreeMethodElement.propTypes = {
     path: PropTypes.string.isRequired,
     type: PropTypes.oneOf(Object.values(HttpMethodEnum)).isRequired,
     httpResource: PropTypes.object.isRequired,
-    onDelete: PropTypes.func.isRequired
+    onDelete: PropTypes.func.isRequired,
+    onCreateHttpIntegration: PropTypes.func,
+    onCreateHttpResponse: PropTypes.func
 };

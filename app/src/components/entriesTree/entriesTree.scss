@@ -34,6 +34,14 @@
             .method-head-first {
                 color: grey;
             }
+
+            .tree-method-detail {
+                width: 100%;
+                display: flex;
+                .tree-method-detail-column {
+                    flex-basis: 50%;
+                }
+            }
         }
 
         .tree-method-type-GET {

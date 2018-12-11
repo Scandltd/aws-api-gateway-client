@@ -9,6 +9,8 @@ import DialogFormComponent from '../../components/dialog/DialogFormComponent';
 import RestApiResourceForm from '../form/restApiResource/RestApiResourceForm';
 import StepperRestApiMethodForm from '../../containers/form/method/StepperRestApiMethodForm';
 import ResourceActionEnum from '../../enum/resourceActionsEnum';
+import IntegrationForm from '../form/method/IntegrationForm';
+import ResponseForm from '../form/method/ResponseForm';
 
 /**
  * 
@@ -25,7 +27,8 @@ class ApiResourceDetail extends Component
             accountId: props.match.params.accountId,
             apiId: props.match.params.apiId,
             resourceAction: null,
-            activeResourceId: null
+            activeResourceId: null,
+            httpMethod: null,
         };
     }
 
@@ -63,7 +66,8 @@ class ApiResourceDetail extends Component
     flushResourceAction = () => {
         this.setState({
             resourceAction: null,
-            activeResourceId: null
+            activeResourceId: null,
+            httpMethod: null
         });
     };
 
@@ -102,6 +106,15 @@ class ApiResourceDetail extends Component
         switch (action) {
             case ResourceActionEnum.DELETE_HTTP_METHOD:
                 this.props.actions.deleteMethodApiRequest(this.state.accountId, this.state.apiId, resourceId, httpMethod);
+                break;
+
+            case ResourceActionEnum.CREATE_HTTP_INTEGRATION:
+            case ResourceActionEnum.CREATE_HTTP_RESPONSE:
+                this.setState({
+                    resourceAction: action,
+                    activeResourceId: resourceId,
+                    httpMethod: httpMethod
+                });
                 break;
 
             default:
@@ -176,6 +189,33 @@ class ApiResourceDetail extends Component
                     onSuccess={this.flushResourceAction}
                 />;
                 title = 'Create a new HTTP method';
+                break;
+
+            case ResourceActionEnum.CREATE_HTTP_INTEGRATION:
+                form = <IntegrationForm
+                    accountId={this.state.accountId}
+                    restApiId={this.state.apiId}
+                    resourceId={this.state.activeResourceId}
+                    isUpdateAction={false}
+                    httpMethod = {this.state.httpMethod}
+                    onCancel={this.flushResourceAction}
+                    onSuccess={this.flushResourceAction}
+
+                />;
+                title = 'HTTP integration';
+                break;
+
+            case ResourceActionEnum.CREATE_HTTP_RESPONSE:
+                form = <ResponseForm
+                    accountId={this.state.accountId}
+                    restApiId={this.state.apiId}
+                    resourceId={this.state.activeResourceId}
+                    isUpdateAction={false}
+                    httpMethod = {this.state.httpMethod}
+                    onCancel={this.flushResourceAction}
+                    onSuccess={this.flushResourceAction}
+                />;
+                title = 'HTTP response';
                 break;
 
             default:

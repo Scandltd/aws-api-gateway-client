@@ -45,6 +45,21 @@ class TreeResourceElement extends Component
 
     /**
      *
+     */
+    onCreateHttpIntegration = (httpMethod) => {
+        this.props.handleInitHttpMethodAction(this.props.id, httpMethod,  ResourceActionEnum.CREATE_HTTP_INTEGRATION);
+    };
+
+    /**
+     *
+     * @param httpMethod
+     */
+    onCreateHttpResponse = (httpMethod) => {
+        this.props.handleInitHttpMethodAction(this.props.id, httpMethod,  ResourceActionEnum.CREATE_HTTP_RESPONSE);
+    };
+
+    /**
+     *
      * @returns {*}
      */
     renderMethodElements = () => {
@@ -57,6 +72,8 @@ class TreeResourceElement extends Component
                 path={this.props.path}
                 httpResource={value}
                 onDelete={this.onDeleteHttpMethod}
+                onCreateHttpIntegration={this.onCreateHttpIntegration}
+                onCreateHttpResponse={this.onCreateHttpResponse}
             />);
         });
 
