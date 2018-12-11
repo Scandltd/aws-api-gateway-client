@@ -19,7 +19,7 @@ class EntriesTree extends Component
         this.state = {
             entries: [],
             treeEntries: [],
-            extended: []
+            expanded: []
         };
     }
 
@@ -39,18 +39,18 @@ class EntriesTree extends Component
      * @param itemId
      * @param expanded
      */
-    onExtend = (itemId, expanded) => {
-        const extended = this.state.extended;
+    onExpand = (itemId, expanded) => {
+        const expandedList = this.state.expanded;
 
         if (expanded) {
-            extended.push(itemId);
+            expandedList.push(itemId);
         } else {
-            remove(extended, function(element){
+            remove(expandedList, function(element){
                 return element === itemId;
             });
         }
 
-        this.setState({extended: extended});
+        this.setState({expanded: expandedList});
     };
 
     /**
@@ -62,7 +62,7 @@ class EntriesTree extends Component
      */
     renderTreeElements(resource, level = 0) {
         return resource.map((item, idx) => {
-            const extended = 0 === level || -1 !== indexOf(this.state.extended, item.id);
+            const extended = 0 === level || -1 !== indexOf(this.state.expanded, item.id);
             let nested = '';
             if (item.children && 0 !== item.children.length && extended) {
                 nested = this.renderTreeElements(item.children, level + 1);
@@ -76,7 +76,7 @@ class EntriesTree extends Component
                 resourceMethods={item.resourceMethods ? item.resourceMethods : {}}
                 nested={nested}
                 expanded={0 === level}
-                onExtend={this.onExtend}
+                onExpand={this.onExpand}
                 handleInitResourceAction={this.props.handleInitResourceAction}
                 handleInitHttpMethodAction={this.props.handleInitHttpMethodAction}
             />

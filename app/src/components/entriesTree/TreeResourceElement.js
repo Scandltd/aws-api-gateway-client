@@ -85,8 +85,8 @@ class TreeResourceElement extends Component
      * @param event
      * @param expanded
      */
-    handleExtendStateChange = (event, expanded) => {
-        this.props.onExtend(this.props.id, expanded);
+    handleExpandStateChange = (event, expanded) => {
+        this.props.onExpand(this.props.id, expanded);
     };
 
     /**
@@ -95,7 +95,7 @@ class TreeResourceElement extends Component
      */
     render() {
         return (
-            <ExpansionPanel classes={{expanded: "tree-resource-expanded"}} className="tree-resource-container" defaultExpanded={this.props.expanded} onChange={this.handleExtendStateChange}>
+            <ExpansionPanel classes={{expanded: "tree-resource-expanded"}} className="tree-resource-container" defaultExpanded={this.props.expanded} onChange={this.handleExpandStateChange}>
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />} className="tree-resource-header">
                     <TreeResourceHeader
                         path={this.props.path}
@@ -121,7 +121,7 @@ TreeResourceElement.propTypes = {
     id: PropTypes.any.isRequired,
     handleInitResourceAction: PropTypes.func.isRequired,
     handleInitHttpMethodAction: PropTypes.func.isRequired,
-    onExtend: PropTypes.func.isRequired
+    onExpand: PropTypes.func.isRequired
 };
 
 export default TreeResourceElement;
