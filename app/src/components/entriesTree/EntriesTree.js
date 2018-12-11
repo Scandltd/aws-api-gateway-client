@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import TreeResourceElement from './TreeResourceElement';
 import './entriesTree.scss';
+import arrayToTree from 'array-to-tree';
+import { remove, indexOf } from 'lodash';
 
 /**
  *
@@ -10,15 +12,59 @@ class EntriesTree extends Component
 {
     /**
      *
+     * @param props
+     */
+    constructor(props) {
+        super(props);
+        this.state = {
+            entries: [],
+            treeEntries: [],
+            extended: []
+        };
+    }
+
+    /**
+     *
+     * @returns {Array}
+     */
+    buildTree() {
+        return arrayToTree(this.props.entries, {
+            parentProperty: 'parentId',
+            customID: 'id'
+        });
+    }
+
+    /**
+     *
+     * @param itemId
+     * @param expanded
+     */
+    onExtend = (itemId, expanded) => {
+        const extended = this.state.extended;
+
+        if (expanded) {
+            extended.push(itemId);
+        } else {
+            remove(extended, function(element){
+                return element === itemId;
+            });
+        }
+
+        this.setState({extended: extended});
+    };
+
+    /**
+     *
      * @param resource
-     * @param level         -- used to open first tab
+     * @param level
      *
      * @returns {*}
      */
     renderTreeElements(resource, level = 0) {
         return resource.map((item, idx) => {
+            const extended = 0 === level || -1 !== indexOf(this.state.extended, item.id);
             let nested = '';
-            if (item.children && 0 !== item.children.length) {
+            if (item.children && 0 !== item.children.length && extended) {
                 nested = this.renderTreeElements(item.children, level + 1);
             }
 
@@ -30,6 +76,7 @@ class EntriesTree extends Component
                 resourceMethods={item.resourceMethods ? item.resourceMethods : {}}
                 nested={nested}
                 expanded={0 === level}
+                onExtend={this.onExtend}
                 handleInitResourceAction={this.props.handleInitResourceAction}
                 handleInitHttpMethodAction={this.props.handleInitHttpMethodAction}
             />
@@ -41,7 +88,7 @@ class EntriesTree extends Component
      * @returns {*}
      */
     renderTree() {
-        return this.renderTreeElements(this.props.treeEntries);
+        return this.renderTreeElements(this.buildTree());
     }
 
     /**
@@ -60,7 +107,7 @@ class EntriesTree extends Component
 export default EntriesTree;
 
 EntriesTree.propsTypes = {
-    treeEntries: PropTypes.array.isRequired,
+    entries: PropTypes.array.isRequired,
     handleInitResourceAction: PropTypes.func.isRequired,
     handleInitHttpMethodAction: PropTypes.func.isRequired
 };

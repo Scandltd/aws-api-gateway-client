@@ -4,7 +4,6 @@ import { find } from 'lodash';
 import { loadResources, deleteResourceApiRequest, deleteMethodApiRequest } from '../../store/actions/entriesActions';
 import { addErrorNotification } from '../../store/actions/notificationActions';
 import EntriesTree from '../../components/entriesTree/EntriesTree';
-import arrayToTree from 'array-to-tree';
 import DialogFormComponent from '../../components/dialog/DialogFormComponent';
 import RestApiResourceForm from '../form/restApiResource/RestApiResourceForm';
 import StepperRestApiMethodForm from '../../containers/form/method/StepperRestApiMethodForm';
@@ -47,17 +46,6 @@ class ApiResourceDetail extends Component
      */
     getEntries = () => {
         return this.props.entries && Array.isArray(this.props.entries[this.state.apiId]) ? this.props.entries[this.state.apiId] : [];
-    };
-
-    /**
-     *
-     * @returns {Array}
-     */
-    buildTree = () => {
-        return arrayToTree(this.getEntries(), {
-            parentProperty: 'parentId',
-            customID: 'id'
-        });
     };
 
     /**
@@ -234,11 +222,13 @@ class ApiResourceDetail extends Component
      * @returns {*}
      */
     render() {
+
+        console.log('render tree', this.getEntries());
+
         return (
             <div>
-                API detail page. Account id: {this.props.match.params.accountId} | Api id: {this.props.match.params.apiId}
                 <EntriesTree
-                    treeEntries={this.buildTree()}
+                    entries={this.getEntries()}
                     handleInitResourceAction={this.handleInitResourceAction}
                     handleInitHttpMethodAction={this.handleInitHttpMethodAction}
                 />
@@ -254,8 +244,7 @@ class ApiResourceDetail extends Component
  */
 const mapStateToProps = (state) => {
     return {
-        entries: state.entries.entries,
-        loaded: false
+        entries: state.entries.entries
     }
 };
 
