@@ -222,9 +222,6 @@ class ApiResourceDetail extends Component
      * @returns {*}
      */
     render() {
-
-        console.log('render tree', this.getEntries());
-
         return (
             <div>
                 <EntriesTree
