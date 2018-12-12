@@ -1,5 +1,4 @@
-import React from 'react';
-import BaseFormContainer from '../BaseFormContainer';
+import React, { Component } from 'react';
 import { connect } from "react-redux";
 import RadioButtonsGroupField from '../../../components/form/fields/RadioButtonsGroupField';
 import IntegrationTypeEnum, { INTEGRATION_TYPE_OPTIONS_LIST } from '../../../enum/integrationTypeEnum';
@@ -18,146 +17,22 @@ import { getAwsRegionsOptionsList } from '../../../enum/awsRegions';
 import AWS_SERVICES_ENUM, { AWS_SERVICES_OPTIONS } from '../../../enum/awsServices';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { forEach } from 'lodash';
+import FormHOC from '../../hoc/FormHOC';
 
 const AWS_REGIONS = getAwsRegionsOptionsList();
 
 /**
  *
  */
-class IntegrationForm extends BaseFormContainer {
+class IntegrationForm extends Component {
     /**
      *
      * @param props
      */
-    constructor(props) {
-        super(props);
-        this.state.data = this.initData({
-            type: IntegrationTypeEnum.LambdaFunction,
-            defaultTimeout: true,
-            customTimeout: 0,
-            lambdaProxyIntegration: false,
-            lambdaFunctionName: '',
-            lambdaFunctionRegion: '',
-            httpProxyIntegration: false,
-            httpMethod: '',
-            httpEndpointUrl: '',
-            httpContentHandling: ContentHandlingTypeEnum.PASSTHROUGH,
-            serviceRegion: '',
-            serviceName: '',
-            serviceSubdomain: '',
-            serviceHttpMethod: '',
-            serviceActionType: ServiceActionTypeEnum.ACTION_NAME,
-            serviceAction: '',
-            serviceExecutionRole: '',
-            serviceContentHandling: ContentHandlingTypeEnum.PASSTHROUGH,
-            vpcProxyIntegration: false,
-            vpcHttpMethod: '',
-            vpcEndpointUrl: '',
-            vpcConnectId: ''
-        });
-        this.state.isLoading = false;
-
-        this.setValidationRules({
-            [IntegrationTypeEnum.LambdaFunction]: {
-                lambdaFunctionName: {
-                    presence: {
-                        allowEmpty: false
-                    }
-                },
-                lambdaFunctionRegion: {
-                    presence: {
-                        allowEmpty: false
-                    },
-                    inclusion: Object.values(AWS_REGIONS)
-                }
-            },
-            [IntegrationTypeEnum.HTTP]: {
-                httpMethod: {
-                    presence: {
-                        allowEmpty: false
-                    },
-                    inclusion: Object.values(HttpMethodEnum)
-                },
-                httpEndpointUrl: {
-                    presence: {
-                        allowEmpty: false
-                    },
-                    url: {
-                        allowLocal: true
-                    }
-                },
-                httpContentHandling: {
-                    presence: {
-                        allowEmpty: false
-                    },
-                    inclusion: Object.values(ContentHandlingTypeEnum)
-                }
-            },
-            [IntegrationTypeEnum.AWSService]: {
-                serviceRegion: {
-                    presence: {
-                        allowEmpty: false
-                    },
-                    inclusion: Object.values(AWS_REGIONS)
-                },
-                serviceName: {
-                    presence: {
-                        allowEmpty: false
-                    },
-                    inclusion: Object.values(AWS_SERVICES_ENUM)
-                },
-                serviceSubdomain: {},
-                serviceHttpMethod: {
-                    presence: {
-                        allowEmpty: false
-                    },
-                    inclusion: Object.values(HttpMethodEnum)
-                },
-                serviceActionType: {
-                    inclusion: Object.values(ServiceActionTypeEnum)
-                },
-                serviceAction: {},
-                serviceExecutionRole: {},
-                serviceContentHandling: {
-                    presence: {
-                        allowEmpty: false
-                    },
-                    inclusion: Object.values(ContentHandlingTypeEnum)
-                }
-            },
-            [IntegrationTypeEnum.VPCLink]: {
-                vpcProxyIntegration: {},
-                vpcHttpMethod: {
-                    presence: {
-                        allowEmpty: false
-                    },
-                    inclusion: Object.values(HttpMethodEnum)
-                },
-                vpcConnectId: {
-                    presence: {
-                        allowEmpty: false
-                    },
-                },
-                vpcEndpointUrl: {
-                    presence: {
-                        allowEmpty: false
-                    },
-                    url: {
-                        allowLocal: true
-                    }
-                }
-            },
-            common: {
-                customTimeout: {
-                    numericality: {
-                        onlyInteger: true,
-                        greaterThanOrEqualTo: 50,
-                        lessThanOrEqualTo: 29000
-                    }
-                },
-            }
-        });
-    }
+    //constructor(props) {
+    //    super(props);
+    //    this.state.isLoading = false;
+   // }
 
     /**
      *
@@ -675,7 +550,133 @@ const mapStateToProps = (state) => {
     }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(IntegrationForm);
+const validationRules = {
+    [IntegrationTypeEnum.LambdaFunction]: {
+        lambdaFunctionName: {
+            presence: {
+                allowEmpty: false
+            }
+        },
+        lambdaFunctionRegion: {
+            presence: {
+                allowEmpty: false
+            },
+            inclusion: Object.values(AWS_REGIONS)
+        }
+    },
+    [IntegrationTypeEnum.HTTP]: {
+        httpMethod: {
+            presence: {
+                allowEmpty: false
+            },
+            inclusion: Object.values(HttpMethodEnum)
+        },
+        httpEndpointUrl: {
+            presence: {
+                allowEmpty: false
+            },
+            url: {
+                allowLocal: true
+            }
+        },
+        httpContentHandling: {
+            presence: {
+                allowEmpty: false
+            },
+            inclusion: Object.values(ContentHandlingTypeEnum)
+        }
+    },
+    [IntegrationTypeEnum.AWSService]: {
+        serviceRegion: {
+            presence: {
+                allowEmpty: false
+            },
+            inclusion: Object.values(AWS_REGIONS)
+        },
+        serviceName: {
+            presence: {
+                allowEmpty: false
+            },
+            inclusion: Object.values(AWS_SERVICES_ENUM)
+        },
+        serviceSubdomain: {},
+        serviceHttpMethod: {
+            presence: {
+                allowEmpty: false
+            },
+            inclusion: Object.values(HttpMethodEnum)
+        },
+        serviceActionType: {
+            inclusion: Object.values(ServiceActionTypeEnum)
+        },
+        serviceAction: {},
+        serviceExecutionRole: {},
+        serviceContentHandling: {
+            presence: {
+                allowEmpty: false
+            },
+            inclusion: Object.values(ContentHandlingTypeEnum)
+        }
+    },
+    [IntegrationTypeEnum.VPCLink]: {
+        vpcProxyIntegration: {},
+        vpcHttpMethod: {
+            presence: {
+                allowEmpty: false
+            },
+            inclusion: Object.values(HttpMethodEnum)
+        },
+        vpcConnectId: {
+            presence: {
+                allowEmpty: false
+            },
+        },
+        vpcEndpointUrl: {
+            presence: {
+                allowEmpty: false
+            },
+            url: {
+                allowLocal: true
+            }
+        }
+    },
+    common: {
+        customTimeout: {
+            numericality: {
+                onlyInteger: true,
+                greaterThanOrEqualTo: 50,
+                lessThanOrEqualTo: 29000
+            }
+        },
+    }
+};
+
+const fields = {
+    type: IntegrationTypeEnum.LambdaFunction,
+    defaultTimeout: true,
+    customTimeout: 0,
+    lambdaProxyIntegration: false,
+    lambdaFunctionName: '',
+    lambdaFunctionRegion: '',
+    httpProxyIntegration: false,
+    httpMethod: '',
+    httpEndpointUrl: '',
+    httpContentHandling: ContentHandlingTypeEnum.PASSTHROUGH,
+    serviceRegion: '',
+    serviceName: '',
+    serviceSubdomain: '',
+    serviceHttpMethod: '',
+    serviceActionType: ServiceActionTypeEnum.ACTION_NAME,
+    serviceAction: '',
+    serviceExecutionRole: '',
+    serviceContentHandling: ContentHandlingTypeEnum.PASSTHROUGH,
+    vpcProxyIntegration: false,
+    vpcHttpMethod: '',
+    vpcEndpointUrl: '',
+    vpcConnectId: ''
+};
+
+export default FormHOC(connect(mapStateToProps, mapDispatchToProps)(IntegrationForm), fields, validationRules);
 
 IntegrationForm.propTypes = {
     httpMethod: PropTypes.oneOf(Object.values(HttpMethodEnum)).isRequired,

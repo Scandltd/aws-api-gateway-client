@@ -1,43 +1,15 @@
-import React from 'react';
-import BaseFormContainer from '../BaseFormContainer';
+import React, { Component } from 'react';
 import HttpMethodEnum from "../../../enum/httpMethodTypeEnum";
 import PropTypes from 'prop-types';
 import { connect } from "react-redux";
 import TextField from '@material-ui/core/TextField';
 import { putMethodResponseApiRequest } from "../../../store/actions/entriesActions";
+import FormHOC from '../../hoc/FormHOC';
 
 /**
  *
  */
-class ResponseForm extends BaseFormContainer {
-    /**
-     *
-     * @param props
-     */
-    constructor(props) {
-        super(props);
-        this.state.data = this.initData({
-            status: '',
-            responseType: ''
-        });
-
-        this.setValidationRules({
-            status: {
-                presence: {
-                    allowEmpty: false
-                },
-                numericality: {
-                    onlyInteger: true,
-                    greaterThanOrEqualTo: 100,
-                    lessThan: 600
-                }
-            },
-            responseTypeHeader: {
-
-            },
-        });
-    }
-
+class ResponseForm extends Component {
     /**
      *
      */
@@ -65,9 +37,8 @@ class ResponseForm extends BaseFormContainer {
             httpMethod: this.props.httpMethod,
         };
 
-
         this.setState({isProcessing: true});
-        this.props.actions.putMethodResponseApirequest(this.props.accountId, data, this.onRequestSuccess, this.onRequestError);
+        this.props.actions.putMethodResponseApiRequest(this.props.accountId, data, this.onRequestSuccess, this.onRequestError);
     };
 
     /**
@@ -75,7 +46,7 @@ class ResponseForm extends BaseFormContainer {
      * @returns {*}
      */
     render() {
-        return this.renderForm(
+        return (
             <React.Fragment>
                 <TextField
                     label="Status code"
@@ -104,12 +75,37 @@ class ResponseForm extends BaseFormContainer {
 const mapDispatchToProps = (dispatch) => {
     return {
         actions: {
-            putMethodResponseApirequest: (accountId, data, onSuccess = null, onError = null) => dispatch(putMethodResponseApiRequest(accountId, data, onSuccess, onError)),
+            putMethodResponseApiRequest: (accountId, data, onSuccess = null, onError = null) => dispatch(putMethodResponseApiRequest(accountId, data, onSuccess, onError)),
         }
     }
 };
 
-export default connect(null, mapDispatchToProps)(ResponseForm);
+/**
+ *
+ * @type {{status: string}}
+ */
+const fields = {
+    status: ''
+};
+
+/**
+ *
+ * @type {{status: {presence: {allowEmpty: boolean}, numericality: {onlyInteger: boolean, greaterThanOrEqualTo: number, lessThan: number}}}}
+ */
+const validationRules = {
+    status: {
+        presence: {
+            allowEmpty: false
+        },
+        numericality: {
+            onlyInteger: true,
+            greaterThanOrEqualTo: 100,
+            lessThan: 600
+        }
+    }
+};
+
+export default FormHOC(connect(null, mapDispatchToProps)(ResponseForm), fields, validationRules);
 
 ResponseForm.propTypes = {
     httpMethod: PropTypes.oneOf(Object.values(HttpMethodEnum)).isRequired,
