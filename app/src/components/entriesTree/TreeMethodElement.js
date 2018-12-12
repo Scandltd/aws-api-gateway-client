@@ -35,7 +35,11 @@ class TreeMethodElement extends Component
      */
     handleClick = (event) => {
         event.stopPropagation();
-        this.setState({expanded: !this.state.expanded});
+        this.setState(function(state, props) {
+            return {
+                expanded: !state.expanded
+            };
+        });
     };
 
     /**

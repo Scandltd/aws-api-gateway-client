@@ -40,17 +40,21 @@ class EntriesTree extends Component
      * @param expanded
      */
     onExpand = (itemId, expanded) => {
-        const expandedList = this.state.expanded;
+        this.setState(function(state, props) {
+            const expandedList = state.expanded;
 
-        if (expanded) {
-            expandedList.push(itemId);
-        } else {
-            remove(expandedList, function(element){
-                return element === itemId;
-            });
-        }
+            if (expanded) {
+                expandedList.push(itemId);
+            } else {
+                remove(expandedList, function(element){
+                    return element === itemId;
+                });
+            }
 
-        this.setState({expanded: expandedList});
+            return {
+                expanded: expandedList
+            };
+        });
     };
 
     /**
