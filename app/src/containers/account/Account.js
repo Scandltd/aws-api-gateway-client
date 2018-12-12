@@ -5,39 +5,16 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import ExtensionIcon from '@material-ui/icons/Extension';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
 import MenuList from '@material-ui/core/MenuList';
-import MenuItem from '@material-ui/core/MenuItem';
-import { NavLink } from 'react-router-dom';
 import AccountApi from '../accountApi/AccountApi';
 import { Route } from "react-router-dom";
+import MenuNavLink from '../../components/sidebar/MenuNavLink';
 
 /**
  *
  */
 class Account extends Component
 {
-    /**
-     *
-     * @param props
-     */
-    constructor(props) {
-        super(props);
-        this.state = {
-
-        };
-    }
-
-    /**
-     *
-     * @param event
-     * @param value
-     */
-    handleChange = (event, value) => {
-        this.setState({ value });
-    };
-
     /**
      *
      * @returns {*}
@@ -48,22 +25,8 @@ class Account extends Component
                 <Grid container spacing={24} className="account-grid">
                     <Grid item xs={12} md={2}>
                         <MenuList>
-                            <NavLink to={`/account/${this.props.match.params.accountId}/api`} exact activeClassName="active-menu-item">
-                                <MenuItem>
-                                    <ListItemIcon>
-                                        <ExtensionIcon />
-                                    </ListItemIcon>
-                                    <ListItemText  inset primary="API" />
-                                </MenuItem>
-                            </NavLink>
-                            <NavLink to={`/account/${this.props.match.params.accountId}/settings`} exact activeClassName="active-menu-item">
-                                <MenuItem >
-                                    <ListItemIcon >
-                                        <SettingsIcon />
-                                    </ListItemIcon>
-                                    <ListItemText  inset primary="Settings" />
-                                </MenuItem>
-                            </NavLink>
+                            <MenuNavLink path={`/account/${this.props.match.params.accountId}/api`} title="API" icon={<ExtensionIcon />} />
+                            <MenuNavLink path={`/account/${this.props.match.params.accountId}/settings`} title="Settings" icon={<SettingsIcon />} />
                         </MenuList>
                     </Grid>
                     <Grid item xs={12} md={10}>
