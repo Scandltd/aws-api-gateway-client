@@ -43,6 +43,7 @@ function FormHOC(WrappedComponent, fields, validationRules) {
          */
         getValidationRules () {
             if (super.getValidationRules) {
+                const func = super.getValidationRules;
                 return super.getValidationRules();
             }
 
@@ -141,6 +142,22 @@ function FormHOC(WrappedComponent, fields, validationRules) {
             this.validateField(name, value);
         };
 
+        /**
+         *
+         * @param event
+         */
+        handleOnSubmit = (event) => {
+            event.preventDefault();
+            if (!this.validateForm()) {
+                if (this.onSubmitInvalid) {
+                    this.onSubmitInvalid();
+                }
+
+                return;
+            }
+
+            this.onSubmitValid();
+        };
 
         /**
          *

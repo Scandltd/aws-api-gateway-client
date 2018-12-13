@@ -53,7 +53,7 @@ class IntegrationForm extends Component {
      * @returns {*|{}}
      */
     getValidationRules  ()  {
-        const rules = super.getValidationRules();
+        const rules = this.validationRules;
         let dynamicRules = rules[this.state.data.type] || {};
 
         if (IntegrationTypeEnum.Mock !== this.state.data.type && !this.state.data.defaultTimeout) {
@@ -501,7 +501,7 @@ class IntegrationForm extends Component {
      * @returns {*}
      */
     render() {
-        return this.renderForm(
+        return (
             <React.Fragment>
                 <RadioButtonsGroupField
                     options={INTEGRATION_TYPE_OPTIONS_LIST}
@@ -676,7 +676,7 @@ const fields = {
     vpcConnectId: ''
 };
 
-export default FormHOC(connect(mapStateToProps, mapDispatchToProps)(IntegrationForm), fields, validationRules);
+export default connect(mapStateToProps, mapDispatchToProps)(FormHOC(IntegrationForm, fields, validationRules));
 
 IntegrationForm.propTypes = {
     httpMethod: PropTypes.oneOf(Object.values(HttpMethodEnum)).isRequired,

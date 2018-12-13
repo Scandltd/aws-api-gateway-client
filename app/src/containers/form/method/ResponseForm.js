@@ -105,7 +105,7 @@ const validationRules = {
     }
 };
 
-export default FormHOC(connect(null, mapDispatchToProps)(ResponseForm), fields, validationRules);
+export default connect(null, mapDispatchToProps)(FormHOC(ResponseForm, fields, validationRules));
 
 ResponseForm.propTypes = {
     httpMethod: PropTypes.oneOf(Object.values(HttpMethodEnum)).isRequired,
