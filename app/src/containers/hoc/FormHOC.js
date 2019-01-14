@@ -3,7 +3,6 @@ import { mapValues, merge } from 'lodash';
 import validate from "validate.js";
 import Button from '@material-ui/core/Button';
 import './FormHOC.scss';
-//import PropTypes from 'prop-types';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 
@@ -43,7 +42,6 @@ function FormHOC(WrappedComponent, fields, validationRules) {
          */
         getValidationRules () {
             if (super.getValidationRules) {
-                const func = super.getValidationRules;
                 return super.getValidationRules();
             }
 

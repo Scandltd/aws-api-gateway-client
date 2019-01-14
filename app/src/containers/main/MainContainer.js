@@ -7,6 +7,21 @@ import PropTypes from 'prop-types';
 import { find } from 'lodash';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
+import Button from '@material-ui/core/Button';
+import { withStyles } from '@material-ui/core/styles';
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+
+const styles = theme => ({
+    button: {
+        margin: theme.spacing.unit,
+    },
+    rightIcon: {
+        marginLeft: theme.spacing.unit,
+    },
+    iconSmall: {
+        fontSize: 20,
+    },
+});
 
 /**
  * 
@@ -35,18 +50,27 @@ class MainContainer extends Component
     };
 
     /**
+     *
+     */
+    handleConnectAccount = () => {
+        this.props.history.push('/authenticate');
+    };
+
+    /**
      * 
      */
     render() {
+        const { classes } = this.props;
+
         const items = this.props.accounts.map((item, idx) => {
             let ApiList = this.props.apiList && Array.isArray(this.props.apiList[item.id]) ? this.props.apiList[item.id] : [];
             return <AccountItem 
                 accountTitle={item.name} 
                 accountId={item.id} 
                 key={item.id} 
-                apiList= {ApiList} 
+                apiList={ApiList}
                 onLoadApiList={this.handleLoadApiList}
-                loaded = {item.loaded}
+                loaded={item.loaded}
             />;
         });
 
@@ -55,6 +79,10 @@ class MainContainer extends Component
                 <Typography variant="h2">
                     Accounts
                 </Typography>
+                <Button variant="contained" color="default" className={classes.button} onClick={this.handleConnectAccount}>
+                    Connect account
+                    <CloudUploadIcon className={classes.rightIcon} />
+                </Button>
                 <Divider className="main-page-divider" />
                 {items}
             </div>
@@ -86,7 +114,7 @@ const mapDispatchToProps = (dispatch) => {
     }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(MainContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(MainContainer));
 
 MainContainer.propTypes = {
     accounts: PropTypes.array.isRequired,
