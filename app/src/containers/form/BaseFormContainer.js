@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { mapValues } from 'lodash';
 import validate from "validate.js";
 import Button from '@material-ui/core/Button';
-import './baseFormContainer.scss';
+import '../hoc/FormHOC.scss';
 import PropTypes from 'prop-types';
 import CircularProgress from '@material-ui/core/CircularProgress';
 

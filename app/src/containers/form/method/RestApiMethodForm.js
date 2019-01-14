@@ -1,5 +1,4 @@
-import React from 'react';
-import BaseFormContainer from '../BaseFormContainer';
+import React, { Component } from 'react';
 import SelectField from '../../../components/form/fields/SelectField';
 import PropTypes from 'prop-types';
 import HttpMethodEnum from '../../../enum/httpMethodTypeEnum';
@@ -8,53 +7,12 @@ import { createMethodApiRequest } from "../../../store/actions/entriesActions";
 import { connect } from "react-redux";
 import TextField from '@material-ui/core/TextField';
 import { omit, keys } from 'lodash';
+import FormHOC from '../../hoc/FormHOC';
 
 /**
  *
  */
-class RestApiMethodForm extends BaseFormContainer {
-    /**
-     *
-     * @param props
-     */
-    constructor(props) {
-        super(props);
-        this.state.data = this.initData({
-            httpMethod: '',
-            authorizationType: 'NONE',
-            authorizerId: ''
-        });
-
-        this.constData = {
-            httpMethodOptions: HttpMethodEnum,
-        };
-
-        const existsHttpMethods = this.props.resource.resourceMethods;
-        if (existsHttpMethods) {
-            this.constData.httpMethodOptions = omit(this.constData.httpMethodOptions, keys(existsHttpMethods));
-        }
-
-        this.setValidationRules({
-            httpMethod: {
-                presence: {
-                    allowEmpty: false
-                },
-                inclusion: Object.values(this.constData.httpMethodOptions)
-            },
-            authorizationType: {
-                presence: {
-                    allowEmpty: false
-                },
-                inclusion: Object.values(AuthorizationTypeEnum)
-            },
-            authorizerId: {
-                length: {
-                    maximum: 250
-                }
-            }
-        });
-    }
-
+class RestApiMethodForm extends Component {
     /**
      *
      */
@@ -81,7 +39,24 @@ class RestApiMethodForm extends BaseFormContainer {
             path: this.props.resource.path
         };
 
-        this.props.actions.createHttpMethod(this.props.accountId, this.props.restApiId, this.props.resource.id, this.state.data, this.onRequestSuccess, this.onRequestError);
+        this.props.actions.createHttpMethod(
+            this.props.accountId,
+            this.props.restApiId,
+            this.props.resource.id,
+            this.state.data,
+            this.onRequestSuccess,
+            this.onRequestError
+        );
+    };
+
+    /**
+     *
+     * @returns {{ANY, DELETE, GET, HEAD, OPTIONS, PATCH, POST, PUT}}
+     */
+    getHttpMethodOptions(){
+        const existsHttpMethods = this.props.resource.resourceMethods;
+
+        return existsHttpMethods ? omit(HttpMethodEnum, keys(existsHttpMethods)) : HttpMethodEnum;
     };
 
     /**
@@ -89,11 +64,11 @@ class RestApiMethodForm extends BaseFormContainer {
      * @returns {*}
      */
     render() {
-        return this.renderForm(
+        return (
             <React.Fragment>
                 <SelectField
                     required
-                    options={this.constData.httpMethodOptions}
+                    options={this.getHttpMethodOptions()}
                     name="httpMethod"
                     label="HTTP method"
                     value={this.state.data.httpMethod}
@@ -127,7 +102,6 @@ class RestApiMethodForm extends BaseFormContainer {
                     onChange={this.handleChange}
                     value={this.state.data.authorizerId}
                 />
-
             </React.Fragment>
         );
     }
@@ -145,7 +119,41 @@ const mapDispatchToProps = (dispatch) => {
     }
 };
 
-export default connect(null, mapDispatchToProps)(RestApiMethodForm);
+/**
+ *
+ * @type {{httpMethod: string, authorizationType: string, authorizerId: string}}
+ */
+const fields = {
+    httpMethod: '',
+    authorizationType: 'NONE',
+    authorizerId: ''
+};
+
+/**
+ *
+ * @type {{httpMethod: {presence: {allowEmpty: boolean}, inclusion: any[]}, authorizationType: {presence: {allowEmpty: boolean}, inclusion: any[]}, authorizerId: {length: {maximum: number}}}}
+ */
+const validationRules = {
+    httpMethod: {
+        presence: {
+            allowEmpty: false
+        },
+        inclusion: Object.values(HttpMethodEnum)
+    },
+    authorizationType: {
+        presence: {
+            allowEmpty: false
+        },
+        inclusion: Object.values(AuthorizationTypeEnum)
+    },
+    authorizerId: {
+        length: {
+            maximum: 250
+        }
+    }
+};
+
+export default connect(null, mapDispatchToProps)(FormHOC(RestApiMethodForm, fields, validationRules));
 
 RestApiMethodForm.propTypes = {
     accountId: PropTypes.any.isRequired,
