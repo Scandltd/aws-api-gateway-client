@@ -2,3 +2,5 @@
 *.phtml*.compiled
 .env
 app/src/config/aws_config.js
+docker/db/db-notes-mongo/.*
+!docker/db/db-notes-mongo/.gitkeep
