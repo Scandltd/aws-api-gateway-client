@@ -4,10 +4,11 @@ import {
     ACTION_SET_AUTHENTICATE_REQUEST,
     ACTION_SET_AUTHENTICATE_REQUEST_DONE,
     ACTION_SET_ACCOUNT,
+    ACTION_SET_LOADING_ACCOUNT_LIST,
 } from './types';
-import AccountService from '../../services/accounts/AccountLoader';
 import { addErrorNotification } from './notificationActions';
 import AwsApiCredentials from '../../services/aws/AwsApiCredentials';
+import { fetchAccounts } from '../../services/api/account';
 
 /**
  * connect a account using user credentials
@@ -35,10 +36,16 @@ export const connectAccountRequest = (data) => {
  * load account settings
  */
 export const loadAccountList = () => {
-    const service = new AccountService();
-
     return dispatch => {
-        dispatch(setAccounts(service.fetchAccounts()));
+        dispatch(setLoadingAccount());
+
+        return fetchAccounts()
+            .then(res => {
+                dispatch(setAccounts(res.data));
+            })
+            .catch(err => {
+                dispatch(addErrorNotification(err.message));
+            });
     };
 };
 
@@ -97,5 +104,11 @@ export const setAccount = (account) => {
         payload: {
             account,
         }
+    };
+};
+
+export const setLoadingAccount = () => {
+    return {
+        type: ACTION_SET_LOADING_ACCOUNT_LIST,
     };
 };

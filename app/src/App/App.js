@@ -4,7 +4,6 @@ import Header from '../components/header/Header';
 import Footer from '../components/footer/Footer';
 import { BrowserRouter} from 'react-router-dom';
 import Main from '../components/main/Main';
-import {loadAccountList} from "../store/actions/accountActions";
 import { connect } from 'react-redux';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import NotificationContainer from '../containers/notification/NotificationContainer';
@@ -13,17 +12,6 @@ import NotificationContainer from '../containers/notification/NotificationContai
  * App component
  */
 class App extends Component {
-
-    /**
-     *
-     * @param props
-     */
-    constructor (props) {
-        super(props);
-        if(!this.props.loaded) {
-            this.props.actions.loadAccounts();
-        }
-    }
 
     /**
     *
@@ -50,22 +38,8 @@ class App extends Component {
  */
 const mapStateToProps = (state) => {
     return {
-        accounts: state.account.accounts,
-        loaded: state.account.loaded,
         isLoading: state.appParams.isLoading
     }
 };
 
-/**
- *
- * @param {*} dispatch
- */
-const mapDispatchToProps = (dispatch) => {
-    return {
-        actions: {
-            loadAccounts: () => dispatch(loadAccountList())
-        }
-    }
-};
-
-export default connect(mapStateToProps, mapDispatchToProps) (App);
+export default connect(mapStateToProps, {}) (App);

@@ -11,6 +11,7 @@ services:
     ports:
       - ${PUBLIC_PORT}:3000
     environment:
+      - API_BASE_URL=${API_BASE_URL}
       - CHOKIDAR_USEPOLLING=${CHOKIDAR_USEPOLLING}      # Used for hot reload. Without it hot reload does not work for me
     #  - HOST=${HOST}
 

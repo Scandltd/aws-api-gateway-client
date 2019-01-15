@@ -3,6 +3,7 @@ import './MainContainer.scss';
 import AccountItem from '../../components/account/AccountItem';
 import { connect } from 'react-redux';
 import { loadRestApiListRequest } from '../../store/actions/apiActions';
+import { loadAccountList } from '../../store/actions/accountActions';
 import PropTypes from 'prop-types';
 import { find } from 'lodash';
 import Typography from '@material-ui/core/Typography';
@@ -10,6 +11,7 @@ import Divider from '@material-ui/core/Divider';
 import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const styles = theme => ({
     button: {
@@ -20,6 +22,9 @@ const styles = theme => ({
     },
     iconSmall: {
         fontSize: 20,
+    },
+    progress: {
+        margin: theme.spacing.unit * 2,
     },
 });
 
@@ -56,26 +61,39 @@ class MainContainer extends Component
         this.props.history.push('/authenticate');
     };
 
+    componentDidMount() {
+        this.props.loadAccountList();
+    };
+
     /**
      * 
      */
     render() {
-        const { classes } = this.props;
+        const { classes, loading } = this.props;
 
-        const items = this.props.accounts.map((item, idx) => {
-            let ApiList = this.props.apiList && Array.isArray(this.props.apiList[item.id]) ? this.props.apiList[item.id] : [];
-            return <AccountItem 
-                accountTitle={item.name} 
-                accountId={item.id} 
-                key={item.id} 
-                apiList={ApiList}
-                onLoadApiList={this.handleLoadApiList}
-                loaded={item.loaded}
-            />;
-        });
+        const items = loading ?
+            <div>
+                <CircularProgress className={classes.progress} />
+            </div>
+            :
+            this.props.accounts.map((item, idx) => {
+                let ApiList = this.props.apiList && Array.isArray(this.props.apiList[item.id]) ? this.props.apiList[item.id] : [];
 
+                return <AccountItem
+                    accountTitle={item.name}
+                    accountId={item.id}
+                    key={item.id}
+                    apiList={ApiList}
+                    onLoadApiList={this.handleLoadApiList}
+                    loaded={item.loaded}
+                />;
+            });
+
+            console.log(process);
+            console.log(global);
         return (
             <div className="main-page">
+
                 <Typography variant="h2">
                     Accounts
                 </Typography>
@@ -98,26 +116,19 @@ const mapStateToProps = (state) => {
     return {
         accounts: state.account.accounts,
         apiList: state.api.apiList,
-        loaded: state.account.loaded
+        loading: state.account.loading
     }
 };
 
-/**
- * 
- * @param {*} dispatch 
- */
-const mapDispatchToProps = (dispatch) => {
-    return {
-        actions: {
-            fetchApiList: (accountId, credentials) => dispatch(loadRestApiListRequest(accountId, credentials))
-        }
-    }
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(MainContainer));
+export default connect(mapStateToProps, {
+    loadRestApiListRequest,
+    loadAccountList,
+})(withStyles(styles)(MainContainer));
 
 MainContainer.propTypes = {
     accounts: PropTypes.array.isRequired,
     apiList: PropTypes.object.isRequired,
-    loaded: PropTypes.bool.isRequired
+    loading: PropTypes.bool.isRequired,
+    loadRestApiListRequest: PropTypes.func.isRequired,
+    loadAccountList: PropTypes.func.isRequired,
 };

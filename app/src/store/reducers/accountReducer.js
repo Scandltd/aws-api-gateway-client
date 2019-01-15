@@ -1,12 +1,25 @@
-import {ACTION_SET_ACCOUNT_LIST, ACTION_SET_ACCOUNT_LOADED} from '../actions/types';
+import {
+    ACTION_SET_ACCOUNT_LIST,
+    ACTION_SET_ACCOUNT_LOADED,
+    ACTION_SET_LOADING_ACCOUNT_LIST
+} from '../actions/types';
 
 const defaultState = {
     accounts: [],
-    loaded: false
+    loaded: false,
+    loading: false,
 };
 
 const accountReducer = (state = defaultState, action) => {
     switch (action.type) {
+        case ACTION_SET_LOADING_ACCOUNT_LIST:
+
+            return {
+                ...state,
+                loading: true,
+                loaded: false,
+            };
+
         case ACTION_SET_ACCOUNT_LIST:
 
             const accounts = action.payload.map((item, idx) => {
@@ -17,6 +30,7 @@ const accountReducer = (state = defaultState, action) => {
                 ...state,
                 accounts: accounts,
                 loaded: true,
+                loading:false,
             };
 
         case ACTION_SET_ACCOUNT_LOADED:
