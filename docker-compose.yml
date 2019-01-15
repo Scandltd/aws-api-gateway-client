@@ -13,3 +13,22 @@ services:
     environment:
       - CHOKIDAR_USEPOLLING=${CHOKIDAR_USEPOLLING}      # Used for hot reload. Without it hot reload does not work for me
     #  - HOST=${HOST}
+
+  back:
+    build:
+      dockerfile: ./docker/node/Dockerfile
+      context: .
+    image: api_gateway_app
+    image: node_app
+    restart: on-failure
+    volumes:
+      - ./back:/app
+    ports:
+      - ${PUBLIC_NODE_HOST_PORT}:3000
+    expose:
+      - 3000
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - PORT=3000
+      - CHOKIDAR_USEPOLLING=${CHOKIDAR_USEPOLLING}       # Used for hot reloading. Should be true
+    command: ["npm", "run", "develop"]
