@@ -97,10 +97,6 @@ class MainContainer extends Component
                 <Typography variant="h2">
                     Accounts
                 </Typography>
-                <Button variant="contained" color="default" className={classes.button} onClick={this.handleConnectAccount}>
-                    Connect account
-                    <CloudUploadIcon className={classes.rightIcon} />
-                </Button>
                 <Divider className="main-page-divider" />
                 {items}
             </div>
