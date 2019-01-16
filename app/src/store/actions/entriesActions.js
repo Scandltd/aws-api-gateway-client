@@ -8,8 +8,21 @@ import {
     ACTION_DELETE_HTTP_METHOD,
     ACTION_SET_VPS_LINKS
 } from './types';
-import { apiCall } from './apiActions';
 import { addErrorNotification, addSuccessNotification } from './notificationActions';
+import { setLoadingTrue, setLoadingFalse } from "./appParamsActions";
+import {
+    fetchApiResources,
+    deleteResource as deleteResourceRequest,
+    createResource,
+} from "../../services/api/resourceApi";
+import { getVpcLinks } from "../../services/api/vpcApi";
+import {
+    createRestApiMethod,
+    putIntegration as putIntegrationRequest,
+    putMethodResponse,
+    deleteMethod,
+} from "../../services/api/methodApi";
+
 import IntegrationTypeEnum from '../../enum/integrationTypeEnum';
 import ContentHandlingTypeEnum from "../../enum/contentHandlingTypeEnum";
 import ServiceActionTypeEnum from "../../enum/serviceActionTypeEnum";
@@ -30,17 +43,26 @@ export const loadResources = (accountId, apiId) => {
     };
 
     return dispatch => {
-        dispatch(apiCall(
-            accountId,
-            'fetchApiResources',
-            params,
-            response => {
-                dispatch(setEntriesResources(apiId, response.items));
-            },
-            err => {
+        dispatch(setLoadingTrue());
+
+        return fetchApiResources(accountId, params)
+            .then(response => {
+                const { success, data, message } = response.data;
+                dispatch(setLoadingFalse());
+                if (!success) {
+                    dispatch(addErrorNotification(message || 'Unable to fetch resources data'));
+
+                    return data;
+                }
+
+                dispatch(setEntriesResources(apiId, data.items));
+
+                return data;
+            })
+            .catch(err => {
+                dispatch(setLoadingFalse());
                 dispatch(addErrorNotification('Unable to fetch resources data. ' + err.message));
-            }
-        ));
+            });
     };
 };
 
@@ -59,18 +81,27 @@ export const deleteResourceApiRequest = (accountId, apiId, resourceId) => {
     };
 
     return dispatch => {
-        dispatch(apiCall(
-            accountId,
-            'deleteResource',
-            params,
-            response => {
+        dispatch(setLoadingTrue());
+
+        return deleteResourceRequest(accountId, params)
+            .then(response => {
+                const { success, data, message } = response.data;
+                dispatch(setLoadingFalse());
+                if (!success) {
+                    dispatch(addErrorNotification(message || 'Unable to dete resource'));
+
+                    return data;
+                }
+
                 dispatch(deleteResource(accountId, apiId, resourceId));
                 dispatch(addSuccessNotification('Resource has been deleted'));
-            },
-            err => {
-                dispatch(addErrorNotification('Unable to fetch resources data. ' + err.message));
-            }
-        ));
+
+                return data;
+            })
+            .catch(err => {
+                dispatch(setLoadingFalse());
+                dispatch(addErrorNotification('Unable to delete resource. ' + err.message));
+            });
     };
 };
 
@@ -92,24 +123,33 @@ export const createResourceApiRequest = (accountId, restApiId, data, onSuccess =
     };
 
     return dispatch => {
-        dispatch(apiCall(
-            accountId,
-            'createRestApiResource',
-            params,
-            response => {
-                dispatch(addEntriesResource(accountId, restApiId, response));
+        dispatch(setLoadingTrue());
+
+        return createResource(accountId, params)
+            .then(response => {
+                const { success, data, message } = response.data;
+                dispatch(setLoadingFalse());
+                if (!success) {
+                    dispatch(addErrorNotification(message || 'Unable to create REST API resource'));
+
+                    return data;
+                }
+
+                dispatch(addEntriesResource(accountId, restApiId, data));
                 dispatch(addSuccessNotification('Resource has been created'));
                 if (onSuccess) {
-                    onSuccess(response);
+                    onSuccess(data);
                 }
-            },
-            err => {
+
+                return data;
+            })
+            .catch(err => {
+                dispatch(setLoadingFalse());
                 dispatch(addErrorNotification('Unable to create REST API resource. ' + err.message));
                 if (onError) {
                     onError(err);
                 }
-            }
-        ));
+            });
     };
 };
 
@@ -128,23 +168,32 @@ export const loadVpsLinksApiRequest = (accountId, onSuccess = null, onError = nu
     };
 
     return dispatch => {
-        dispatch(apiCall(
-            accountId,
-            'getVpcLinks',
-            params,
-            response => {
-                dispatch(setVpsLinks(accountId, response.items));
-                if (onSuccess) {
-                    onSuccess(response);
+        dispatch(setLoadingTrue());
+
+        return getVpcLinks(accountId, params)
+            .then(response => {
+                const { success, data, message } = response.data;
+                dispatch(setLoadingFalse());
+                if (!success) {
+                    dispatch(addErrorNotification(message || 'Unable to fetch VPC links'));
+
+                    return data;
                 }
-            },
-            err => {
+
+                dispatch(setVpsLinks(accountId, data.items));
+                if (onSuccess) {
+                    onSuccess(data);
+                }
+
+                return data;
+            })
+            .catch(err => {
+                dispatch(setLoadingFalse());
                 dispatch(addErrorNotification('Unable to load VPC links. ' + err.message));
                 if (onError) {
                     onError(err);
                 }
-            }
-        ));
+            });
     };
 };
 
@@ -183,91 +232,100 @@ export const createMethodApiRequest = (accountId, restApiId, resourceId, data, o
     }
 
     return dispatch => {
-        dispatch(apiCall(
-            accountId,
-            'createRestApiMethod',
-            params,
-            response => {
-                dispatch(putHttpMethod(accountId, restApiId, resourceId, response));
-                dispatch(addSuccessNotification(`Http method ${response.httpMethod} has been created`));
-                if (onSuccess) {
-                    onSuccess(response);
+        dispatch(setLoadingTrue());
+
+        return createRestApiMethod(accountId, params)
+            .then(response => {
+                const { success, data, message } = response.data;
+                dispatch(setLoadingFalse());
+                if (!success) {
+                    dispatch(addErrorNotification(message || `Unable to create http method ${data.httpMethod}`));
+
+                    return data;
                 }
-            },
-            err => {
+
+                dispatch(putHttpMethod(accountId, restApiId, resourceId, data));
+                dispatch(addSuccessNotification(`Http method ${data.httpMethod} has been created`));
+                if (onSuccess) {
+                    onSuccess(data);
+                }
+
+                return data;
+            })
+            .catch(err => {
+                dispatch(setLoadingFalse());
                 dispatch(addErrorNotification(`Unable to create http method ${data.httpMethod}.  ${err.message}`));
                 if (onError) {
                     onError(err);
                 }
-            }
-        ));
+            });
     };
 };
 
 /**
  *
  * @param accountId
- * @param data
+ * @param dataParams
  * @param onSuccess
  * @param onError
  *
  * @returns {Function}
  */
-export const putMethodIntegrationApiRequest = (accountId, data, onSuccess = null, onError = null) => {
+export const putMethodIntegrationApiRequest = (accountId, dataParams, onSuccess = null, onError = null) => {
 
     const params = {
-        httpMethod: data.constData.httpMethod, /* required */
-        resourceId: data.constData.resourceId, /* required */
-        restApiId: data.constData.restApiId,   /* required */
+        httpMethod: dataParams.constData.httpMethod, /* required */
+        resourceId: dataParams.constData.resourceId, /* required */
+        restApiId: dataParams.constData.restApiId,   /* required */
         type: null,                            /* required */
     };
 
-    if (!data.defaultTimeout) {
-        params.timeoutInMillis = data.customTimeout;
+    if (!dataParams.defaultTimeout) {
+        params.timeoutInMillis = dataParams.customTimeout;
     }
 
-    switch (data.type) {
+    switch (dataParams.type) {
         case IntegrationTypeEnum.Mock:
             params.type = 'MOCK';
             break;
 
         case IntegrationTypeEnum.LambdaFunction:
-            params.type = data.lambdaProxyIntegration ? 'AWS_PROXY' : 'AWS';
-            params.uri = `arn:aws:apigateway:${data.lambdaFunctionRegion}:lambda:path/2015-03-31/functions/${data.lambdaFunctionName}/invocations`;
-            params.integrationHttpMethod = data.constData.httpMethod;
+            params.type = dataParams.lambdaProxyIntegration ? 'AWS_PROXY' : 'AWS';
+            params.uri = `arn:aws:apigateway:${dataParams.lambdaFunctionRegion}:lambda:path/2015-03-31/functions/${dataParams.lambdaFunctionName}/invocations`;
+            params.integrationHttpMethod = dataParams.constData.httpMethod;
             params.contentHandling = ContentHandlingTypeEnum.CONVERT_TO_TEXT;
             break;
 
         case IntegrationTypeEnum.HTTP:
-            params.type = data.httpProxyIntegration ? 'HTTP_PROXY' : 'HTTP';
-            params.uri = data.httpEndpointUrl;
-            params.integrationHttpMethod = data.httpMethod;
-            if (ContentHandlingTypeEnum.PASSTHROUGH !== data.httpContentHandling) {
-                params.contentHandling = data.httpContentHandling;
+            params.type = dataParams.httpProxyIntegration ? 'HTTP_PROXY' : 'HTTP';
+            params.uri = dataParams.httpEndpointUrl;
+            params.integrationHttpMethod = dataParams.httpMethod;
+            if (ContentHandlingTypeEnum.PASSTHROUGH !== dataParams.httpContentHandling) {
+                params.contentHandling = dataParams.httpContentHandling;
             }
 
             break;
 
         case IntegrationTypeEnum.AWSService:
             params.type = 'AWS';
-            params.credentials = data.serviceExecutionRole;
-            params.integrationHttpMethod = data.serviceHttpMethod;
-            if (ContentHandlingTypeEnum.PASSTHROUGH !== data.httpContentHandling) {
-                params.contentHandling = data.httpContentHandling;
+            params.credentials = dataParams.serviceExecutionRole;
+            params.integrationHttpMethod = dataParams.serviceHttpMethod;
+            if (ContentHandlingTypeEnum.PASSTHROUGH !== dataParams.httpContentHandling) {
+                params.contentHandling = dataParams.httpContentHandling;
             }
 
-            let serviceName = data.serviceSubdomain ? `${data.serviceSubdomain}.${data.serviceName}` : data.serviceName;
-            let pathAction = ServiceActionTypeEnum.PATH_OVERRIDE === data.serviceActionType ? `path/${data.serviceAction}` : `action/${data.serviceAction}`;
-            params.uri = `arn:aws:apigateway:${data.serviceRegion}:${serviceName}:${pathAction}`;
+            let serviceName = dataParams.serviceSubdomain ? `${dataParams.serviceSubdomain}.${dataParams.serviceName}` : dataParams.serviceName;
+            let pathAction = ServiceActionTypeEnum.PATH_OVERRIDE === dataParams.serviceActionType ? `path/${dataParams.serviceAction}` : `action/${dataParams.serviceAction}`;
+            params.uri = `arn:aws:apigateway:${dataParams.serviceRegion}:${serviceName}:${pathAction}`;
 
             break;
 
         case IntegrationTypeEnum.VPCLink:
-            params.type = data.vpcProxyIntegration ? 'HTTP_PROXY' : 'HTTP';
-            params.connectionId = data.vpcConnectId;
+            params.type = dataParams.vpcProxyIntegration ? 'HTTP_PROXY' : 'HTTP';
+            params.connectionId = dataParams.vpcConnectId;
             params.connectionType = 'VPC_LINK';
-            params.uri = data.vpcEndpointUrl;
-            params.integrationHttpMethod = data.vpcHttpMethod;
+            params.uri = dataParams.vpcEndpointUrl;
+            params.integrationHttpMethod = dataParams.vpcHttpMethod;
 
             break;
 
@@ -275,66 +333,80 @@ export const putMethodIntegrationApiRequest = (accountId, data, onSuccess = null
             break;
     }
 
-
-
     return dispatch => {
-        dispatch(apiCall(
-            accountId,
-            'putIntegration',
-            params,
-            response => {
-                dispatch(addSuccessNotification(`Integration for ${data.constData.httpMethod} method has been applied`));
-                dispatch(putIntegration(accountId, data.constData.restApiId, data.constData.resourceId, data.constData.httpMethod, response));
+        dispatch(setLoadingTrue());
+
+        return putIntegrationRequest(accountId, params)
+            .then(response => {
+                const { success, data, message } = response.data;
+                dispatch(setLoadingFalse());
+                if (!success) {
+                    dispatch(addErrorNotification(message || 'Unable to put method integration'));
+
+                    return data;
+                }
+
+                dispatch(addSuccessNotification(`Integration for ${dataParams.constData.httpMethod} method has been applied`));
+                dispatch(putIntegration(accountId, dataParams.constData.restApiId, dataParams.constData.resourceId, dataParams.constData.httpMethod, response));
                 if (onSuccess) {
                     onSuccess(response);
                 }
-            },
-            err => {
+            })
+            .catch(err => {
+                dispatch(setLoadingFalse());
                 dispatch(addErrorNotification(`Unable to put method integration.  ${err.message}`));
                 if (onError) {
                     onError(err);
                 }
-            }
-        ));
+            });
     };
 };
 
 /**
  *
  * @param accountId
- * @param data
+ * @param dataParams
  * @param onSuccess
  * @param onError
  *
  * @returns {Function}
  */
-export const putMethodResponseApiRequest = (accountId, data, onSuccess = null, onError = null) => {
+export const putMethodResponseApiRequest = (accountId, dataParams, onSuccess = null, onError = null) => {
     const params = {
-        httpMethod: data.constData.httpMethod, /* required */
-        resourceId: data.constData.resourceId, /* required */
-        restApiId: data.constData.restApiId,   /* required */
-        statusCode: String(data.status),       /* required */
+        httpMethod: dataParams.constData.httpMethod, /* required */
+        resourceId: dataParams.constData.resourceId, /* required */
+        restApiId: dataParams.constData.restApiId,   /* required */
+        statusCode: String(dataParams.status),       /* required */
     };
 
     return dispatch => {
-        dispatch(apiCall(
-            accountId,
-            'putMethodResponse',
-            params,
-            response => {
-                dispatch(addSuccessNotification(`Response parameters for ${data.constData.httpMethod} method has been set`));
-                dispatch(putResponse(accountId, data.constData.restApiId, data.constData.resourceId, data.constData.httpMethod, response));
-                if (onSuccess) {
-                    onSuccess(response);
+        dispatch(setLoadingTrue());
+
+        return putMethodResponse(accountId, params)
+            .then(response => {
+                const { success, data, message } = response.data;
+                dispatch(setLoadingFalse());
+                if (!success) {
+                    dispatch(addErrorNotification(message || 'Unable to put method response'));
+
+                    return data;
                 }
-            },
-            err => {
+
+                dispatch(addSuccessNotification(`Response parameters for ${dataParams.constData.httpMethod} method has been set`));
+                dispatch(putResponse(accountId, dataParams.constData.restApiId, dataParams.constData.resourceId, dataParams.constData.httpMethod, response));
+                if (onSuccess) {
+                    onSuccess(data);
+                }
+
+                return data;
+            })
+            .catch(err => {
+                dispatch(setLoadingFalse());
                 dispatch(addErrorNotification(`Unable to put method response.  ${err.message}`));
                 if (onError) {
                     onError(err);
                 }
-            }
-        ));
+            });
     };
 };
 
@@ -357,24 +429,33 @@ export const deleteMethodApiRequest = (accountId, restApiId, resourceId, httpMet
     };
 
     return dispatch => {
-        dispatch(apiCall(
-            accountId,
-            'deleteMethod',
-            params,
-            response => {
+        dispatch(setLoadingTrue());
+
+        return deleteMethod(accountId, params)
+            .then(response => {
+                const { success, data, message } = response.data;
+                dispatch(setLoadingFalse());
+                if (!success) {
+                    dispatch(addErrorNotification(message || `Unable to delete ${httpMethod} method`));
+
+                    return data;
+                }
+
                 dispatch(addSuccessNotification(`Http method ${httpMethod} has been deleted`));
                 dispatch(deleteHttpMethod(accountId, restApiId, resourceId, httpMethod));
                 if (onSuccess) {
-                    onSuccess(response);
+                    onSuccess(data);
                 }
-            },
-            err => {
+
+                return data;
+            })
+            .catch(err => {
+                dispatch(setLoadingFalse());
                 dispatch(addErrorNotification(`Unable to delete ${httpMethod} method.  ${err.message}`));
                 if (onError) {
                     onError(err);
                 }
-            }
-        ));
+            });
     };
 };
 

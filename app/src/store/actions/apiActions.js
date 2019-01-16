@@ -1,7 +1,15 @@
-import { ACTION_SET_API_LIST, ACTION_AWS_API_CALL, ACTION_ADD_API, ACTION_DELETE_API, ACTION_UPDATE_API } from './types';
-import {setAccountLoaded} from './accountActions';
+import { ACTION_SET_API_LIST, ACTION_ADD_API, ACTION_DELETE_API, ACTION_UPDATE_API } from './types';
+import { setAccountLoaded } from './accountActions';
 import { forIn } from 'lodash';
 import { addErrorNotification, addSuccessNotification } from './notificationActions';
+import { setLoadingTrue, setLoadingFalse } from "./appParamsActions";
+import {
+    fetchApiList,
+    createRestApi,
+    deleteRestApi,
+    updateRestApi,
+    getRestApi,
+} from "../../services/api/restApi";
 
 /**
  * 
@@ -9,18 +17,26 @@ import { addErrorNotification, addSuccessNotification } from './notificationActi
  */
 export const loadRestApiListRequest = (accountId) => {
     return dispatch => {
-        dispatch(apiCall(
-            accountId,
-            'fetchApiList',
-            {},
-            response => {
+        dispatch(setLoadingTrue());
+
+        return fetchApiList(accountId)
+            .then(response => {
+                const { success, data, message } = response.data;
+                dispatch(setLoadingFalse());
+
+                if (!success) {
+                    dispatch(message || 'Unable to load rest api list. Unknown error');
+                }
+
                 dispatch(setAccountLoaded(accountId));
-                dispatch(setApiList(accountId, response.items));
-            },
-            err => {
+                dispatch(setApiList(accountId, data.items));
+
+                return data;
+            })
+            .catch(err => {
+                dispatch(setLoadingFalse());
                 dispatch(addErrorNotification(err.message));
-            }
-        ));
+            });
     };
 };
 
@@ -34,7 +50,6 @@ export const loadRestApiListRequest = (accountId) => {
  * @returns {Function}
  */
 export const createRestApiRequest = (accountId, data, onSuccess = null, onError = null) => {
-
     const types = [];
     if (data.type) {
         types.push(data.type);
@@ -58,24 +73,33 @@ export const createRestApiRequest = (accountId, data, onSuccess = null, onError 
     };
 
     return dispatch => {
-        dispatch(apiCall(
-            accountId,
-            'createRestApi',
-            params,
-            response => {
-                dispatch(addApi(accountId, response));
+        dispatch(setLoadingTrue());
+
+        return createRestApi(accountId, params)
+            .then(response => {
+                const { success, data, message } = response.data;
+                dispatch(setLoadingFalse());
+                if (!success) {
+                    dispatch(addErrorNotification(message || 'Unable to create REST API'));
+
+                    return ;
+                }
+
+                dispatch(addApi(accountId, data));
                 if (onSuccess) {
-                    onSuccess(response);
+                    onSuccess(data);
                 }
                 dispatch(addSuccessNotification('A new REST API instance has been created'));
-            },
-            err => {
+
+                return data;
+            })
+            .catch(err => {
+                dispatch(setLoadingFalse());
                 if (onError) {
                     onError(err);
                 }
                 dispatch(addErrorNotification('Unable to create REST API. ' + err.message));
-            }
-        ))
+            })
     };
 };
 
@@ -94,24 +118,34 @@ export const deleteRestApiRequest = (accountId, apiId, onSuccess = null, onError
     };
 
     return dispatch => {
-        dispatch(apiCall(
-            accountId,
-            'deleteRestApi',
-            params,
-            response => {
+        dispatch(setLoadingTrue());
+
+        return deleteRestApi(accountId, params)
+            .then(response => {
+                const { success, data, message } = response.data;
+
+                dispatch(setLoadingFalse());
+                if (!success) {
+                    dispatch(addErrorNotification(message || 'Unable to delete REST API'));
+
+                    return ;
+                }
+
                 dispatch(removeApi(accountId, apiId));
                 if (onSuccess) {
-                    onSuccess(response);
+                    onSuccess(data);
                 }
                 dispatch(addSuccessNotification('The REST API instance has been deleted'));
-            },
-            err => {
+
+                return data;
+            })
+            .catch(err => {
+                dispatch(setLoadingFalse());
                 if (onError) {
                     onError(err);
                 }
                 dispatch(addErrorNotification('Unable to delete REST API. ' + err.message));
-            }
-        ))
+            });
     };
 };
 
@@ -147,24 +181,35 @@ export const updateRestApiRequest = (accountId, apiId, data, oldData, onSuccess 
         patchOperations: patchOperations
     };
 
-    return dispatch => {dispatch(apiCall(
-        accountId,
-        'updateRestApi',
-        params,
-        response => {
-            dispatch(updateApi(accountId, response));
-            if (onSuccess) {
-                onSuccess(response);
-            }
-            dispatch(addSuccessNotification('The REST API instance has been updated'));
-        },
-        err => {
-            if (onError) {
-                onError(err);
-            }
-            dispatch(addErrorNotification('Unable to update REST API. ' + err.message));
-        }
-    ))}
+    return dispatch => {
+        dispatch(setLoadingTrue());
+
+        return updateRestApi(accountId, params)
+            .then(response => {
+                const { success, data, message } = response.data;
+                dispatch(setLoadingFalse());
+                if (!success) {
+                    dispatch(addErrorNotification(message || 'Unable to update REST API'));
+
+                    return ;
+                }
+
+                dispatch(updateApi(accountId, data));
+                if (onSuccess) {
+                    onSuccess(data);
+                }
+                dispatch(addSuccessNotification('The REST API instance has been updated'));
+
+                return data;
+            })
+            .catch(err => {
+                dispatch(setLoadingFalse());
+                if (onError) {
+                    onError(err);
+                }
+                dispatch(addErrorNotification('Unable to update REST API. ' + err.message));
+            });
+       }
 };
 /**
  *
@@ -180,44 +225,32 @@ export const getRestApiRequest = (accountId, apiId, onSuccess = null, onError = 
         restApiId: apiId
     };
 
-    return dispatch => {dispatch(apiCall(
-        accountId,
-        'getRestApi',
-        params,
-        response => {
-            if (onSuccess) {
-                onSuccess(response);
-            }
-        },
-        err => {
-            if (onError) {
-                onError(err);
-            }
-            dispatch(addErrorNotification('Unable to fetch REST API data. ' + err.message));
-        }
-    ))}
-};
+    return dispatch => {
+        dispatch(setLoadingTrue());
 
-/**
- *
- * @param accountId
- * @param method
- * @param data
- * @param onSuccess
- * @param onError
- *
- * @returns {{type: string, payload: {accountId: *, method: *, data, onSuccess: *, onError: *}}}
- */
-export const apiCall = (accountId, method, data = {}, onSuccess = null, onError = null) => {
-    return {
-        type: ACTION_AWS_API_CALL,
-        payload: {
-            accountId: accountId,
-            method: method,
-            data: data,
-            onSuccess: onSuccess,
-            onError: onError,
-        }
+        return getRestApi(accountId, params)
+            .then(response => {
+                const { success, message, data } = response.data;
+
+                dispatch(setLoadingFalse());
+                if (!success) {
+                    dispatch(addErrorNotification(message || 'Unable to get REST API'));
+
+                    return ;
+                }
+                if (onSuccess) {
+                    onSuccess(data);
+                }
+
+                return data;
+            })
+            .catch(err => {
+                dispatch(setLoadingFalse());
+                if (onError) {
+                    onError(err);
+                }
+                dispatch(addErrorNotification('Unable to fetch REST API data. ' + err.message));
+            });
     }
 };
 

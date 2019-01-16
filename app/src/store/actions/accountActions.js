@@ -7,8 +7,7 @@ import {
     ACTION_SET_LOADING_ACCOUNT_LIST,
 } from './types';
 import { addErrorNotification } from './notificationActions';
-import AwsApiCredentials from '../../services/aws/AwsApiCredentials';
-import { fetchAccounts } from '../../services/api/account';
+import { fetchAccounts } from '../../services/api/accountApi';
 
 /**
  * connect a account using user credentials
@@ -20,7 +19,7 @@ import { fetchAccounts } from '../../services/api/account';
 export const connectAccountRequest = (data) => {
     return dispatch => {
         dispatch(setAuthRequest());
-
+/*
         return AwsApiCredentials.authenticate(data)
             .then((response) => {
                 setAccount(response);
@@ -29,6 +28,7 @@ export const connectAccountRequest = (data) => {
                 dispatch(setAuthRequestDone());
                 dispatch(addErrorNotification(err.message));
             });
+            */
     };
 };
 

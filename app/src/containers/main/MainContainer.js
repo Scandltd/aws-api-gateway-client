@@ -44,7 +44,7 @@ class MainContainer extends Component
             return ;
         }
         
-        this.props.actions.fetchApiList(id);
+        this.props.loadRestApiListRequest(id);
     };
 
     /**
@@ -61,6 +61,9 @@ class MainContainer extends Component
         this.props.history.push('/authenticate');
     };
 
+    /**
+     * 
+     */
     componentDidMount() {
         this.props.loadAccountList();
     };

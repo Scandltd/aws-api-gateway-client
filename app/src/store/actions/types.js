@@ -11,7 +11,6 @@ export const ACTION_ADD_API = 'ADD_API';
 export const ACTION_DELETE_API = 'DELETE_API';
 export const ACTION_SET_API_LIST = 'SET_API_LIST';
 export const ACTION_UPDATE_API = 'UPDATE_API';
-export const ACTION_LOAD_ROUTE_LIST = 'LOAD_ROUTE_LIST';
 
 // entries list
 export const ACTION_SET_RESOURCE_ENTRIES = 'SET_RESOURCE_ENTRIES';
