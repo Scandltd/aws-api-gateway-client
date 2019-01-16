@@ -41,7 +41,13 @@ export const loadAccountList = () => {
 
         return fetchAccounts()
             .then(res => {
-                dispatch(setAccounts(res.data));
+                const { data, success } = res.data;
+                if (!success) {
+                    dispatch(addErrorNotification('Unable to get accounts. Unknown error'));
+                    return ;
+                }
+
+                dispatch(setAccounts(data));
             })
             .catch(err => {
                 dispatch(addErrorNotification(err.message));

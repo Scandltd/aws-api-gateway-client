@@ -42,9 +42,6 @@ exports.deleteAccount = async function(req, res, next) {
 
         res.json(response.success({}, 'Account successfully removed'));
     } catch (e) {
-        console.log('eee', e);
-
-
         return next(e);
     }
 };

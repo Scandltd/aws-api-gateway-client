@@ -4,6 +4,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 const response = require(path.join(__dirname, 'components/response'));
 const validationErrorNormalizer = require(path.join(__dirname, 'components/validationErrorNormalizer'));
+var cors = require('cors');
 
 const indexRouter = require(path.join(__dirname, 'routes/index'));
 const accountRouter = require(path.join(__dirname, 'routes/account'));
@@ -25,6 +26,7 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 const app = express();
 
+app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

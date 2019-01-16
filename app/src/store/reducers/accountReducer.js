@@ -35,7 +35,7 @@ const accountReducer = (state = defaultState, action) => {
 
         case ACTION_SET_ACCOUNT_LOADED:
             const updatedItems = state.accounts.map(item => {
-                if(item.id === action.payload.accountId){
+                if(item._id === action.payload.accountId){
                     return { ...item, loaded: true }
                 }
 

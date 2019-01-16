@@ -9,12 +9,12 @@ const AccountSchema = new Schema({
         max: 100,
         unique: true,
     },
-    apiKeyId: {
+    accessKey: {
         type: String,
         required: true,
         max: 100
     },
-    secretKeyId: {
+    secretKey: {
         type: String,
         required: true,
         max: 100

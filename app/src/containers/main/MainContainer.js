@@ -44,14 +44,14 @@ class MainContainer extends Component
             return ;
         }
         
-        this.props.actions.fetchApiList(id, account.credentials);
+        this.props.actions.fetchApiList(id);
     };
 
     /**
      * 
      */
     getAccount = (id) => {
-        return find(this.props.accounts, {id: id});
+        return find(this.props.accounts, {_id: id});
     };
 
     /**
@@ -77,20 +77,17 @@ class MainContainer extends Component
             </div>
             :
             this.props.accounts.map((item, idx) => {
-                let ApiList = this.props.apiList && Array.isArray(this.props.apiList[item.id]) ? this.props.apiList[item.id] : [];
+                let ApiList = this.props.apiList && Array.isArray(this.props.apiList[item._id]) ? this.props.apiList[item._id] : [];
 
                 return <AccountItem
                     accountTitle={item.name}
-                    accountId={item.id}
-                    key={item.id}
+                    accountId={item._id}
+                    key={item._id}
                     apiList={ApiList}
                     onLoadApiList={this.handleLoadApiList}
                     loaded={item.loaded}
                 />;
             });
-
-            console.log(process);
-            console.log(global);
         return (
             <div className="main-page">
 
