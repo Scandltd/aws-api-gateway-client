@@ -1,7 +1,8 @@
 import axios from '../axiosBase';
-import { setLoadingFalse, setLoadingTrue } from '../../../store/actions/appParamsActions';
-
-
+import {
+  setLoadingFalse,
+  setLoadingTrue
+} from '../../../store/actions/appParamsActions';
 
 export default {
   setupInterceptors: (store, history) => {
@@ -26,6 +27,5 @@ export default {
 
       return Promise.reject(error);
     });
-
   },
 };

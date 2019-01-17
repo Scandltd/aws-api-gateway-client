@@ -1,36 +1,15 @@
 import {
     ACTION_SET_ACCOUNT_LIST,
     ACTION_SET_ACCOUNT_LOADED,
-    ACTION_SET_AUTHENTICATE_REQUEST,
-    ACTION_SET_AUTHENTICATE_REQUEST_DONE,
     ACTION_SET_ACCOUNT,
     ACTION_SET_LOADING_ACCOUNT_LIST,
+    ACTION_REMOVE_ACCOUNT,
 } from './types';
 import { addErrorNotification } from './notificationActions';
-import { fetchAccounts } from '../../services/api/accountApi';
-
-/**
- * connect a account using user credentials
- *
- * @param data
- *
- * @returns {function(*): (Promise<T> | *)}
- */
-export const connectAccountRequest = (data) => {
-    return dispatch => {
-        dispatch(setAuthRequest());
-/*
-        return AwsApiCredentials.authenticate(data)
-            .then((response) => {
-                setAccount(response);
-            })
-            .catch((err) => {
-                dispatch(setAuthRequestDone());
-                dispatch(addErrorNotification(err.message));
-            });
-            */
-    };
-};
+import {
+    deleteAccount as deleteAccountRequest,
+    fetchAccounts,
+} from '../../services/api/accountApi';
 
 /**
  * load account settings
@@ -79,25 +58,6 @@ export const setAccountLoaded = (accountId) => {
     };
 };
 
-/**
- *
- * @returns {{type: string}}
- */
-export const setAuthRequest = () => {
-    return {
-        type: ACTION_SET_AUTHENTICATE_REQUEST,
-    };
-};
-
-/**
- *
- * @returns {{type: string}}
- */
-export const setAuthRequestDone = () => {
-    return {
-        type: ACTION_SET_AUTHENTICATE_REQUEST_DONE,
-    };
-};
 
 /**
  *
@@ -113,8 +73,55 @@ export const setAccount = (account) => {
     };
 };
 
+/**
+ *
+ * @returns {{type: string}}
+ */
 export const setLoadingAccount = () => {
     return {
         type: ACTION_SET_LOADING_ACCOUNT_LIST,
+    };
+};
+
+/**
+ *
+ * @param accountId
+ *
+ * @returns {{type: string, payload: {accountId: *}}}
+ */
+export const removeAccount = (accountId) => {
+    return {
+        type: ACTION_REMOVE_ACCOUNT,
+        payload: {
+            accountId,
+        }
+    };
+};
+
+/**
+ * Delete an account
+ *
+ * @param id
+ *
+ * @returns {function(*): (Promise<T> | *)}
+ */
+export const deleteAccount = (id) => {
+    return dispatch => {
+        dispatch(setLoadingAccount());
+
+        return deleteAccountRequest(id)
+            .then(res => {
+                const { data, success, message } = res.data;
+                if (!success) {
+                    dispatch(addErrorNotification(message || 'Unable to delete account. Unknown error'));
+
+                    return data;
+                }
+
+                dispatch(removeAccount(id));
+            })
+            .catch(err => {
+                dispatch(addErrorNotification(err.message));
+            });
     };
 };

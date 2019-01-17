@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { loadAccountList } from '../../store/actions/accountActions';
+import { loadAccountList, deleteAccount } from '../../store/actions/accountActions';
 import SettingsAccountTable from "../../components/settingsAccount/settingsAccountTable/SettingsAccountTable";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { withStyles } from '@material-ui/core/styles';
@@ -13,6 +13,9 @@ const styles = theme => ({
 });
 
 class SettingsAccounts extends Component {
+    /**
+     *
+     */
     componentDidMount() {
       this.props.loadAccountList();
     }
@@ -22,7 +25,6 @@ class SettingsAccounts extends Component {
      * @param id
      */
     handleEditAction = (id) => {
-        console.log('edit', id);
         this.props.history.push(`/settings/account/${id}/edit`);
     };
 
@@ -30,7 +32,7 @@ class SettingsAccounts extends Component {
      *
      */
     handleAddAction = () => {
-        this.props.history.push('/settings/account/add');
+        this.props.history.push('/settings/account/new');
     };
 
     /**
@@ -38,7 +40,10 @@ class SettingsAccounts extends Component {
      * @param id
      */
     handleDeleteAction = (id) => {
-      console.log('delete', id);
+        this.props.deleteAccount(id)
+            .then(data => {
+                this.props.loadAccountList();
+            });
     };
 
     /**
@@ -80,9 +85,11 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
     loadAccountList,
+    deleteAccount,
 })(withStyles(styles)(SettingsAccounts));
 
 SettingsAccounts.propTypes = {
     accounts: PropTypes.array.required,
     loadAccountList: PropTypes.func.required,
+    deleteAccount: PropTypes.func.required,
 };

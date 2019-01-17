@@ -11,16 +11,16 @@ const styles = theme => ({
 
 class SidebarPage extends Component {
     render() {
-        const { classes } = this.props;
+        const { classes, leftContent, mainContent } = this.props;
 
         return (
             <div>
                 <Grid container spacing={24} className={classes.root}>
                     <Grid item xs={12} md={2}>
-                        { this.props.leftContent }
+                        { leftContent }
                     </Grid>
                     <Grid item xs={12} md={10}>
-                        { this.props.mainContent }
+                        { mainContent }
                     </Grid>
                 </Grid>
             </div>
@@ -31,6 +31,6 @@ class SidebarPage extends Component {
 export default withStyles(styles)(SidebarPage);
 
 SidebarPage.propTypes = {
-  leftContent: PropTypes.any.required,
-  mainContent: PropTypes.any.required,
+  leftContent: PropTypes.any,
+  mainContent: PropTypes.any,
 };

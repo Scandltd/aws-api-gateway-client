@@ -7,11 +7,8 @@ import store from './store/index';
 import { Provider } from 'react-redux';
 
 import httpService from './services/httpService';
-import createHistory from 'history/createBrowserHistory';
 
-const history = createHistory();
-
-httpService.setupInterceptors(store, history);
+httpService.setupInterceptors(store, null);
 
 ReactDOM.render(
     <Provider store={store}>
