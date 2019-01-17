@@ -1,5 +1,5 @@
-import axios from './api/axiosBase';
-import { setLoadingFalse, setLoadingTrue } from '../store/actions/appParamsActions';
+import axios from '../axiosBase';
+import { setLoadingFalse, setLoadingTrue } from '../../../store/actions/appParamsActions';
 
 
 
