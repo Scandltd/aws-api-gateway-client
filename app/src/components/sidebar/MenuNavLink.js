@@ -13,9 +13,12 @@ class MenuNavLink extends Component {
         return (
             <NavLink to={this.props.path} exact activeClassName="active-menu-item">
                 <MenuItem>
-                    <ListItemIcon>
-                        {this.props.icon}
-                    </ListItemIcon>
+                    {this.props.icon &&
+                        <ListItemIcon>
+                            {this.props.icon}
+                        </ListItemIcon>
+                    }
+
                     <ListItemText  inset primary={this.props.title} />
                 </MenuItem>
             </NavLink>
@@ -27,6 +30,6 @@ export default MenuNavLink;
 
 MenuNavLink.propTypes = {
     path: PropTypes.string.isRequired,
-    icon: PropTypes.node.isRequired,
+    icon: PropTypes.node,
     title: PropTypes.string.isRequired
 };

@@ -8,9 +8,7 @@ import PropTypes from 'prop-types';
 import { find } from 'lodash';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
-import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 const styles = theme => ({
@@ -52,13 +50,6 @@ class MainContainer extends Component
      */
     getAccount = (id) => {
         return find(this.props.accounts, {_id: id});
-    };
-
-    /**
-     *
-     */
-    handleConnectAccount = () => {
-        this.props.history.push('/authenticate');
     };
 
     /**

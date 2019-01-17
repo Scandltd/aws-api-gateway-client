@@ -12,9 +12,6 @@ import IconButton from '@material-ui/core/IconButton';
 import SettingsIcon from '@material-ui/icons/Settings';
 
 const styles = {
-    root: {
-        flexGrow: 1,
-    },
     grow: {
         flexGrow: 1,
     },
@@ -34,7 +31,7 @@ class Header extends Component
         const { classes } = this.props;
 
         return (
-            <div className={classes.root}>
+            <div>
                 <AppBar position="static" color="default">
                     <Toolbar>
                         <Typography variant="h6" color="inherit" className={classes.grow}>
