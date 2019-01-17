@@ -9,7 +9,6 @@ import {
     ACTION_SET_VPS_LINKS
 } from './types';
 import { addErrorNotification, addSuccessNotification } from './notificationActions';
-import { setLoadingTrue, setLoadingFalse } from "./appParamsActions";
 import {
     fetchApiResources,
     deleteResource as deleteResourceRequest,
@@ -43,12 +42,10 @@ export const loadResources = (accountId, apiId) => {
     };
 
     return dispatch => {
-        dispatch(setLoadingTrue());
-
         return fetchApiResources(accountId, params)
             .then(response => {
                 const { success, data, message } = response.data;
-                dispatch(setLoadingFalse());
+
                 if (!success) {
                     dispatch(addErrorNotification(message || 'Unable to fetch resources data'));
 
@@ -60,7 +57,6 @@ export const loadResources = (accountId, apiId) => {
                 return data;
             })
             .catch(err => {
-                dispatch(setLoadingFalse());
                 dispatch(addErrorNotification('Unable to fetch resources data. ' + err.message));
             });
     };
@@ -81,12 +77,10 @@ export const deleteResourceApiRequest = (accountId, apiId, resourceId) => {
     };
 
     return dispatch => {
-        dispatch(setLoadingTrue());
-
         return deleteResourceRequest(accountId, params)
             .then(response => {
                 const { success, data, message } = response.data;
-                dispatch(setLoadingFalse());
+
                 if (!success) {
                     dispatch(addErrorNotification(message || 'Unable to dete resource'));
 
@@ -99,7 +93,6 @@ export const deleteResourceApiRequest = (accountId, apiId, resourceId) => {
                 return data;
             })
             .catch(err => {
-                dispatch(setLoadingFalse());
                 dispatch(addErrorNotification('Unable to delete resource. ' + err.message));
             });
     };
@@ -123,12 +116,10 @@ export const createResourceApiRequest = (accountId, restApiId, data, onSuccess =
     };
 
     return dispatch => {
-        dispatch(setLoadingTrue());
-
         return createResource(accountId, params)
             .then(response => {
                 const { success, data, message } = response.data;
-                dispatch(setLoadingFalse());
+
                 if (!success) {
                     dispatch(addErrorNotification(message || 'Unable to create REST API resource'));
 
@@ -144,7 +135,6 @@ export const createResourceApiRequest = (accountId, restApiId, data, onSuccess =
                 return data;
             })
             .catch(err => {
-                dispatch(setLoadingFalse());
                 dispatch(addErrorNotification('Unable to create REST API resource. ' + err.message));
                 if (onError) {
                     onError(err);
@@ -168,12 +158,10 @@ export const loadVpsLinksApiRequest = (accountId, onSuccess = null, onError = nu
     };
 
     return dispatch => {
-        dispatch(setLoadingTrue());
-
         return getVpcLinks(accountId, params)
             .then(response => {
                 const { success, data, message } = response.data;
-                dispatch(setLoadingFalse());
+
                 if (!success) {
                     dispatch(addErrorNotification(message || 'Unable to fetch VPC links'));
 
@@ -188,7 +176,6 @@ export const loadVpsLinksApiRequest = (accountId, onSuccess = null, onError = nu
                 return data;
             })
             .catch(err => {
-                dispatch(setLoadingFalse());
                 dispatch(addErrorNotification('Unable to load VPC links. ' + err.message));
                 if (onError) {
                     onError(err);
@@ -232,12 +219,10 @@ export const createMethodApiRequest = (accountId, restApiId, resourceId, data, o
     }
 
     return dispatch => {
-        dispatch(setLoadingTrue());
-
         return createRestApiMethod(accountId, params)
             .then(response => {
                 const { success, data, message } = response.data;
-                dispatch(setLoadingFalse());
+
                 if (!success) {
                     dispatch(addErrorNotification(message || `Unable to create http method ${data.httpMethod}`));
 
@@ -253,7 +238,6 @@ export const createMethodApiRequest = (accountId, restApiId, resourceId, data, o
                 return data;
             })
             .catch(err => {
-                dispatch(setLoadingFalse());
                 dispatch(addErrorNotification(`Unable to create http method ${data.httpMethod}.  ${err.message}`));
                 if (onError) {
                     onError(err);
@@ -334,12 +318,10 @@ export const putMethodIntegrationApiRequest = (accountId, dataParams, onSuccess 
     }
 
     return dispatch => {
-        dispatch(setLoadingTrue());
-
         return putIntegrationRequest(accountId, params)
             .then(response => {
                 const { success, data, message } = response.data;
-                dispatch(setLoadingFalse());
+
                 if (!success) {
                     dispatch(addErrorNotification(message || 'Unable to put method integration'));
 
@@ -353,7 +335,6 @@ export const putMethodIntegrationApiRequest = (accountId, dataParams, onSuccess 
                 }
             })
             .catch(err => {
-                dispatch(setLoadingFalse());
                 dispatch(addErrorNotification(`Unable to put method integration.  ${err.message}`));
                 if (onError) {
                     onError(err);
@@ -380,12 +361,10 @@ export const putMethodResponseApiRequest = (accountId, dataParams, onSuccess = n
     };
 
     return dispatch => {
-        dispatch(setLoadingTrue());
-
         return putMethodResponse(accountId, params)
             .then(response => {
                 const { success, data, message } = response.data;
-                dispatch(setLoadingFalse());
+
                 if (!success) {
                     dispatch(addErrorNotification(message || 'Unable to put method response'));
 
@@ -401,7 +380,6 @@ export const putMethodResponseApiRequest = (accountId, dataParams, onSuccess = n
                 return data;
             })
             .catch(err => {
-                dispatch(setLoadingFalse());
                 dispatch(addErrorNotification(`Unable to put method response.  ${err.message}`));
                 if (onError) {
                     onError(err);
@@ -429,12 +407,10 @@ export const deleteMethodApiRequest = (accountId, restApiId, resourceId, httpMet
     };
 
     return dispatch => {
-        dispatch(setLoadingTrue());
-
         return deleteMethod(accountId, params)
             .then(response => {
                 const { success, data, message } = response.data;
-                dispatch(setLoadingFalse());
+
                 if (!success) {
                     dispatch(addErrorNotification(message || `Unable to delete ${httpMethod} method`));
 
@@ -450,7 +426,6 @@ export const deleteMethodApiRequest = (accountId, restApiId, resourceId, httpMet
                 return data;
             })
             .catch(err => {
-                dispatch(setLoadingFalse());
                 dispatch(addErrorNotification(`Unable to delete ${httpMethod} method.  ${err.message}`));
                 if (onError) {
                     onError(err);
