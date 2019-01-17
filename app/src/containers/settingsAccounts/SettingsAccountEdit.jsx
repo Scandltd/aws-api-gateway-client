@@ -32,7 +32,7 @@ class SettingsAccountEdit extends Component {
 
         return (
             <InnerPageWrapper
-                title={`Update account ${ account.name }`}
+                title={`Update account: ${ account.name }`}
                 variant="center"
             >
                 {loading ?

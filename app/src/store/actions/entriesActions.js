@@ -6,7 +6,9 @@ import {
     ACTION_PUT_INTEGRATION,
     ACTION_PUT_RESPONSE,
     ACTION_DELETE_HTTP_METHOD,
-    ACTION_SET_VPS_LINKS
+    ACTION_SET_VPS_LINKS,
+    ACTION_ENTRIES_LOADING_REST_API,
+    ACTION_ENTRIES_SET_REST_API
 } from './types';
 import { addErrorNotification, addSuccessNotification } from './notificationActions';
 import {
@@ -21,6 +23,7 @@ import {
     putMethodResponse,
     deleteMethod,
 } from "../../services/api/methodApi";
+import { getRestApi } from '../../services/api/restApi';
 
 import IntegrationTypeEnum from '../../enum/integrationTypeEnum';
 import ContentHandlingTypeEnum from "../../enum/contentHandlingTypeEnum";
@@ -437,6 +440,41 @@ export const deleteMethodApiRequest = (accountId, restApiId, resourceId, httpMet
 /**
  *
  * @param accountId
+ * @param restApiId
+ * @returns {function(*): Promise<T | never>}
+ */
+export const loadRestApi = (accountId, restApiId) => {
+    const params = {
+        restApiId: restApiId
+    };
+
+    return dispatch => {
+        dispatch(setLoadingRestApi());
+
+        return getRestApi(accountId, params)
+            .then(response => {
+                const { success, data, message } = response.data;
+
+                if (!success) {
+                    dispatch(addErrorNotification(message || 'Unable to get REST API'));
+
+                    return data;
+                }
+
+                dispatch(setRestApi(data));
+
+                return data;
+            })
+            .catch(err => {
+                dispatch(addErrorNotification('Unable to get REST API. ' + err.message));
+                dispatch(setRestApi({}));
+            });
+    };
+};
+
+/**
+ *
+ * @param accountId
  * @param apiId
  * @param resourceId
  *
@@ -589,6 +627,30 @@ export const setVpsLinks = (accountId, entities) => {
         payload: {
             accountId,
             entities
+        }
+    };
+};
+
+/**
+ *
+ * @returns {{type: string}}
+ */
+export const setLoadingRestApi = () => {
+    return {
+        type: ACTION_ENTRIES_LOADING_REST_API,
+    };
+};
+
+/**
+ *
+ * @param entity
+ * @returns {{payload: {entity: *}, type: string}}
+ */
+export const setRestApi = (entity) => {
+    return {
+        type: ACTION_ENTRIES_SET_REST_API,
+        payload: {
+            entity,
         }
     };
 };

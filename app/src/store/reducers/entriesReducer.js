@@ -7,7 +7,9 @@ import {
     ACTION_PUT_INTEGRATION,
     ACTION_PUT_RESPONSE,
     ACTION_DELETE_HTTP_METHOD,
-    ACTION_SET_VPS_LINKS
+    ACTION_SET_VPS_LINKS,
+    ACTION_ENTRIES_SET_REST_API,
+    ACTION_ENTRIES_LOADING_REST_API,
 } from '../actions/types';
 import { forEach, concat, indexOf, findIndex } from "lodash";
 
@@ -16,7 +18,9 @@ import { forEach, concat, indexOf, findIndex } from "lodash";
  */
 const defaultState = {
     entries: {},
-    vpcLinks: {}
+    vpcLinks: {},
+    restApi: {},
+    loadingRestApi: false,
 };
 
 /**
@@ -114,6 +118,20 @@ const entriesReducer = (state = defaultState, action) => {
         case ACTION_SET_VPS_LINKS:
 
             return dotProp.set(state, `vpcLinks.${action.payload.accountId}`, action.payload.entities);
+
+        case ACTION_ENTRIES_SET_REST_API:
+
+            return {
+                ...state,
+                restApi: action.payload.entity,
+                loadingRestApi: false
+            };
+
+        case ACTION_ENTRIES_LOADING_REST_API:
+            return {
+                ...state,
+                loadingRestApi: true
+            };
 
         default:
             return state;

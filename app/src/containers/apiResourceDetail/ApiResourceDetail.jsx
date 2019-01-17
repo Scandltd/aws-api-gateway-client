@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { find } from 'lodash';
-import { loadResources, deleteResourceApiRequest, deleteMethodApiRequest } from '../../store/actions/entriesActions';
+import { loadResources, deleteResourceApiRequest, deleteMethodApiRequest, loadRestApi } from '../../store/actions/entriesActions';
 import { addErrorNotification } from '../../store/actions/notificationActions';
 import EntriesTree from '../../components/entriesTree/EntriesTree';
 import DialogFormComponent from '../../components/dialog/DialogFormComponent';
@@ -10,6 +10,11 @@ import StepperRestApiMethodForm from '../form/method/StepperRestApiMethodForm';
 import ResourceActionEnum from '../../enum/resourceActionsEnum';
 import IntegrationForm from '../form/method/IntegrationForm';
 import ResponseForm from '../form/method/ResponseForm';
+import InnerPageWrapper from '../../components/innerPageWrapper/InnerPageWrapper';
+import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip';
+import BackIcon from '@material-ui/icons/ArrowBack';
+
 
 /**
  * 
@@ -36,8 +41,10 @@ class ApiResourceDetail extends Component
      */
     componentDidMount() {
         if (!this.props.entries[this.state.apiId]) {
-            this.props.actions.loadResources(this.state.accountId, this.state.apiId);
+            this.props.loadResources(this.state.accountId, this.state.apiId);
         }
+
+        this.props.loadRestApi(this.state.accountId, this.state.apiId);
     }
 
     /**
@@ -79,7 +86,7 @@ class ApiResourceDetail extends Component
                 break;
 
             default:
-                this.props.actions.addErrorNotification('Unknown action');
+                this.props.addErrorNotification('Unknown action');
                 break;
         }
     };
@@ -93,7 +100,7 @@ class ApiResourceDetail extends Component
     handleInitHttpMethodAction = (resourceId, httpMethod, action) => {
         switch (action) {
             case ResourceActionEnum.DELETE_HTTP_METHOD:
-                this.props.actions.deleteMethodApiRequest(this.state.accountId, this.state.apiId, resourceId, httpMethod);
+                this.props.deleteMethodApiRequest(this.state.accountId, this.state.apiId, resourceId, httpMethod);
                 break;
 
             case ResourceActionEnum.CREATE_HTTP_INTEGRATION:
@@ -106,7 +113,7 @@ class ApiResourceDetail extends Component
                 break;
 
             default:
-                this.props.actions.addErrorNotification('Unknown action');
+                this.props.addErrorNotification('Unknown action');
                 break;
         }
     };
@@ -116,7 +123,7 @@ class ApiResourceDetail extends Component
      * @param resourceId
      */
     deleteResource = (resourceId) => {
-        this.props.actions.deleteResource(this.state.accountId, this.state.apiId, resourceId);
+        this.props.deleteResourceApiRequest(this.state.accountId, this.state.apiId, resourceId);
     };
 
     /**
@@ -217,20 +224,36 @@ class ApiResourceDetail extends Component
         );
     };
 
+    handleRedirectToRestApis = () => {
+        this.props.history.push(`/account/${this.props.match.params.accountId}/api`);
+    };
+
     /**
      *
      * @returns {*}
      */
     render() {
+        const { restApi, loadingRestApi } = this.props;
+        const title = loadingRestApi ? 'loading...' : restApi.name ? restApi.name : '';
+
         return (
-            <div>
+            <InnerPageWrapper
+                title={ title }
+                actions={
+                    <Tooltip title="To REST APIs">
+                        <IconButton aria-label="To REST APIs" onClick={ this.handleRedirectToRestApis } >
+                            <BackIcon />
+                        </IconButton>
+                    </Tooltip>
+                }
+            >
                 <EntriesTree
                     entries={this.getEntries()}
                     handleInitResourceAction={this.handleInitResourceAction}
                     handleInitHttpMethodAction={this.handleInitHttpMethodAction}
                 />
                 {this.renderForm()}
-            </div>
+            </InnerPageWrapper>
         );
     }
 }
@@ -241,23 +264,16 @@ class ApiResourceDetail extends Component
  */
 const mapStateToProps = (state) => {
     return {
-        entries: state.entries.entries
+        entries: state.entries.entries,
+        restApi: state.entries.restApi,
+        loadingRestApi: state.entries.loadingRestApi,
     }
 };
 
-/**
- *
- * @param {*} dispatch
- */
-const mapDispatchToProps = (dispatch) => {
-    return {
-        actions: {
-            loadResources: (accountId, apiId) => dispatch(loadResources(accountId, apiId)),
-            deleteResource: (accountId, apiId, resourceId) => dispatch(deleteResourceApiRequest(accountId, apiId, resourceId)),
-            addErrorNotification: (message) => dispatch(addErrorNotification(message)),
-            deleteMethodApiRequest: (accountId, apiId, resourceId, httpMethod) => dispatch(deleteMethodApiRequest(accountId, apiId, resourceId, httpMethod))
-        }
-    }
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ApiResourceDetail);
+export default connect(mapStateToProps, {
+    loadResources,
+    deleteResourceApiRequest,
+    addErrorNotification,
+    deleteMethodApiRequest,
+    loadRestApi,
+})(ApiResourceDetail);
