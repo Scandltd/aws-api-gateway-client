@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {loadRestApiListRequest, deleteRestApiRequest, getRestApiRequest } from "../../store/actions/apiActions";
+import { loadRestApiListRequest, deleteRestApiRequest, getRestApiRequest } from "../../store/actions/apiActions";
 import { connect } from "react-redux";
 import ApiListComponent from '../../components/account/ApiList';
-import AccountApiHeader from '../../components/account/AccountApiHeader';
 import './accoutApiContainer.scss';
 import DialogFormComponent from '../../components/dialog/DialogFormComponent';
 import RestApiForm from '../form/restApi/RestApiForm';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import InnerPageWrapper from '../../components/innerPageWrapper/InnerPageWrapper';
+import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip';
+import AddIcon from '@material-ui/icons/Add';
 
 /**
  *
@@ -32,7 +35,7 @@ class AccountApi extends Component
     /**
      *
      */
-    componentDidMount() {
+    componentDidMount()  {
         if (!this.props.apiList[this.props.accountId]) {
             this.fetchApiList();
         }
@@ -107,9 +110,16 @@ class AccountApi extends Component
         let apiList = this.props.apiList && Array.isArray(this.props.apiList[this.props.accountId]) ? this.props.apiList[this.props.accountId] : [];
 
         return (
-            <div className="account-api-container">
-                <AccountApiHeader title="APIs" buttonTitle="Add" onButtonClick={this.handleAddClick} />
-
+            <InnerPageWrapper
+                title="REST APIs"
+                actions={
+                    <Tooltip title="Add">
+                        <IconButton aria-label="Add" onClick={ this.handleAddClick } >
+                            <AddIcon />
+                        </IconButton>
+                    </Tooltip>
+                }
+            >
                 <ApiListComponent
                     items={apiList}
                     accountId={this.props.accountId}
@@ -131,7 +141,7 @@ class AccountApi extends Component
                         />
                     }
                 </DialogFormComponent>
-            </div>
+            </InnerPageWrapper>
         );
     }
 }

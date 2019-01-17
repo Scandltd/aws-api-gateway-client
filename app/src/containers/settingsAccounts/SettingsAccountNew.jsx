@@ -1,14 +1,6 @@
 import React, { Component } from 'react';
 import AccountForm from '../form/account/AccountForm';
-import { withStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-
-const styles = theme => ({
-    root: {
-        width: '100%',
-        marginTop: theme.spacing.unit,
-    },
-});
+import InnerPageWrapper from '../../components/innerPageWrapper/InnerPageWrapper';
 
 /**
  *
@@ -26,19 +18,20 @@ class SettingsAccountNew extends Component {
      * @returns {*}
      */
     render() {
-        const { classes } = this.props;
-
         return (
-            <Paper className={classes.root}>
+            <InnerPageWrapper
+                title="Add new account"
+                variant="center"
+            >
                 <AccountForm
-                  onSuccess={ this.handleSuccess }
-                  onCancel={ this.handleSuccess }
+                    onSuccess={ this.handleSuccess }
+                    onCancel={ this.handleSuccess }
                 />
-            </Paper>
+            </InnerPageWrapper>
         );
     }
 }
 
-export default withStyles(styles)(SettingsAccountNew);
+export default SettingsAccountNew;
 
 SettingsAccountNew.propTypes = {};

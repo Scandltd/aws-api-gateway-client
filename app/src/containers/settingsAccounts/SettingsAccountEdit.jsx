@@ -1,20 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { withStyles } from "@material-ui/core/styles/index";
 import { loadAccount } from "../../store/actions/settingsAccount";
 import AccountForm from '../form/account/AccountForm';
-import Paper from '@material-ui/core/Paper';
 import CircularProgress from '@material-ui/core/CircularProgress';
-
-const styles = theme => ({
-    root: {
-        width: '100%',
-        marginTop: theme.spacing.unit,
-    },
-});
+import InnerPageWrapper from '../../components/innerPageWrapper/InnerPageWrapper';
 
 class SettingsAccountEdit extends Component {
-
     /**
      *
      */
@@ -36,13 +27,16 @@ class SettingsAccountEdit extends Component {
      * @returns {*}
      */
     render() {
-        const { classes, account, loading } = this.props;
+        const { account, loading } = this.props;
         const { id } = this.props.match.params;
 
         return (
-            <Paper className={classes.root}>
+            <InnerPageWrapper
+                title={`Update account ${ account.name }`}
+                variant="center"
+            >
                 {loading ?
-                    <CircularProgress className={ classes.progress } />
+                    <CircularProgress />
                     :
                     <AccountForm
                         onSuccess={ this.handleSuccess }
@@ -52,7 +46,7 @@ class SettingsAccountEdit extends Component {
                         initialData={ account }
                     />
                 }
-            </Paper>
+            </InnerPageWrapper>
         );
     }
 }
@@ -70,7 +64,6 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
     loadAccount,
-})(withStyles(styles)(SettingsAccountEdit));
-
+})(SettingsAccountEdit);
 
 SettingsAccountEdit.propTypes = {};

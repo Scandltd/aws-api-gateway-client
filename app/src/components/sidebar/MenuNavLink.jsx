@@ -1,6 +1,4 @@
 import React, {Component} from 'react';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
 import MenuItem from '@material-ui/core/MenuItem';
 import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -13,13 +11,7 @@ class MenuNavLink extends Component {
         return (
             <NavLink to={this.props.path} exact activeClassName="active-menu-item">
                 <MenuItem>
-                    {this.props.icon &&
-                        <ListItemIcon>
-                            {this.props.icon}
-                        </ListItemIcon>
-                    }
-
-                    <ListItemText  inset primary={this.props.title} />
+                    {this.props.title}
                 </MenuItem>
             </NavLink>
         );

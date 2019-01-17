@@ -84,7 +84,6 @@ class MainContainer extends Component
             });
         return (
             <div className="main-page">
-
                 <Typography variant="h2">
                     Accounts
                 </Typography>

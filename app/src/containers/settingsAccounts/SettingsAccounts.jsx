@@ -5,6 +5,10 @@ import { loadAccountList, deleteAccount } from '../../store/actions/accountActio
 import SettingsAccountTable from "../../components/settingsAccount/settingsAccountTable/SettingsAccountTable";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { withStyles } from '@material-ui/core/styles';
+import InnerPageWrapper from '../../components/innerPageWrapper/InnerPageWrapper';
+import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip';
+import AddIcon from '@material-ui/icons/Add';
 
 const styles = theme => ({
     progress: {
@@ -65,9 +69,18 @@ class SettingsAccounts extends Component {
         ;
 
         return (
-            <div>
+            <InnerPageWrapper
+                title="Accounts"
+                actions={
+                    <Tooltip title="Add">
+                        <IconButton aria-label="Add" onClick={ this.handleAddAction }>
+                            <AddIcon />
+                        </IconButton>
+                    </Tooltip>
+                }
+            >
                 { content }
-            </div>
+            </InnerPageWrapper>
         );
     }
 }
@@ -89,7 +102,7 @@ export default connect(mapStateToProps, {
 })(withStyles(styles)(SettingsAccounts));
 
 SettingsAccounts.propTypes = {
-    accounts: PropTypes.array.required,
-    loadAccountList: PropTypes.func.required,
-    deleteAccount: PropTypes.func.required,
+    accounts: PropTypes.array.isRequired,
+    loadAccountList: PropTypes.func.isRequired,
+    deleteAccount: PropTypes.func.isRequired,
 };

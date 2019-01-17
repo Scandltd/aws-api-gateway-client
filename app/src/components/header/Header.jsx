@@ -42,7 +42,7 @@ class Header extends Component
                                 <HomeIcon />
                             </IconButton>
                         </NavLink>
-                        <NavLink to="/settings" activeClassName="hideHomeLink">
+                        <NavLink to="/settings/account" activeClassName="hideHomeLink">
                             <IconButton color="inherit">
                                 <SettingsIcon />
                             </IconButton>
@@ -56,7 +56,6 @@ class Header extends Component
 }
 
 export default withStyles(styles)(Header);
-
 
 Header.propTypes = {
     isLoading: PropTypes.bool

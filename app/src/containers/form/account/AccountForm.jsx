@@ -151,7 +151,8 @@ export default connect(null, {
 })(FormHOC(AccountForm, fields, validationRules));
 
 AccountForm.propTypes = {
-    createAccount: PropTypes.func.required,
+    createAccount: PropTypes.func.isRequired,
+    updateAccount: PropTypes.func.isRequired,
     onSuccess: PropTypes.func,
     onCancel: PropTypes.func,
 };

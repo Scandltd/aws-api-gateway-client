@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import SidebarPage from '../../components/sidebarPage/SidebarPage';
-
 import MenuList from '@material-ui/core/MenuList';
 import MenuNavLink from '../../components/sidebar/MenuNavLink';
 import { Route } from "react-router-dom";

@@ -6,7 +6,7 @@ import { addErrorNotification } from '../../store/actions/notificationActions';
 import EntriesTree from '../../components/entriesTree/EntriesTree';
 import DialogFormComponent from '../../components/dialog/DialogFormComponent';
 import RestApiResourceForm from '../form/restApiResource/RestApiResourceForm';
-import StepperRestApiMethodForm from '../../containers/form/method/StepperRestApiMethodForm';
+import StepperRestApiMethodForm from '../form/method/StepperRestApiMethodForm';
 import ResourceActionEnum from '../../enum/resourceActionsEnum';
 import IntegrationForm from '../form/method/IntegrationForm';
 import ResponseForm from '../form/method/ResponseForm';
