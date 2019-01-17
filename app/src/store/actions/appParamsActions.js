@@ -5,6 +5,8 @@ import { ACTION_SET_LOADING_TRUE, ACTION_SET_LOADING_FALSE, ACTION_SET_AWS_REGIO
  * @returns {{type: string, payload: {}}}
  */
 export const setLoadingTrue = () => {
+    console.log('setLoadingTrue');
+
     return {
         'type': ACTION_SET_LOADING_TRUE,
         'payload': {}
@@ -16,6 +18,8 @@ export const setLoadingTrue = () => {
  * @returns {{type: string, payload: {}}}
  */
 export const setLoadingFalse = () => {
+  console.log('setLoadingFalse');
+
     return {
         'type': ACTION_SET_LOADING_FALSE,
         'payload': {}
