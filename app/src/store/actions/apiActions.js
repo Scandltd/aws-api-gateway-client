@@ -2,7 +2,6 @@ import { ACTION_SET_API_LIST, ACTION_ADD_API, ACTION_DELETE_API, ACTION_UPDATE_A
 import { setAccountLoaded } from './accountActions';
 import { forIn } from 'lodash';
 import { addErrorNotification, addSuccessNotification } from './notificationActions';
-import { setLoadingTrue, setLoadingFalse } from "./appParamsActions";
 import {
     fetchApiList,
     createRestApi,
@@ -17,12 +16,9 @@ import {
  */
 export const loadRestApiListRequest = (accountId) => {
     return dispatch => {
-        dispatch(setLoadingTrue());
-
         return fetchApiList(accountId)
             .then(response => {
                 const { success, data, message } = response.data;
-                dispatch(setLoadingFalse());
 
                 if (!success) {
                     dispatch(message || 'Unable to load rest api list. Unknown error');
@@ -34,7 +30,6 @@ export const loadRestApiListRequest = (accountId) => {
                 return data;
             })
             .catch(err => {
-                dispatch(setLoadingFalse());
                 dispatch(addErrorNotification(err.message));
             });
     };
@@ -73,12 +68,10 @@ export const createRestApiRequest = (accountId, data, onSuccess = null, onError 
     };
 
     return dispatch => {
-        dispatch(setLoadingTrue());
-
         return createRestApi(accountId, params)
             .then(response => {
                 const { success, data, message } = response.data;
-                dispatch(setLoadingFalse());
+
                 if (!success) {
                     dispatch(addErrorNotification(message || 'Unable to create REST API'));
 
@@ -94,7 +87,6 @@ export const createRestApiRequest = (accountId, data, onSuccess = null, onError 
                 return data;
             })
             .catch(err => {
-                dispatch(setLoadingFalse());
                 if (onError) {
                     onError(err);
                 }
@@ -118,13 +110,10 @@ export const deleteRestApiRequest = (accountId, apiId, onSuccess = null, onError
     };
 
     return dispatch => {
-        dispatch(setLoadingTrue());
-
         return deleteRestApi(accountId, params)
             .then(response => {
                 const { success, data, message } = response.data;
 
-                dispatch(setLoadingFalse());
                 if (!success) {
                     dispatch(addErrorNotification(message || 'Unable to delete REST API'));
 
@@ -140,7 +129,6 @@ export const deleteRestApiRequest = (accountId, apiId, onSuccess = null, onError
                 return data;
             })
             .catch(err => {
-                dispatch(setLoadingFalse());
                 if (onError) {
                     onError(err);
                 }
@@ -182,12 +170,10 @@ export const updateRestApiRequest = (accountId, apiId, data, oldData, onSuccess 
     };
 
     return dispatch => {
-        dispatch(setLoadingTrue());
-
         return updateRestApi(accountId, params)
             .then(response => {
                 const { success, data, message } = response.data;
-                dispatch(setLoadingFalse());
+
                 if (!success) {
                     dispatch(addErrorNotification(message || 'Unable to update REST API'));
 
@@ -203,7 +189,6 @@ export const updateRestApiRequest = (accountId, apiId, data, oldData, onSuccess 
                 return data;
             })
             .catch(err => {
-                dispatch(setLoadingFalse());
                 if (onError) {
                     onError(err);
                 }
@@ -226,13 +211,10 @@ export const getRestApiRequest = (accountId, apiId, onSuccess = null, onError = 
     };
 
     return dispatch => {
-        dispatch(setLoadingTrue());
-
         return getRestApi(accountId, params)
             .then(response => {
                 const { success, message, data } = response.data;
 
-                dispatch(setLoadingFalse());
                 if (!success) {
                     dispatch(addErrorNotification(message || 'Unable to get REST API'));
 
@@ -245,7 +227,6 @@ export const getRestApiRequest = (accountId, apiId, onSuccess = null, onError = 
                 return data;
             })
             .catch(err => {
-                dispatch(setLoadingFalse());
                 if (onError) {
                     onError(err);
                 }
