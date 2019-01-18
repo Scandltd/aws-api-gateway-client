@@ -1,6 +1,23 @@
 const path = require('path');
 const Account = require(path.join(__dirname, '../models/account'));
 const response = require(path.join(__dirname, '../components/response'));
+const getAWSAccount = require(path.join(__dirname, '../components/awsHelper')).getAWSAccount;
+
+/**
+ *
+ * @param account
+ * @returns {Promise<*>}
+ */
+const validateAccount = async function(account) {
+    try {
+        await getAWSAccount(account);
+
+        return null;
+    } catch (e) {
+
+        return e.message;
+    }
+};
 
 /**
  *
@@ -60,6 +77,18 @@ exports.createAccount = async function(req, res, next) {
             return next(errors);
         }
 
+        const awsError = await validateAccount(entity);
+        if (awsError) {
+            res
+                .status(422)
+                .json(response.error(`Check credentials Failed. ${awsError}`, {
+                    accessKey: 'Check account credentials',
+                    secretKey: 'Check account credentials'
+                }));
+
+            return ;
+        }
+
         await entity.save();
 
         res.json(response.success(entity, 'Account successfully created'));
@@ -112,7 +141,25 @@ exports.putAccount = async function(req, res, next) {
             return ;
         }
 
-        await entity.update(req.body);
+        entity.set(req.body);
+        const errors = entity.validateSync();
+        if ( errors ) {
+            return next(errors);
+        }
+
+        const awsError = await validateAccount(entity);
+        if (awsError) {
+            res
+                .status(422)
+                .json(response.error(`Check credentials Failed. ${awsError}`, {
+                    accessKey: 'Check account credentials',
+                    secretKey: 'Check account credentials'
+                }));
+
+            return ;
+        }
+
+        await entity.save();
 
         res.json(response.success(entity, 'Account successfully updated'));
     } catch (e) {

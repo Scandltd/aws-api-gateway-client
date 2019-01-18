@@ -4,6 +4,10 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import TextField from '@material-ui/core/TextField';
 import { createAccount, updateAccount } from '../../../store/actions/settingsAccount';
+import { getAwsRegionsOptionsList } from '../../../enum/awsRegions';
+import SelectField from '../../../components/form/fields/SelectField';
+
+const AWS_REGIONS = getAwsRegionsOptionsList();
 
 class AccountForm extends Component {
 
@@ -103,22 +107,14 @@ class AccountForm extends Component {
                   value={this.state.data.secretKey}
               />
 
-              <TextField
-                  id="standard-full-width"
-                  label="Region"
-                  required
+              <SelectField
+                  options={AWS_REGIONS}
                   name="region"
-                  placeholder="us-west-2"
-                  helperText={this.getErrorText('region')}
-                  fullWidth
-                  margin="normal"
-                  multiline={true}
-                  error={Boolean(this.state.errors.region)}
-                  InputLabelProps={{
-                      shrink: true,
-                  }}
-                  onChange={this.handleChange}
+                  label="Region"
+                  helperText=""
                   value={this.state.data.region}
+                  error={this.getErrorText('region')}
+                  onChange={this.handleChange}
               />
           </React.Fragment>
       )

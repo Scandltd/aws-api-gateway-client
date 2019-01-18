@@ -78,6 +78,10 @@ export const updateAccount = (id, data) => {
             .catch(err => {
                 dispatch(setProcessingDone());
                 dispatch(addErrorNotification(err.message));
+                const response = err.response;
+                if (response && response.status === 422 && response.data) {
+                    return Promise.reject(response.data);
+                }
             });
     };
 };
