@@ -21,14 +21,24 @@ class AccountForm extends Component {
             this.props.updateAccount(this.props.entityId, data)
                 .then(response => {
                     if (this.props.onSuccess) {
-                        this.props.onSuccess();
+                        this.props.onSuccess(response);
+                    }
+                })
+                .catch(err => {
+                    if (err.errors) {
+                        this.setState({errors: err.errors});
                     }
                 });
         } else {
             this.props.createAccount(data)
                 .then(response => {
                     if (this.props.onSuccess) {
-                        this.props.onSuccess();
+                        this.props.onSuccess(response);
+                    }
+                })
+                .catch(err => {
+                    if (err.errors) {
+                        this.setState({errors: err.errors});
                     }
                 });
         }
@@ -47,7 +57,7 @@ class AccountForm extends Component {
                   required
                   name="name"
                   placeholder="Account name"
-                  helperText={Boolean(this.state.errors.name) ? this.state.errors.name[0] : ''}
+                  helperText={this.getErrorText('name')}
                   fullWidth
                   margin="normal"
                   multiline={true}
@@ -64,7 +74,7 @@ class AccountForm extends Component {
                   required
                   name="accessKey"
                   placeholder="AKIAIOSFODNN7EXAMPLE"
-                  helperText={Boolean(this.state.errors.accessKey) ? this.state.errors.accessKey[0] : ''}
+                  helperText={this.getErrorText('accessKey')}
                   fullWidth
                   margin="normal"
                   multiline={true}
@@ -81,7 +91,7 @@ class AccountForm extends Component {
                   required
                   name="secretKey"
                   placeholder="wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
-                  helperText={Boolean(this.state.errors.secretKey) ? this.state.errors.secretKey[0] : ''}
+                  helperText={this.getErrorText('secretKey')}
                   fullWidth
                   margin="normal"
                   multiline={true}
@@ -99,7 +109,7 @@ class AccountForm extends Component {
                   required
                   name="region"
                   placeholder="us-west-2"
-                  helperText={Boolean(this.state.errors.region) ? this.state.errors.region[0] : ''}
+                  helperText={this.getErrorText('region')}
                   fullWidth
                   margin="normal"
                   multiline={true}

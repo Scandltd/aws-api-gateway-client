@@ -159,6 +159,26 @@ function FormHOC(WrappedComponent, fields, validationRules) {
 
         /**
          *
+         * @param fieldName
+         *
+         * @returns {*}
+         */
+        getErrorText(fieldName){
+            const errors = this.state.errors[fieldName];
+
+            if (Boolean(errors)) {
+                if (Array.isArray(errors)) {
+                    return errors[0];
+                }
+
+                return errors;
+            }
+
+            return '';
+        }
+
+        /**
+         *
          * @returns {*}
          */
         renderButtons() {
