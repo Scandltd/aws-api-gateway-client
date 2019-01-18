@@ -90,6 +90,7 @@ export const createRestApiRequest = (accountId, data, onSuccess = null, onError 
                 if (onError) {
                     onError(err);
                 }
+
                 dispatch(addErrorNotification('Unable to create REST API. ' + err.message));
             })
     };

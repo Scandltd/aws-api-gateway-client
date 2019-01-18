@@ -24,6 +24,9 @@ export default {
       return response;
     }, error => {
       store.dispatch(setLoadingFalse());
+      if (error.response && error.response.data && error.response.data.message) {
+        error.message = error.response.data.message;
+      }
 
       return Promise.reject(error);
     });
