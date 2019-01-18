@@ -4,17 +4,10 @@ import { connect } from 'react-redux';
 import { loadAccountList, deleteAccount } from '../../store/actions/accountActions';
 import SettingsAccountTable from "../../components/settingsAccount/settingsAccountTable/SettingsAccountTable";
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { withStyles } from '@material-ui/core/styles';
 import InnerPageWrapper from '../../components/innerPageWrapper/InnerPageWrapper';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import AddIcon from '@material-ui/icons/Add';
-
-const styles = theme => ({
-    progress: {
-        margin: theme.spacing.unit * 2,
-    },
-});
 
 class SettingsAccounts extends Component {
     /**
@@ -55,10 +48,10 @@ class SettingsAccounts extends Component {
      * @returns {*}
      */
     render() {
-        const { accounts, loading, classes } = this.props;
+        const { accounts, loading } = this.props;
 
         const content = loading ?
-            <CircularProgress className={ classes.progress } />
+            <CircularProgress />
             :
             <SettingsAccountTable
                 accounts={ accounts }
@@ -99,7 +92,7 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps, {
     loadAccountList,
     deleteAccount,
-})(withStyles(styles)(SettingsAccounts));
+})(SettingsAccounts);
 
 SettingsAccounts.propTypes = {
     accounts: PropTypes.array.isRequired,
