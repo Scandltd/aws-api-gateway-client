@@ -8,6 +8,7 @@ import TextField from '@material-ui/core/TextField';
 import FormGroup from '@material-ui/core/FormGroup';
 import Typography from '@material-ui/core/Typography'
 import SelectField from '../../../components/form/fields/SelectField';
+import SelectAutocompleteField from '../../../components/form/fields/SelectAutocompleteField';
 import HttpMethodEnum from '../../../enum/httpMethodTypeEnum';
 import ContentHandlingTypeEnum from '../../../enum/contentHandlingTypeEnum';
 import ServiceActionTypeEnum, { SERVICE_ACTION_TYPE_LIST } from '../../../enum/serviceActionTypeEnum';
@@ -18,6 +19,8 @@ import AWS_SERVICES_ENUM, { AWS_SERVICES_OPTIONS } from '../../../enum/awsServic
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { forEach } from 'lodash';
 import FormHOC from '../../hoc/FormHOC';
+import { getLambdaFunctions } from '../../../store/actions/listActions';
+import getLambdaFunctionList from '../../../store/selectors/lambdaFunnctionListSelector';
 
 const AWS_REGIONS = getAwsRegionsOptionsList();
 
@@ -27,12 +30,28 @@ const AWS_REGIONS = getAwsRegionsOptionsList();
 class IntegrationForm extends Component {
     /**
      *
-     * @param props
+     * @param prevProps
+     * @param prevState
+     * @param snapshot
      */
-    //constructor(props) {
-    //    super(props);
-    //    this.state.isLoading = false;
-   // }
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevState.data.type !== this.state.data.type && IntegrationTypeEnum.LambdaFunction === this.state.data.type) {
+            if (!this.props.lambdaFunctionList) {
+                this.props.actions.getLambdaFunctions(this.props.accountId);
+            }
+        }
+    }
+
+    /**
+     *
+     */
+    componentDidMount() {
+        if (IntegrationTypeEnum.LambdaFunction === this.state.data.type) {
+            if (!this.props.lambdaFunctionList) {
+                this.props.actions.getLambdaFunctions(this.props.accountId);
+            }
+        }
+    }
 
     /**
      *
@@ -136,6 +155,12 @@ class IntegrationForm extends Component {
      * @returns {*}
      */
     getFormFragmentLambdaFunction = () => {
+        if (this.props.isLambdaFunctionLoading) {
+            return ( <FormGroup>
+                <CircularProgress />
+            </FormGroup>);
+        }
+console.log(this.props.lambdaFunctionList);
         return (
             <React.Fragment>
                 <FormGroup>
@@ -163,20 +188,14 @@ class IntegrationForm extends Component {
                     onChange={this.handleChange}
                 />
 
-                <TextField
-                    label="Lambda Function ARN"
+                <SelectAutocompleteField
+                    suggestions={ this.props.lambdaFunctionList || [] }
                     name="lambdaFunctionName"
-                    placeholder=""
-                    helperText={Boolean(this.state.errors.lambdaFunctionName) ? this.state.errors.lambdaFunctionName[0] : 'You should insert ARN of lambda function: E.g: arn:aws:lambda:eu-west-1:188280853789:function:test'}
-                    fullWidth
-                    margin="normal"
-                    error={Boolean(this.state.errors.lambdaFunctionName)}
-                    multiline={false}
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
-                    onChange={this.handleChange}
+                    label="Lambda Function NAME(ARN)"
                     value={this.state.data.lambdaFunctionName}
+                    error={Boolean(this.state.errors.lambdaFunctionName)}
+                    onChange={this.handleChange}
+                    placeholder="Choose one"
                 />
             </React.Fragment>
         );
@@ -515,7 +534,7 @@ class IntegrationForm extends Component {
                     name="type"
                     error={Boolean(this.state.errors.type) ? this.state.errors.type[0] : ''}
                     helperText="Integration point for HTTP method"
-                    disabled={this.state.isLoading}
+                    disabled={ this.state.isLoading || this.props.isLambdaFunctionLoading }
                 />
 
                 { this.renderFormFragmentByType() }
@@ -533,7 +552,8 @@ const mapDispatchToProps = (dispatch) => {
     return {
         actions: {
             putMethodIntegration: (accountId, data, onSuccess = null, onError = null) => dispatch(putMethodIntegrationApiRequest(accountId, data, onSuccess, onError)),
-            loadVpsLinksApiRequest: (accountId, onSuccess = null, onError = null) => dispatch(loadVpsLinksApiRequest(accountId, onSuccess, onError))
+            loadVpsLinksApiRequest: (accountId, onSuccess = null, onError = null) => dispatch(loadVpsLinksApiRequest(accountId, onSuccess, onError)),
+            getLambdaFunctions: (accountId) => dispatch(getLambdaFunctions(accountId)),
         }
     }
 };
@@ -541,12 +561,17 @@ const mapDispatchToProps = (dispatch) => {
 /**
  *
  * @param state
+ * @param props
  *
  * @returns {{vpcLinks: ({}|defaultState.vpcLinks)}}
  */
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, props) => {
+    const { loadingLambdaFunction } = state.list;
+
     return {
-        vpcLinks: state.entries.vpcLinks
+        vpcLinks: state.entries.vpcLinks,
+        lambdaFunctionList: getLambdaFunctionList(state, props),
+        isLambdaFunctionLoading: loadingLambdaFunction,
     }
 };
 
@@ -685,5 +710,7 @@ IntegrationForm.propTypes = {
     accountId: PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.number
-    ]).isRequired
+    ]).isRequired,
+    getLambdaFunctions: PropTypes.func,
+    isLambdaFunctionLoading: PropTypes.bool,
 };

@@ -5,6 +5,7 @@ import entriesReducer from './entriesReducer';
 import appParamsReducer from './appParamsReducer';
 import notificationReducer from './notificationReducer';
 import settingsAccount from './settingsAccount';
+import list from './listReducer';
 
 export default combineReducers({
     account: accountReducer,
@@ -13,4 +14,5 @@ export default combineReducers({
     appParams: appParamsReducer,
     notification: notificationReducer,
     settingsAccount,
+    list,
 });
