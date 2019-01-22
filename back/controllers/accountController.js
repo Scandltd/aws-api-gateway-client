@@ -47,7 +47,7 @@ exports.getAccountList = async function(req, res, next) {
  */
 exports.getAccount = async function(req, res, next) {
     try {
-        const entity = await Account.findById(req.params.id).exec();
+        const entity = await Account.findById(req.params.accountId).exec();
         if (!entity) {
             res.status(404);
             res.json(response.error('Entity not found'));
@@ -107,7 +107,7 @@ exports.createAccount = async function(req, res, next) {
  */
 exports.deleteAccount = async function(req, res, next) {
     try {
-        const entity = await Account.findById(req.params.id).exec();
+        const entity = await Account.findById(req.params.accountId).exec();
         if (!entity) {
             res.status(404);
             res.json(response.error('Entity not found'));
@@ -133,7 +133,7 @@ exports.deleteAccount = async function(req, res, next) {
  */
 exports.putAccount = async function(req, res, next) {
     try {
-        const entity = await Account.findById(req.params.id).exec();
+        const entity = await Account.findById(req.params.accountId).exec();
         if (!entity) {
             res.status(404);
             res.json(response.error('Entity not found'));
