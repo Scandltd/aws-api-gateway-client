@@ -1,4 +1,7 @@
- const AWS_SERVICES_ENUM = {
+import AWS_REGIONS from "./awsRegions";
+import { map } from "lodash";
+
+const AWS_SERVICES_ENUM = {
     AWSCertificateManager:"acm",
     AppStream:"appstream",
     Athena:"athena",
@@ -154,4 +157,17 @@ export const AWS_SERVICES_OPTIONS = {
     [AWS_SERVICES_ENUM.VirtualPrivateCloud]: "Virtual Private Cloud (VPC)",
     [AWS_SERVICES_ENUM.WorkSpaces]: "WorkSpaces",
     [AWS_SERVICES_ENUM.XRay]: "X-Ray"
+};
+
+/**
+ *
+ * @returns {*}
+ */
+export const getServiceSuggestionList = function() {
+    return map(AWS_SERVICES_OPTIONS, function(value, key){
+        return {
+            label: value,
+            value: key,
+        };
+    });
 };

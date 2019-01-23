@@ -5,7 +5,6 @@ const getLambdaFunctions = (state, props) => state.list.lambdaFunction[props.acc
 const getLambdaFunctionList = createSelector(
     [getLambdaFunctions],
     (lambdaFunctions) => {
-        console.log('selector', lambdaFunctions);
         if (!lambdaFunctions) {
             return null;
         }

@@ -14,15 +14,18 @@ import ContentHandlingTypeEnum from '../../../enum/contentHandlingTypeEnum';
 import ServiceActionTypeEnum, { SERVICE_ACTION_TYPE_LIST } from '../../../enum/serviceActionTypeEnum';
 import PropTypes from 'prop-types';
 import { putMethodIntegrationApiRequest, loadVpsLinksApiRequest } from '../../../store/actions/entriesActions';
-import { getAwsRegionsOptionsList } from '../../../enum/awsRegions';
-import AWS_SERVICES_ENUM, { AWS_SERVICES_OPTIONS } from '../../../enum/awsServices';
+import { getAwsRegionSuggestionList, getAwsRegionsOptionsList } from '../../../enum/awsRegions';
+import AWS_SERVICES_ENUM, { getServiceSuggestionList } from '../../../enum/awsServices';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { forEach } from 'lodash';
 import FormHOC from '../../hoc/FormHOC';
 import { getLambdaFunctions } from '../../../store/actions/listActions';
 import getLambdaFunctionList from '../../../store/selectors/lambdaFunnctionListSelector';
+import getVpcLinksSuggestion from '../../../store/selectors/vpsLinksSuggestionSelector';
 
+const AWS_REGIONS_SUGGESTION = getAwsRegionSuggestionList();
 const AWS_REGIONS = getAwsRegionsOptionsList();
+const AWS_SERVICE_SUGGESTION = getServiceSuggestionList();
 
 /**
  *
@@ -122,7 +125,7 @@ class IntegrationForm extends Component {
             return ;
         }
 
-        if (undefined === this.props.vpcLinks[this.props.accountId]) {
+        if (!this.props.vpcLinks) {
             this.setLoadingTrue();
             this.props.actions.loadVpsLinksApiRequest(this.props.accountId,
                 (response) => {
@@ -136,22 +139,6 @@ class IntegrationForm extends Component {
 
     /**
      *
-     * @returns {{}}
-     */
-    getVpcLinkOptions() {
-        if(!this.props.vpcLinks[this.props.accountId]) {
-            return {};
-        }
-        let result = {};
-        forEach(this.props.vpcLinks[this.props.accountId], function(value, key) {
-            result[value.id] = `${value.name} (${value.status})`;
-        });
-
-        return result;
-    };
-
-    /**
-     *
      * @returns {*}
      */
     getFormFragmentLambdaFunction = () => {
@@ -160,7 +147,7 @@ class IntegrationForm extends Component {
                 <CircularProgress />
             </FormGroup>);
         }
-console.log(this.props.lambdaFunctionList);
+
         return (
             <React.Fragment>
                 <FormGroup>
@@ -178,14 +165,15 @@ console.log(this.props.lambdaFunctionList);
                     />
                 </FormGroup>
 
-                <SelectField
-                    options={AWS_REGIONS}
+                <SelectAutocompleteField
+                    suggestions={ AWS_REGIONS_SUGGESTION }
                     name="lambdaFunctionRegion"
                     label="Lambda Region"
                     helperText=""
                     value={this.state.data.lambdaFunctionRegion}
                     error={Boolean(this.state.errors.lambdaFunctionRegion) ? this.state.errors.lambdaFunctionRegion[0] : ''}
                     onChange={this.handleChange}
+                    placeholder="Choose one"
                 />
 
                 <SelectAutocompleteField
@@ -193,7 +181,7 @@ console.log(this.props.lambdaFunctionList);
                     name="lambdaFunctionName"
                     label="Lambda Function NAME(ARN)"
                     value={this.state.data.lambdaFunctionName}
-                    error={Boolean(this.state.errors.lambdaFunctionName)}
+                    error={Boolean(this.state.errors.lambdaFunctionName) ? this.state.errors.lambdaFunctionName[0] : ''}
                     onChange={this.handleChange}
                     placeholder="Choose one"
                 />
@@ -268,25 +256,26 @@ console.log(this.props.lambdaFunctionList);
     getFormFragmentAwsService = () => {
         return (
             <React.Fragment>
-                <SelectField
-                    options={AWS_REGIONS}
+                <SelectAutocompleteField
+                    suggestions={ AWS_REGIONS_SUGGESTION }
                     name="serviceRegion"
                     label="Service Region"
                     helperText=""
                     value={this.state.data.serviceRegion}
                     error={Boolean(this.state.errors.serviceRegion) ? this.state.errors.serviceRegion[0] : ''}
                     onChange={this.handleChange}
+                    placeholder="Choose one"
                 />
 
-                <SelectField
-                    options={ AWS_SERVICES_OPTIONS }
-                    useKeyAsValue={true}
+                <SelectAutocompleteField
+                    suggestions={ AWS_SERVICE_SUGGESTION }
                     name="serviceName"
                     label="Service"
                     helperText=""
                     value={this.state.data.serviceName}
                     error={Boolean(this.state.errors.serviceName) ? this.state.errors.serviceName[0] : ''}
                     onChange={this.handleChange}
+                    placeholder="Choose one"
                 />
 
                 <TextField
@@ -412,16 +401,14 @@ console.log(this.props.lambdaFunctionList);
                     helperText=""
                 />
 
-                <SelectField
-                    required
-                    options={this.getVpcLinkOptions()}
-                    useKeyAsValue={true}
+                <SelectAutocompleteField
+                    suggestions={ this.props.vpcLinks }
                     name="vpcConnectId"
                     label="VPC link"
                     value={this.state.data.vpcConnectId}
                     error={Boolean(this.state.errors.vpcConnectId) ? this.state.errors.vpcConnectId[0] : ''}
                     onChange={this.handleChange}
-                    helperText=""
+                    placeholder="Choose one"
                 />
 
                 <TextField
@@ -569,9 +556,9 @@ const mapStateToProps = (state, props) => {
     const { loadingLambdaFunction } = state.list;
 
     return {
-        vpcLinks: state.entries.vpcLinks,
         lambdaFunctionList: getLambdaFunctionList(state, props),
         isLambdaFunctionLoading: loadingLambdaFunction,
+        vpcLinks: getVpcLinksSuggestion(state, props),
     }
 };
 

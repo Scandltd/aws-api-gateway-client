@@ -1,4 +1,4 @@
-import { mapKeys } from 'lodash';
+import { mapKeys, map } from 'lodash';
 
 const AWS_REGIONS = {
     usEast2: "us-east-2",
@@ -32,5 +32,18 @@ export default AWS_REGIONS;
 export const getAwsRegionsOptionsList = function() {
     return mapKeys(AWS_REGIONS, function(value, key){
         return key;
+    });
+};
+
+/**
+ *
+ * @returns {*}
+ */
+export const getAwsRegionSuggestionList = function() {
+    return map(AWS_REGIONS, function(value, key){
+        return {
+            label: value,
+            value: value,
+        };
     });
 };

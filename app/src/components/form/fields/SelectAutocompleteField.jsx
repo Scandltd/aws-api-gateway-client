@@ -10,6 +10,8 @@ import Chip from '@material-ui/core/Chip';
 import MenuItem from '@material-ui/core/MenuItem';
 import CancelIcon from '@material-ui/icons/Cancel';
 import { emphasize } from '@material-ui/core/styles/colorManipulator';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
 
 const styles = theme => ({
     input: {
@@ -160,13 +162,8 @@ const components = {
 };
 
 class SelectAutocompleteField extends Component {
-    state = {
-        single: null,
-        multi: null,
-    };
-
     render() {
-        const { classes, theme, value, label, suggestions, name, placeholder } = this.props;
+        const { classes, theme, value, label, suggestions, name, placeholder, helperText } = this.props;
 
         const selectStyles = {
             input: base => ({
@@ -178,23 +175,29 @@ class SelectAutocompleteField extends Component {
             }),
         };
 
+        const getValue = (opts, val) => opts.find(item => item.value === val);
+
         return (
-            <Select
-                classes={ classes }
-                styles={ selectStyles }
-                name={ name }
-                textFieldProps={{
-                    label: label,
-                    InputLabelProps: {
-                        shrink: true,
-                    },
-                }}
-                options={suggestions}
-                components={ components }
-                value={ value }
-                onChange={ this.handleChange }
-                placeholder={ placeholder }
-            />
+            <FormControl fullWidth error={Boolean(this.props.error)} className="form-control">
+                <Select
+                    classes={ classes }
+                    styles={ selectStyles }
+                    name={ name }
+                    textFieldProps={{
+                        label: label,
+                        InputLabelProps: {
+                            shrink: true,
+                        },
+                    }}
+                    options={ suggestions }
+                    components={ components }
+                    value={ value ? getValue(suggestions, value) : value }
+                    onChange={ this.handleChange }
+                    placeholder={ placeholder }
+                    error={Boolean(this.props.error)}
+                />
+                <FormHelperText>{Boolean(this.props.error) ? this.props.error : helperText}</FormHelperText>
+            </FormControl>
         );
     }
 
@@ -223,8 +226,9 @@ SelectAutocompleteField.propTypes = {
     name: PropTypes.string.isRequired,
     placeholder: PropTypes.string,
     value: PropTypes.any.isRequired,
-    error: PropTypes.bool,
+    error: PropTypes.string,
     onChange: PropTypes.func.isRequired,
+    helperText: PropTypes.string,
 };
 
 export default withStyles(styles, { withTheme: true })(SelectAutocompleteField);
