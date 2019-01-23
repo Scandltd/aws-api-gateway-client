@@ -50,7 +50,9 @@ const recursiveCall = async function(client, method, dataAttributeName, params =
         result = response[dataAttributeName];
         if (response['NextMarker']) {
             params.Marker = response['NextMarker'];
-            result = _.concat(result, recursiveCall(client, method, dataAttributeName, params))
+            const data = await recursiveCall(client, method, dataAttributeName, params);
+
+            result = _.concat(result, data);
         }
     }
 
