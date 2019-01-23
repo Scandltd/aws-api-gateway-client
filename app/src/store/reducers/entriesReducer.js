@@ -80,15 +80,18 @@ const entriesReducer = (state = defaultState, action) => {
         case ACTION_PUT_RESPONSE: {
             const resourceIndex = findIndex(dotProp.get(state, `entries.${action.payload.restApiId}`), {id: action.payload.resourceId});
             const httpMethod = dotProp.get(state, `entries.${action.payload.restApiId}.${resourceIndex}.resourceMethods.${action.payload.httpMethod}`);
-            if (!httpMethod) {
+            const responseData = get(action.payload, 'entity.data.data');
+
+            if (!httpMethod || !responseData) {
                 return state;
             }
+            
             if (!httpMethod.methodResponses) {
                 httpMethod.methodResponses = {
-                    [action.payload.entity.statusCode]: action.payload.entity
+                    [responseData.statusCode]: responseData
                 };
             } else {
-                httpMethod.methodResponses[action.payload.entity.statusCode] = action.payload.entity;
+                httpMethod.methodResponses[responseData.statusCode] = responseData;
             }
 
             return dotProp.set(state, `entries.${action.payload.restApiId}.${resourceIndex}.resourceMethods.${action.payload.httpMethod}`, httpMethod);
