@@ -1,4 +1,3 @@
-import AWS_REGIONS from "./awsRegions";
 import { map } from "lodash";
 
 const AWS_SERVICES_ENUM = {

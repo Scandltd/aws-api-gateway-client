@@ -11,7 +11,7 @@ import {
     ACTION_ENTRIES_SET_REST_API,
     ACTION_ENTRIES_LOADING_REST_API,
 } from '../actions/types';
-import { forEach, concat, indexOf, findIndex } from "lodash";
+import { forEach, concat, indexOf, findIndex, get } from "lodash";
 
 /**
  *
@@ -100,7 +100,7 @@ const entriesReducer = (state = defaultState, action) => {
             if (!httpMethod) {
                 return state;
             }
-            httpMethod.methodIntegration = action.payload.entity;
+            httpMethod.methodIntegration = get(action.payload, 'entity.data.data');
 
             return dotProp.set(state, `entries.${action.payload.restApiId}.${resourceIndex}.resourceMethods.${action.payload.httpMethod}`, httpMethod);
         }

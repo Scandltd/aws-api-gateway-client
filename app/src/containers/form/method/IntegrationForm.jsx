@@ -17,7 +17,6 @@ import { putMethodIntegrationApiRequest, loadVpsLinksApiRequest } from '../../..
 import { getAwsRegionSuggestionList, getAwsRegionsOptionsList } from '../../../enum/awsRegions';
 import AWS_SERVICES_ENUM, { getServiceSuggestionList } from '../../../enum/awsServices';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { forEach } from 'lodash';
 import FormHOC from '../../hoc/FormHOC';
 import { getLambdaFunctions } from '../../../store/actions/listActions';
 import getLambdaFunctionList from '../../../store/selectors/lambdaFunnctionListSelector';
