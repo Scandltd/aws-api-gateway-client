@@ -10,6 +10,7 @@ router.get('/:accountId', AccountController.getAccount);
 router.post('/', AccountController.createAccount);
 router.delete('/:accountId', AccountController.deleteAccount);
 router.put('/:accountId', AccountController.putAccount);
+router.post('/:accountId/proxy/getResources', ProxyController.getResources);
 router.post('/:accountId/proxy/:method', (req, res, next) => {
     return ProxyController.proxyRequest(req.params.method, req.params.accountId, req.body, res, next);
 });

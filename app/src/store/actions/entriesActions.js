@@ -41,7 +41,6 @@ export const loadResources = (accountId, apiId) => {
         restApiId: apiId, /* required */
         embed: ['methods'],
         limit: 500,
-        //position: 0               //@todo realize paginate or load all entries
     };
 
     return dispatch => {
@@ -55,7 +54,7 @@ export const loadResources = (accountId, apiId) => {
                     return data;
                 }
 
-                dispatch(setEntriesResources(apiId, data.items));
+                dispatch(setEntriesResources(apiId, data));
 
                 return data;
             })
