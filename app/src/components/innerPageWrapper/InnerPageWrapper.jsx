@@ -4,6 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
+import Divider from '@material-ui/core/Divider';
 import cn from 'classnames';
 
 const styles = theme => ({
@@ -13,9 +14,7 @@ const styles = theme => ({
         width: '100%',
     },
     contentWrapper: {
-        paddingRight: theme.spacing.unit * 3,
-        paddingLeft: theme.spacing.unit * 3,
-        paddingBottom: theme.spacing.unit * 3,
+        padding: theme.spacing.unit * 3,
     },
     rootToolbar: {
         paddingRight: theme.spacing.unit,
@@ -57,6 +56,7 @@ class InnerPageWrapper extends Component {
                         </div>
                     }
                 </Toolbar>
+                <Divider light />
                 <div className={cn(classes.contentWrapper, { [classes.contentCenter]: variant === 'center'}) }>
                     { children }
                 </div>
