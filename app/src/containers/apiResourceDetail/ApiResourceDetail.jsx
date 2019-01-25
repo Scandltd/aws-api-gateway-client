@@ -2,7 +2,17 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { find } from 'lodash';
 import { createSelector } from 'reselect'
-import { loadResources, deleteResourceApiRequest, deleteMethodApiRequest, loadRestApi } from '../../store/actions/entriesActions';
+import arrayToTree from 'array-to-tree';
+import {
+    loadResources,
+    deleteResourceApiRequest,
+    deleteMethodApiRequest,
+    loadRestApi
+} from '../../store/actions/entriesActions';
+import {
+    setFilteringStatus,
+    setFilterValue,
+} from '../../store/actions/apiResourceDetailActions';
 import { addErrorNotification } from '../../store/actions/notificationActions';
 import EntriesTree from '../../components/entriesTree/EntriesTree';
 import DialogFormComponent from '../../components/dialog/DialogFormComponent';
@@ -15,7 +25,7 @@ import InnerPageWrapper from '../../components/innerPageWrapper/InnerPageWrapper
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import BackIcon from '@material-ui/icons/ArrowBack';
-import arrayToTree from 'array-to-tree';
+import SearchBar from '../../components/searchBar/SearchBar';
 
 /**
  * 
@@ -34,6 +44,9 @@ class ApiResourceDetail extends Component
             resourceAction: null,
             activeResourceId: null,
             httpMethod: null,
+            filterDisabled: false,
+            isFilterApplied: false,
+            filterTree: [],
         };
     }
 
@@ -234,27 +247,43 @@ class ApiResourceDetail extends Component
 
     /**
      *
+     * @param qString
+     */
+    handleOnFilter = (qString) => {
+        //if (this.state.)
+
+        console.log('on filter', qString);
+        //this.setState({filterDisabled: true});
+    };
+
+    /**
+     *
      * @returns {*}
      */
     render() {
         const { restApi, loadingRestApi, entriesTree } = this.props;
+        const { filterDisabled, isFilterApplied, filterTree } = this.state;
         const title = loadingRestApi ? 'loading...' : restApi.name ? restApi.name : '';
 
         return (
             <InnerPageWrapper
                 title={ title }
                 actions={
-                    <Tooltip title="To REST APIs">
-                        <IconButton aria-label="To REST APIs" onClick={ this.handleRedirectToRestApis } >
-                            <BackIcon />
-                        </IconButton>
-                    </Tooltip>
+                    <React.Fragment>
+                        <SearchBar onBlur={ this.handleOnFilter } disabled={ filterDisabled } />
+                        <Tooltip title="To REST APIs">
+                            <IconButton aria-label="To REST APIs" onClick={ this.handleRedirectToRestApis } >
+                                <BackIcon />
+                            </IconButton>
+                        </Tooltip>
+                    </React.Fragment>
                 }
             >
                 <EntriesTree
-                    entries={ entriesTree }
-                    handleInitResourceAction={this.handleInitResourceAction}
-                    handleInitHttpMethodAction={this.handleInitHttpMethodAction}
+                    entries={ isFilterApplied ? filterTree : entriesTree }
+                    filterApplied={ isFilterApplied }
+                    handleInitResourceAction={ this.handleInitResourceAction }
+                    handleInitHttpMethodAction={ this.handleInitHttpMethodAction }
                 />
                 {this.renderForm()}
             </InnerPageWrapper>

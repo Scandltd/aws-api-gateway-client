@@ -24,6 +24,7 @@ const styles = theme => ({
     },
     actions: {
         color: theme.palette.text.secondary,
+        display: 'flex',
     },
     title: {
         flex: '0 0 auto',
