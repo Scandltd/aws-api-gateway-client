@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import TreeResourceElement from './TreeResourceElement';
 import './entriesTree.scss';
-import arrayToTree from 'array-to-tree';
 import { remove, indexOf } from 'lodash';
 
 /**
@@ -21,17 +20,6 @@ class EntriesTree extends Component
             treeEntries: [],
             expanded: []
         };
-    }
-
-    /**
-     *
-     * @returns {Array}
-     */
-    buildTree() {
-        return arrayToTree(this.props.entries, {
-            parentProperty: 'parentId',
-            customID: 'id'
-        });
     }
 
     /**
@@ -91,18 +79,12 @@ class EntriesTree extends Component
      *
      * @returns {*}
      */
-    renderTree() {
-        return this.renderTreeElements(this.buildTree());
-    }
-
-    /**
-     *
-     * @returns {*}
-     */
     render() {
+        const { entries } = this.props;
+
         return (
             <div className="entries-tree">
-                {this.renderTree()}
+                { this.renderTreeElements(entries) }
             </div>
         );
     };

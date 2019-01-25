@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { find } from 'lodash';
+import { createSelector } from 'reselect'
 import { loadResources, deleteResourceApiRequest, deleteMethodApiRequest, loadRestApi } from '../../store/actions/entriesActions';
 import { addErrorNotification } from '../../store/actions/notificationActions';
 import EntriesTree from '../../components/entriesTree/EntriesTree';
@@ -14,7 +15,7 @@ import InnerPageWrapper from '../../components/innerPageWrapper/InnerPageWrapper
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import BackIcon from '@material-ui/icons/ArrowBack';
-
+import arrayToTree from 'array-to-tree';
 
 /**
  * 
@@ -40,7 +41,7 @@ class ApiResourceDetail extends Component
      *
      */
     componentDidMount() {
-        if (!this.props.entries[this.state.apiId]) {
+        if (!this.props.entries) {
             this.props.loadResources(this.state.accountId, this.state.apiId);
         }
 
@@ -140,7 +141,7 @@ class ApiResourceDetail extends Component
      * @returns {*}
      */
     findResourceById = (resourceId) => {
-        return find(this.props.entries[this.state.apiId], {id: resourceId});
+        return find(this.props.entries, {id: resourceId});
     };
 
     /**
@@ -219,11 +220,14 @@ class ApiResourceDetail extends Component
 
         return (
             <DialogFormComponent open={true} title={title} onClose={this.onCloseDialog}>
-                {form}
+                { form }
             </DialogFormComponent>
         );
     };
 
+    /**
+     *
+     */
     handleRedirectToRestApis = () => {
         this.props.history.push(`/account/${this.props.match.params.accountId}/api`);
     };
@@ -233,7 +237,7 @@ class ApiResourceDetail extends Component
      * @returns {*}
      */
     render() {
-        const { restApi, loadingRestApi } = this.props;
+        const { restApi, loadingRestApi, entriesTree } = this.props;
         const title = loadingRestApi ? 'loading...' : restApi.name ? restApi.name : '';
 
         return (
@@ -248,7 +252,7 @@ class ApiResourceDetail extends Component
                 }
             >
                 <EntriesTree
-                    entries={this.getEntries()}
+                    entries={ entriesTree }
                     handleInitResourceAction={this.handleInitResourceAction}
                     handleInitHttpMethodAction={this.handleInitHttpMethodAction}
                 />
@@ -260,11 +264,48 @@ class ApiResourceDetail extends Component
 
 /**
  *
- * @param {*} state
+ * @param state
+ * @param props
+ *
+ * @returns {*}
  */
-const mapStateToProps = (state) => {
+const getResources = (state, props) => state.entries.entries[props.match.params.apiId];
+
+const resourceSelector = createSelector(
+    [getResources],
+    (entries) => {
+        if (!entries || !Array.isArray(entries)) {
+            return null;
+        }
+
+        return entries;
+    });
+
+const treeSelector = createSelector(
+    [getResources],
+    (entries) => {
+        if (!entries || !Array.isArray(entries)) {
+            return [];
+        }
+
+        return arrayToTree(entries, {
+            parentProperty: 'parentId',
+            customID: 'id'
+        });
+    }
+);
+
+/**
+ *
+ * @param state
+ * @param props
+ *
+ * @returns {{entries: any, restApi: ({}|defaultState.restApi), loadingRestApi: boolean}}
+ */
+const mapStateToProps = (state, props) => {
     return {
-        entries: state.entries.entries,
+        entries: resourceSelector(state, props),
+        entriesTree: treeSelector(state, props),
         restApi: state.entries.restApi,
         loadingRestApi: state.entries.loadingRestApi,
     }
