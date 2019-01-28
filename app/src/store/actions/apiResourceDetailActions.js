@@ -1,6 +1,6 @@
 import {
-    ACTION_SET_FILTER_VALUE,
-    ACTION_SET_FILTERING_STATUS
+    ACTION_API_DETAIL_SET_FILTER_VALUE,
+    ACTION_API_DETAIL_SET_DEFAULT_STATE
 } from './types';
 
 /**
@@ -11,7 +11,7 @@ import {
  */
 export function setFilterValue(qString) {
     return {
-        type: ACTION_SET_FILTER_VALUE,
+        type: ACTION_API_DETAIL_SET_FILTER_VALUE,
         payload: {
             qString,
         }
@@ -20,15 +20,10 @@ export function setFilterValue(qString) {
 
 /**
  *
- * @param isProcessed
- *
- * @returns {{type: string, payload: {isProcessed: boolean}}}
+ * @returns {{type: string}}
  */
-export function setFilteringStatus(isProcessed = true) {
+export function setDefaultState() {
     return {
-        type: ACTION_SET_FILTERING_STATUS,
-        payload: {
-            isProcessed,
-        }
+        type: ACTION_API_DETAIL_SET_DEFAULT_STATE,
     };
 }

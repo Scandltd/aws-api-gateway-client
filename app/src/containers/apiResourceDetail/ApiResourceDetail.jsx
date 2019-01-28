@@ -11,6 +11,7 @@ import {
 } from '../../store/actions/entriesActions';
 import {
     setFilterValue,
+    setDefaultState,
 } from '../../store/actions/apiResourceDetailActions';
 import { addErrorNotification } from '../../store/actions/notificationActions';
 import EntriesTree from '../../components/entriesTree/EntriesTree';
@@ -55,6 +56,13 @@ class ApiResourceDetail extends Component
         }
 
         this.props.loadRestApi(this.state.accountId, this.state.apiId);
+    }
+
+    /**
+     *
+     */
+    componentWillUnmount() {
+        this.props.setDefaultState();
     }
 
     /**
@@ -396,7 +404,7 @@ const mapStateToProps = (state, props) => {
         entriesTree: treeSelector(state, props),
         restApi: state.entries.restApi,
         loadingRestApi: state.entries.loadingRestApi,
-        qString: state.apiResourceDetailReducer.qString,
+        qString: getQString(state),
     }
 };
 
@@ -407,4 +415,5 @@ export default connect(mapStateToProps, {
     deleteMethodApiRequest,
     loadRestApi,
     setFilterValue,
+    setDefaultState,
 })(ApiResourceDetail);
