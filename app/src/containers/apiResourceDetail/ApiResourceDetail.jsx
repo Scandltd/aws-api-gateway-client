@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
-import { find } from 'lodash';
+import { find, mapKeys, map, has, merge, values } from 'lodash';
 import { createSelector } from 'reselect'
 import arrayToTree from 'array-to-tree';
 import {
@@ -10,7 +10,6 @@ import {
     loadRestApi
 } from '../../store/actions/entriesActions';
 import {
-    setFilteringStatus,
     setFilterValue,
 } from '../../store/actions/apiResourceDetailActions';
 import { addErrorNotification } from '../../store/actions/notificationActions';
@@ -44,9 +43,6 @@ class ApiResourceDetail extends Component
             resourceAction: null,
             activeResourceId: null,
             httpMethod: null,
-            filterDisabled: false,
-            isFilterApplied: false,
-            filterTree: [],
         };
     }
 
@@ -247,13 +243,14 @@ class ApiResourceDetail extends Component
 
     /**
      *
-     * @param qString
+     * @param qStringNew
      */
-    handleOnFilter = (qString) => {
-        //if (this.state.)
+    handleOnFilter = (qStringNew) => {
+        const { qString } = this.props;
 
-        console.log('on filter', qString);
-        //this.setState({filterDisabled: true});
+        if(qString !== qStringNew) {
+            this.props.setFilterValue(qStringNew);
+        }
     };
 
     /**
@@ -262,7 +259,6 @@ class ApiResourceDetail extends Component
      */
     render() {
         const { restApi, loadingRestApi, entriesTree } = this.props;
-        const { filterDisabled, isFilterApplied, filterTree } = this.state;
         const title = loadingRestApi ? 'loading...' : restApi.name ? restApi.name : '';
 
         return (
@@ -270,7 +266,7 @@ class ApiResourceDetail extends Component
                 title={ title }
                 actions={
                     <React.Fragment>
-                        <SearchBar onBlur={ this.handleOnFilter } disabled={ filterDisabled } />
+                        <SearchBar onBlur={ this.handleOnFilter } />
                         <Tooltip title="To REST APIs">
                             <IconButton aria-label="To REST APIs" onClick={ this.handleRedirectToRestApis } >
                                 <BackIcon />
@@ -280,8 +276,7 @@ class ApiResourceDetail extends Component
                 }
             >
                 <EntriesTree
-                    entries={ isFilterApplied ? filterTree : entriesTree }
-                    filterApplied={ isFilterApplied }
+                    entries={ entriesTree }
                     handleInitResourceAction={ this.handleInitResourceAction }
                     handleInitHttpMethodAction={ this.handleInitHttpMethodAction }
                 />
@@ -293,12 +288,74 @@ class ApiResourceDetail extends Component
 
 /**
  *
+ * @param entries
+ * @param keyId
+ * @param exists
+ * @param qString
+ */
+const getParent = (entries, keyId, exists, qString) => {
+    const result = {};
+    const entity = entries[keyId];
+
+    if (entity) {
+        entity.matchToFilter = has(entity, 'pathPart') ? entity.pathPart.includes(qString) : entity.path.includes(qString) ;
+        result[entity.id] = entity;
+
+        if (entity.parentId && !has(exists, entity.parentId)) {
+            merge(result, getParent(entries, entity.parentId, exists));
+        }
+    }
+
+    return result;
+};
+
+/**
+ *
+ * @param entries
+ * @param qString
+ *
+ * @returns {*}
+ */
+const filteredValues = (entries, qString) => {
+    const normalizedValues = mapKeys(entries, (value, key) => {
+        return value.id;
+    });
+
+    const filtered = {};
+    map(normalizedValues, (value, key) => {
+        if(value.pathPart && value.pathPart.includes(qString)) {
+            if(has(filtered, key)) {
+                return ;
+            }
+
+            value.matchToFilter = true;
+
+            filtered[key] = value;
+            if (value.parentId && !has(filtered, value.parentId)) {
+                merge(filtered, getParent(normalizedValues, value.parentId, filtered, qString));
+            }
+        }
+    });
+
+    return values(filtered);
+};
+
+/**
+ *
  * @param state
  * @param props
  *
  * @returns {*}
  */
 const getResources = (state, props) => state.entries.entries[props.match.params.apiId];
+
+/**
+ *
+ * @param state
+ *
+ * @returns {string}
+ */
+const getQString = (state) => state.apiResourceDetailReducer.qString;
 
 const resourceSelector = createSelector(
     [getResources],
@@ -311,13 +368,15 @@ const resourceSelector = createSelector(
     });
 
 const treeSelector = createSelector(
-    [getResources],
-    (entries) => {
+    [getResources, getQString],
+    (entries, qString) => {
         if (!entries || !Array.isArray(entries)) {
             return [];
         }
 
-        return arrayToTree(entries, {
+        const data = qString ? filteredValues(entries, qString) : entries;
+
+        return arrayToTree(data, {
             parentProperty: 'parentId',
             customID: 'id'
         });
@@ -337,6 +396,7 @@ const mapStateToProps = (state, props) => {
         entriesTree: treeSelector(state, props),
         restApi: state.entries.restApi,
         loadingRestApi: state.entries.loadingRestApi,
+        qString: state.apiResourceDetailReducer.qString,
     }
 };
 
@@ -346,4 +406,5 @@ export default connect(mapStateToProps, {
     addErrorNotification,
     deleteMethodApiRequest,
     loadRestApi,
+    setFilterValue,
 })(ApiResourceDetail);

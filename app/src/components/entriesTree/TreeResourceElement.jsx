@@ -63,6 +63,10 @@ class TreeResourceElement extends Component
      * @returns {*}
      */
     renderMethodElements = () => {
+        if (!this.props.matchToFilter) {
+            return null;
+        }
+
         let i = 0;
         let elements = [];
         mapKeys(this.props.resourceMethods, (value, key) => {
@@ -121,7 +125,8 @@ TreeResourceElement.propTypes = {
     id: PropTypes.any.isRequired,
     handleInitResourceAction: PropTypes.func.isRequired,
     handleInitHttpMethodAction: PropTypes.func.isRequired,
-    onExpand: PropTypes.func.isRequired
+    onExpand: PropTypes.func.isRequired,
+    matchToFilter: PropTypes.bool,
 };
 
 export default TreeResourceElement;

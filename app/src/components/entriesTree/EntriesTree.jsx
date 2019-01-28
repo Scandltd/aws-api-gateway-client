@@ -66,6 +66,7 @@ class EntriesTree extends Component
                 path={item.path}
                 parentId={item.parentId}
                 resourceMethods={item.resourceMethods ? item.resourceMethods : {}}
+                matchToFilter={ undefined === item.matchToFilter ? true : item.matchToFilter }
                 nested={nested}
                 expanded={0 === level}
                 onExpand={this.onExpand}

@@ -5,15 +5,15 @@ import {
 
 /**
  *
- * @param querySting
+ * @param qString
  *
  * @returns {{type: string, payload: {querySting: *}}}
  */
-export function setFilterValue(querySting) {
+export function setFilterValue(qString) {
     return {
         type: ACTION_SET_FILTER_VALUE,
         payload: {
-            querySting,
+            qString,
         }
     };
 }

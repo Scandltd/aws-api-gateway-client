@@ -35,7 +35,7 @@ class MethodDetailIntegration extends Component {
 
         const match = uri.match(regExLambdaName);
 
-        if (match[1]) {
+        if (match && match[1]) {
             return `Lambda name: ${ match[1] }`;
         }
 
