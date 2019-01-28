@@ -40,7 +40,7 @@ const styles = theme => ({
 
 class InnerPageWrapper extends Component {
     render() {
-        const { classes, title, actions, children, variant } = this.props;
+        const { classes, title, actions, children, variant, searchBar } = this.props;
 
         return (
             <Paper className={ classes.root }>
@@ -50,6 +50,7 @@ class InnerPageWrapper extends Component {
                             { title }
                         </Typography>
                     </div>
+                    { searchBar }
                     {variant !== 'center' && <div className={ classes.spacer } />}
                     {actions &&
                         <div className={ classes.actions }>
@@ -70,6 +71,7 @@ export default withStyles(styles)(InnerPageWrapper);
 
 InnerPageWrapper.propTypes = {
     title: PropTypes.string.isRequired,
+    searchBar: PropTypes.node,
     actions: PropTypes.node,
     variant: PropTypes.string,
 };

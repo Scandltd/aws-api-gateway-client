@@ -272,15 +272,13 @@ class ApiResourceDetail extends Component
         return (
             <InnerPageWrapper
                 title={ title }
+                searchBar={ <SearchBar onBlur={ this.handleOnFilter } /> }
                 actions={
-                    <React.Fragment>
-                        <SearchBar onBlur={ this.handleOnFilter } />
-                        <Tooltip title="To REST APIs">
-                            <IconButton aria-label="To REST APIs" onClick={ this.handleRedirectToRestApis } >
-                                <BackIcon />
-                            </IconButton>
-                        </Tooltip>
-                    </React.Fragment>
+                    <Tooltip title="To REST APIs">
+                        <IconButton aria-label="To REST APIs" onClick={ this.handleRedirectToRestApis } >
+                            <BackIcon />
+                        </IconButton>
+                    </Tooltip>
                 }
             >
                 <EntriesTree
