@@ -32,10 +32,8 @@ const styles = theme => ({
     inputRoot: {
         color: 'inherit',
         width: '100%',
-        paddingTop: theme.spacing.unit,
     },
     inputInput: {
-        paddingTop: theme.spacing.unit,
         paddingRight: theme.spacing.unit,
         paddingLeft: theme.spacing.unit,
         transition: theme.transitions.create('width'),
@@ -45,7 +43,8 @@ const styles = theme => ({
          },
     },
     selectRow: {
-        margin: theme.spacing.unit,
+        marginRight: theme.spacing.unit,
+        marginLeft: theme.spacing.unit,
         minWidth: 60,
     },
     selectWrapper: {
@@ -58,7 +57,7 @@ const styles = theme => ({
         backgroundColor: fade(theme.palette.grey[300], 0.15),
         cursor: 'pointer',
         '&:hover': {
-            backgroundColor: fade(theme.palette.grey[300], 0.25),
+            backgroundColor: fade(theme.palette.grey[300], 0.5),
         },
     }
 });

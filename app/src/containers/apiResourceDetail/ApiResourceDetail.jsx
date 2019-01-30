@@ -269,13 +269,13 @@ class ApiResourceDetail extends Component
         return (
             <InnerPageWrapper
                 title={ title }
-                searchBar={ <SearchBar onSearch={ this.handleOnFilter } /> }
+                searchBar={ <Tooltip title="To REST APIs">
+                    <IconButton aria-label="To REST APIs" onClick={ this.handleRedirectToRestApis } >
+                        <BackIcon />
+                    </IconButton>
+                </Tooltip> }
                 actions={
-                    <Tooltip title="To REST APIs">
-                        <IconButton aria-label="To REST APIs" onClick={ this.handleRedirectToRestApis } >
-                            <BackIcon />
-                        </IconButton>
-                    </Tooltip>
+                    <SearchBar onSearch={ this.handleOnFilter } />
                 }
             >
                 <EntriesTree
