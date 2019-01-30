@@ -2,7 +2,20 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import TreeResourceElement from './TreeResourceElement';
 import './entriesTree.scss';
-import { remove, indexOf } from 'lodash';
+import { remove, indexOf, forEach, pullAll, map } from 'lodash';
+import { getToggleIds } from '../../utils/treeHelper';
+
+/**
+ *
+ * @param entries
+ *
+ * @returns {*}
+ */
+const getInitialExpandedElement = function(entries) {
+    return map(entries, (item) => {
+        return item.id;
+    });
+};
 
 /**
  *
@@ -16,9 +29,7 @@ class EntriesTree extends Component
     constructor(props) {
         super(props);
         this.state = {
-            entries: [],
-            treeEntries: [],
-            expanded: []
+            expanded: getInitialExpandedElement(props.entries),
         };
     }
 
@@ -47,17 +58,46 @@ class EntriesTree extends Component
 
     /**
      *
+     * @param resourceId
+     * @param action
+     */
+    handleMassToggleAction = (resourceId, action) => {
+        const { entries } = this.props;
+
+        const ids = getToggleIds(entries, resourceId);
+
+        if (0 !== ids.length) {
+            this.setState((state, props) => {
+                const { expanded } = state;
+                if (action === 'show') {
+                    forEach(ids, (item) => {
+                        if (-1 === indexOf(expanded, item)) {
+                            expanded.push(item);
+                        }
+                    });
+                } else {
+                    pullAll(expanded, ids);
+                }
+
+                return {
+                    expanded
+                };
+            });
+        }
+    };
+
+    /**
+     *
      * @param resource
-     * @param level
      *
      * @returns {*}
      */
-    renderTreeElements(resource, level = 0) {
+    renderTreeElements(resource) {
         return resource.map((item, idx) => {
-            const extended = 0 === level || -1 !== indexOf(this.state.expanded, item.id);
+            const extended = -1 !== indexOf(this.state.expanded, item.id);
             let nested = '';
             if (item.children && 0 !== item.children.length && extended) {
-                nested = this.renderTreeElements(item.children, level + 1);
+                nested = this.renderTreeElements(item.children);
             }
 
             return <TreeResourceElement
@@ -68,10 +108,11 @@ class EntriesTree extends Component
                 resourceMethods={item.resourceMethods ? item.resourceMethods : {}}
                 matchToFilter={ undefined === item.matchToFilter ? true : item.matchToFilter }
                 nested={nested}
-                expanded={0 === level}
+                expanded={ extended }
                 onExpand={this.onExpand}
                 handleInitResourceAction={this.props.handleInitResourceAction}
                 handleInitHttpMethodAction={this.props.handleInitHttpMethodAction}
+                onMassToggleAction={this.handleMassToggleAction}
             />
         });
     }

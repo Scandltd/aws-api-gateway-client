@@ -103,7 +103,7 @@ class TreeResourceElement extends Component
      */
     render() {
         return (
-            <ExpansionPanel classes={{expanded: "tree-resource-expanded"}} className="tree-resource-container" defaultExpanded={this.props.expanded} onChange={this.handleExpandStateChange}>
+            <ExpansionPanel classes={{expanded: "tree-resource-expanded"}} className="tree-resource-container" expanded={this.props.expanded} onChange={this.handleExpandStateChange}>
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />} className="tree-resource-header">
                     <TreeResourceHeader
                         path={this.props.path}
@@ -111,6 +111,7 @@ class TreeResourceElement extends Component
                         onCreateMethod={this.onCreateMethod}
                         onDeleteResource={this.onDeleteResource}
                         onCreateResource={this.onCreateResource}
+                        onMassToggleAction={this.props.onMassToggleAction}
                     />
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails className="tree-source-element-details">
@@ -131,6 +132,7 @@ TreeResourceElement.propTypes = {
     handleInitHttpMethodAction: PropTypes.func.isRequired,
     onExpand: PropTypes.func.isRequired,
     matchToFilter: PropTypes.string,
+    onMassToggleAction: PropTypes.func,
 };
 
 export default TreeResourceElement;
