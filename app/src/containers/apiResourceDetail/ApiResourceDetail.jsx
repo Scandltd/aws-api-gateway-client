@@ -251,14 +251,11 @@ class ApiResourceDetail extends Component
 
     /**
      *
+     * @param httpMethodNew
      * @param qStringNew
      */
-    handleOnFilter = (qStringNew) => {
-        const { qString } = this.props;
-
-        if(qString !== qStringNew) {
-            this.props.setFilterValue(qStringNew);
-        }
+    handleOnFilter = (httpMethodNew, qStringNew) => {
+        this.props.setFilterValue(qStringNew, httpMethodNew);
     };
 
     /**
@@ -272,7 +269,7 @@ class ApiResourceDetail extends Component
         return (
             <InnerPageWrapper
                 title={ title }
-                searchBar={ <SearchBar onBlur={ this.handleOnFilter } /> }
+                searchBar={ <SearchBar onSearch={ this.handleOnFilter } /> }
                 actions={
                     <Tooltip title="To REST APIs">
                         <IconButton aria-label="To REST APIs" onClick={ this.handleRedirectToRestApis } >
@@ -297,18 +294,27 @@ class ApiResourceDetail extends Component
  * @param entries
  * @param keyId
  * @param exists
- * @param qString
+ * @param filterParams
  */
-const getParent = (entries, keyId, exists, qString) => {
+const getParent = (entries, keyId, exists, filterParams) => {
     const result = {};
     const entity = entries[keyId];
 
     if (entity) {
-        entity.matchToFilter = has(entity, 'pathPart') ? entity.pathPart.includes(qString) : entity.path.includes(qString) ;
+        if (!filterParams.qString && has(entity, 'pathPart') ? entity.pathPart.includes(filterParams.qString) : entity.path.includes(filterParams.qString)) {
+            if (filterParams.httpMethod) {
+                entity.matchToFilter = filterParams.httpMethod;
+            } else {
+                entity.matchToFilter = 'ALL';
+            }
+        } else {
+            entity.matchToFilter = 'NONE';
+        }
+
         result[entity.id] = entity;
 
         if (entity.parentId && !has(exists, entity.parentId)) {
-            merge(result, getParent(entries, entity.parentId, exists));
+            merge(result, getParent(entries, entity.parentId, exists, filterParams));
         }
     }
 
@@ -318,29 +324,41 @@ const getParent = (entries, keyId, exists, qString) => {
 /**
  *
  * @param entries
- * @param qString
+ * @param filterParams
  *
  * @returns {*}
  */
-const filteredValues = (entries, qString) => {
+const filteredValues = (entries, filterParams) => {
     const normalizedValues = mapKeys(entries, (value, key) => {
         return value.id;
     });
 
     const filtered = {};
     map(normalizedValues, (value, key) => {
-        if(value.pathPart && value.pathPart.includes(qString)) {
-            if(has(filtered, key)) {
+        if(has(filtered, key)) {                // check for duplicate
+            return ;
+        }
+
+        if (!value.pathPart || !value.pathPart.includes(filterParams.qString)) {        // filter by query string
+            return ;
+        }
+
+        if (filterParams.httpMethod) {          //filter by http method
+            if (!value.resourceMethods || !has(value.resourceMethods, filterParams.httpMethod)) {
                 return ;
             }
 
-            value.matchToFilter = true;
-
-            filtered[key] = value;
-            if (value.parentId && !has(filtered, value.parentId)) {
-                merge(filtered, getParent(normalizedValues, value.parentId, filtered, qString));
-            }
+            value.matchToFilter = filterParams.httpMethod;
+        } else {
+            value.matchToFilter = 'ALL';
         }
+
+        filtered[key] = value;
+        if (!value.parentId || has(filtered, value.parentId)) {
+            return ;
+        }
+
+        merge(filtered, getParent(normalizedValues, value.parentId, filtered, filterParams));      // walk on the parent entity
     });
 
     return values(filtered);
@@ -361,7 +379,15 @@ const getResources = (state, props) => state.entries.entries[props.match.params.
  *
  * @returns {string}
  */
-const getQString = (state) => state.apiResourceDetailReducer.qString;
+const getQString = (state) => state.apiResourceDetail.qString;
+
+/**
+ *
+ * @param state
+ *
+ * @returns {*}
+ */
+const getHttpMethod = (state) => state.apiResourceDetail.httpMethod;
 
 const resourceSelector = createSelector(
     [getResources],
@@ -374,13 +400,18 @@ const resourceSelector = createSelector(
     });
 
 const treeSelector = createSelector(
-    [getResources, getQString],
-    (entries, qString) => {
+    [getResources, getQString, getHttpMethod],
+    (entries, qString, httpMethod) => {
         if (!entries || !Array.isArray(entries)) {
             return [];
         }
 
-        const data = qString ? filteredValues(entries, qString) : entries;
+        const filterParams = {
+            qString,
+            httpMethod,
+        };
+
+        const data = filteredValues(entries, filterParams);
 
         return arrayToTree(data, {
             parentProperty: 'parentId',

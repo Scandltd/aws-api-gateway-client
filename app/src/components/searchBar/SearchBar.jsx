@@ -77,19 +77,23 @@ class SearchBar extends Component {
      * @param event
      */
     handelChange = (event) => {
+        const { target } = event;
         this.setState({
-            qString: event.target.qString,
-        })
-
+            [target.name]: target.value,
+        });
     };
 
     /**
      *
      */
-    handleBlur = () => {
-        this.props.onBlur(this.state.value);
+    handleClickSearch = () => {
+        this.props.onSearch(this.state.httpMethod, this.state.qString);
     };
 
+    /**
+     *
+     * @returns {*}
+     */
     render() {
         const { classes, disabled } = this.props;
         const { qString, httpMethod} = this.state;
@@ -101,7 +105,7 @@ class SearchBar extends Component {
                         className={ classes.selectRow }
                         value={ httpMethod }
                         name="httpMethod"
-                        onChange={ this.handleChange }
+                        onChange={ this.handelChange }
                         inputProps={{
                             name: 'httpMethod',
                         }}
@@ -124,10 +128,10 @@ class SearchBar extends Component {
                         disabled={ disabled }
                         onChange={ this.handelChange }
                         value={ qString }
-                        name={ qString }
+                        name="qString"
                     />
                 </div>
-                <div className={ classes.iconWrapper }>
+                <div className={ classes.iconWrapper } onClick={ this.handleClickSearch }>
                     <div className={ classes.searchIcon }>
                         <SearchIcon/>
                     </div>
@@ -141,5 +145,5 @@ export default withStyles(styles)(SearchBar);
 
 SearchBar.propTypes = {
     disabled: PropTypes.bool,
-    onBlur: PropTypes.func,
+    onSearch: PropTypes.func,
 };

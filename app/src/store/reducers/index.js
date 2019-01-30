@@ -6,7 +6,7 @@ import appParamsReducer from './appParamsReducer';
 import notificationReducer from './notificationReducer';
 import settingsAccount from './settingsAccount';
 import list from './listReducer';
-import apiResourceDetailReducer from './apiResourceDetailReducer';
+import apiResourceDetail from './apiResourceDetailReducer';
 
 export default combineReducers({
     account: accountReducer,
@@ -16,5 +16,5 @@ export default combineReducers({
     notification: notificationReducer,
     settingsAccount,
     list,
-    apiResourceDetailReducer,
+    apiResourceDetail,
 });

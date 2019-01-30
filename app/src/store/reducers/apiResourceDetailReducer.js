@@ -8,6 +8,7 @@ import {
  */
 const defaultState = {
     qString: '',
+    httpMethod: ''
 };
 
 /**
@@ -19,7 +20,11 @@ const appParamsReducer = (state = defaultState, action) => {
     switch (action.type) {
         case ACTION_API_DETAIL_SET_FILTER_VALUE:
 
-            return {...state, qString: action.payload.qString};
+            return {
+                ...state,
+                qString: action.payload.qString,
+                httpMethod: action.payload.httpMethod.toUpperCase(),
+            };
 
         case ACTION_API_DETAIL_SET_DEFAULT_STATE:
 
