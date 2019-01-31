@@ -79,6 +79,14 @@ class AccountApi extends Component
      *
      * @param apiId
      */
+    handleDeploy = (apiId) => {
+        console.log(apiId);
+    };
+
+    /**
+     *
+     * @param apiId
+     */
     handleUpdate = (apiId) => {
         this.setState({open:true, isDataLoading: true});
         this.props.actions.getRestApi(
@@ -121,10 +129,11 @@ class AccountApi extends Component
                 }
             >
                 <ApiListComponent
-                    items={apiList}
-                    accountId={this.props.accountId}
-                    onDeleteApi={this.handleDelete}
-                    onUpdateApi={this.handleUpdate}
+                    items={ apiList }
+                    accountId={ this.props.accountId }
+                    onDeleteApi={ this.handleDelete }
+                    onUpdateApi={ this.handleUpdate }
+                    onDeploy={ this.handleDeploy }
                 />
 
                 <DialogFormComponent open={this.state.open} title={this.state.isUpdateAction ? 'Update REST API' : 'Create REST API'}>

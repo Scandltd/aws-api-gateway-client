@@ -29,6 +29,7 @@ class ApiItem extends Component
             redirect: false,
             isDeleteDialogOpened: false,
             anchorEl: null,
+            actionMenuItems: this.getMenuItems(props),
         };
     }
 
@@ -92,19 +93,33 @@ class ApiItem extends Component
 
     /**
      *
+     */
+    handleDeploy = () => {
+        this.handleCloseActionMenu();
+        this.props.onDeploy(this.props.apiId);
+    };
+
+    /**
+     *
      * @returns {Array}
      */
-    getMenuItems = () => {
+    getMenuItems = (props) => {
         const menuItems = [];
-        if (this.props.onDelete) {
+        if (props.onDelete) {
             menuItems.push(
-                <MenuItem onClick={this.handleDeleteBtn} key={`${this.props.apiId}_delete`}>Delete</MenuItem>
+                <MenuItem onClick={this.handleDeleteBtn} key={`${props.apiId}_delete`}>Delete</MenuItem>
             );
         }
 
-        if (this.props.onUpdate) {
+        if (props.onUpdate) {
             menuItems.push(
-                <MenuItem onClick={this.handleUpdate} key={`${this.props.apiId}_update`}>Update</MenuItem>
+                <MenuItem onClick={this.handleUpdate} key={`${props.apiId}_update`}>Update</MenuItem>
+            );
+        }
+
+        if(this.props.onDeploy) {
+            menuItems.push(
+                <MenuItem onClick={this.handleDeploy} key={`${props.apiId}_deploy`}>Deploy</MenuItem>
             );
         }
 
@@ -116,17 +131,19 @@ class ApiItem extends Component
      * @returns {string}
      */
     getActionMenu = () => {
-        const menuItems = this.getMenuItems();
+        const { actionMenuItems, anchorEl } = this.state;
+        const { apiId } = this.props;
+
         let actionMenu = '';
-        if (0 !== menuItems.length) {
+        if (0 !== actionMenuItems.length) {
             actionMenu = (
                 <Menu
-                    open={Boolean(this.state.anchorEl)}
-                    onClose={this.handleCloseActionMenu}
-                    id={`action-menu-${this.props.apiId}`}
-                    anchorEl={this.state.anchorEl}
+                    open={ Boolean(anchorEl) }
+                    onClose={ this.handleCloseActionMenu }
+                    id={`action-menu-${ apiId }`}
+                    anchorEl={ anchorEl }
                 >
-                    { menuItems }
+                    { actionMenuItems }
                 </Menu>
             );
         }
@@ -194,5 +211,6 @@ ApiItem.propTypes = {
     name: PropTypes.string.isRequired,
     description: PropTypes.string,
     onDelete: PropTypes.func,
-    onUpdate: PropTypes.func
+    onUpdate: PropTypes.func,
+    onDeploy: PropTypes.func,
 };
