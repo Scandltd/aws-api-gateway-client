@@ -14,14 +14,16 @@ class DialogFormComponent extends Component
      * @returns {*}
      */
     render () {
-      return (
-          <Dialog open={this.props.open} onClose={this.props.onClose} aria-labelledby="form-dialog-title" maxWidth="lg">
-              <DialogTitle id="form-dialog-title">{this.props.title}</DialogTitle>
-              <DialogContent>
-                  {this.props.children}
-              </DialogContent>
-          </Dialog>
-      );
+        const { open, onClose, title, children, maxWidth } = this.props;
+
+       return (
+           <Dialog open={ open } onClose={ onClose } aria-labelledby="form-dialog-title" maxWidth={ maxWidth || 'xs' }>
+               <DialogTitle id="form-dialog-title">{ title }</DialogTitle>
+               <DialogContent>
+                   { children }
+               </DialogContent>
+           </Dialog>
+       );
     };
 }
 
@@ -30,5 +32,6 @@ export default DialogFormComponent;
 DialogFormComponent.propTypes = {
     open: PropTypes.bool.isRequired,
     title: PropTypes.string.isRequired,
-    onClose: PropTypes.func
+    onClose: PropTypes.func,
+    maxWidth: PropTypes.string,
 };

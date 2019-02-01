@@ -16,6 +16,10 @@ import CircularProgress from '@material-ui/core/CircularProgress';
  */
 function FormHOC(WrappedComponent, fields, validationRules) {
     return class Form extends WrappedComponent {
+        static defaultProps = {
+            disabled: false,
+        };
+
         /**
          *
          * @param props
@@ -175,6 +179,13 @@ function FormHOC(WrappedComponent, fields, validationRules) {
             }
 
             return '';
+        }
+
+        isDisabled() {
+            const { isProcessing } = this.state;
+            const { disabled } = this.props;
+
+            return isProcessing || disabled;
         }
 
         /**

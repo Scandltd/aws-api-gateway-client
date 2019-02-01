@@ -1,20 +1,24 @@
 import { combineReducers } from 'redux';
-import accountReducer from './accountReducer';
-import apiReducer from './apiReducer';
-import entriesReducer from './entriesReducer';
-import appParamsReducer from './appParamsReducer';
-import notificationReducer from './notificationReducer';
+import account from './accountReducer';
+import api from './apiReducer';
+import entries from './entriesReducer';
+import appParams from './appParamsReducer';
+import notification from './notificationReducer';
 import settingsAccount from './settingsAccount';
 import list from './listReducer';
 import apiResourceDetail from './apiResourceDetailReducer';
+import stages from './stagesReducer';
+import deployment from './deploymentReducer';
 
 export default combineReducers({
-    account: accountReducer,
-    api: apiReducer,
-    entries: entriesReducer,
-    appParams: appParamsReducer,
-    notification: notificationReducer,
+    account,
+    api,
+    entries,
+    appParams,
+    notification,
     settingsAccount,
     list,
     apiResourceDetail,
+    stages,
+    deployment,
 });

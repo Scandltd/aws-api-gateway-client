@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
-import './account.scss';
-import SidebarPage from '../../components/sidebarPage/SidebarPage';
+import { Route } from "react-router-dom";
 import SettingsIcon from '@material-ui/icons/Settings';
 import ExtensionIcon from '@material-ui/icons/Extension';
 import MenuList from '@material-ui/core/MenuList';
 import AccountApi from '../accountApi/AccountApi';
-import { Route } from "react-router-dom";
+import SidebarPage from '../../components/sidebarPage/SidebarPage';
 import MenuNavLink from '../../components/sidebar/MenuNavLink';
+import ApiDeploy from "../apiDeploy/ApiDeploy";
+
+import './account.scss';
 
 /**
  *
@@ -28,7 +30,8 @@ class Account extends Component
                 }
                 mainContent={
                     <React.Fragment>
-                        <Route exact path="/account/:accountId/api"  render={() => <AccountApi accountId={this.props.match.params.accountId}/> } />
+                        <Route path="/account/:accountId/api"  render={(props) => <AccountApi accountId={this.props.match.params.accountId} {...props} /> } />
+                        <Route path="/account/:accountId/api/:apiId/deploy" component={ ApiDeploy } />
                         <Route exact path="/account/:accountId/settings" render={() => <h3>settings.</h3>}/>
                     </React.Fragment>
                 }

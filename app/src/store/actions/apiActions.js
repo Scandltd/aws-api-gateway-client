@@ -22,6 +22,8 @@ export const loadRestApiListRequest = (accountId) => {
 
                 if (!success) {
                     dispatch(message || 'Unable to load rest api list. Unknown error');
+
+                    return ;
                 }
 
                 dispatch(setAccountLoaded(accountId));

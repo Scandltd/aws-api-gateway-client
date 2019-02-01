@@ -1,16 +1,20 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { loadRestApiListRequest, deleteRestApiRequest, getRestApiRequest } from "../../store/actions/apiActions";
 import { connect } from "react-redux";
-import ApiListComponent from '../../components/account/ApiList';
-import './accoutApiContainer.scss';
-import DialogFormComponent from '../../components/dialog/DialogFormComponent';
-import RestApiForm from '../form/restApi/RestApiForm';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import InnerPageWrapper from '../../components/innerPageWrapper/InnerPageWrapper';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import AddIcon from '@material-ui/icons/Add';
+import {
+    loadRestApiListRequest,
+    deleteRestApiRequest,
+    getRestApiRequest,
+} from "../../store/actions/apiActions";
+import InnerPageWrapper from '../../components/innerPageWrapper/InnerPageWrapper';
+import ApiListComponent from '../../components/account/ApiList';
+import DialogFormComponent from '../../components/dialog/DialogFormComponent';
+import RestApiForm from '../form/restApi/RestApiForm';
+import './accoutApiContainer.scss';
 
 /**
  *
@@ -80,7 +84,9 @@ class AccountApi extends Component
      * @param apiId
      */
     handleDeploy = (apiId) => {
-        console.log(apiId);
+        const { accountId } = this.props;
+
+        this.props.history.push(`/account/${accountId}/api/${apiId}/deploy`);
     };
 
     /**

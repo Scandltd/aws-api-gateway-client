@@ -163,7 +163,7 @@ const components = {
 
 class SelectAutocompleteField extends Component {
     render() {
-        const { classes, theme, value, label, suggestions, name, placeholder, helperText } = this.props;
+        const { classes, theme, value, label, suggestions, name, placeholder, helperText, required } = this.props;
 
         const selectStyles = {
             input: base => ({
@@ -195,6 +195,7 @@ class SelectAutocompleteField extends Component {
                     onChange={ this.handleChange }
                     placeholder={ placeholder }
                     error={Boolean(this.props.error)}
+                    required={ required }
                 />
                 <FormHelperText>{Boolean(this.props.error) ? this.props.error : helperText}</FormHelperText>
             </FormControl>
@@ -229,6 +230,7 @@ SelectAutocompleteField.propTypes = {
     error: PropTypes.string,
     onChange: PropTypes.func.isRequired,
     helperText: PropTypes.string,
+    required: PropTypes.bool,
 };
 
 export default withStyles(styles, { withTheme: true })(SelectAutocompleteField);
