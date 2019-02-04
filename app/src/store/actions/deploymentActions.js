@@ -15,6 +15,7 @@ export function createDeploymentRequest(accountId, restApiId, data) {
         restApiId: restApiId,               /* required */
         stageName: data.stageName,          /* required */
         description: data.description,
+        stageDescription: data.stageDescription,
     };
 
     return dispatch => {

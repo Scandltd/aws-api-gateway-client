@@ -75,11 +75,17 @@ class ApiDeploy extends Component {
         if (1 === data.type) {
             params.stageName = data.newStageName;
             params.stageDescription = data.newStageDescription;
+
+            if (-1 !== this.props.stages.findIndex(item => item.label.toLowerCase() === data.newStageName.toLowerCase())) {
+                return Promise.reject({errors: {
+                    newStageName: ['Should be unique'],
+                }});
+            }
         } else {
             const stage = this.props.stages.find(item => item.value === data.stage);
             if (!stage) {
                 return Promise.reject({errors: {
-                    stage: 'Unable to find stage',
+                    stage: ['Unable to find stage'],
                 }});
             }
 
