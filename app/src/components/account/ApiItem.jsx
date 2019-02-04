@@ -153,6 +153,15 @@ class ApiItem extends Component
 
     /**
      *
+     */
+    handleStageBtnClick = () => {
+        const { apiId } = this.props;
+
+        this.props.onClickStageButton(apiId);
+    };
+
+    /**
+     *
      * @returns {*}
      */
     render() {
@@ -193,6 +202,11 @@ class ApiItem extends Component
                         <Button size="small" color="primary" onClick={this.handleResourceBtn}>
                             Resources
                         </Button>
+                        {this.props.onClickStageButton &&
+                            <Button size="small" color="primary" onClick={ this.handleStageBtnClick }>
+                                Stages
+                            </Button>
+                        }
                         { this.getActionMenu() }
                     </CardActions>
                 </Card>
@@ -213,4 +227,5 @@ ApiItem.propTypes = {
     onDelete: PropTypes.func,
     onUpdate: PropTypes.func,
     onDeploy: PropTypes.func,
+    onClickStageButton: PropTypes.func,
 };

@@ -116,6 +116,12 @@ class AccountApi extends Component
             });
     };
 
+    handleClickStageButton = (apiId) => {
+        const { accountId } = this.props;
+
+        this.props.history.push(`/account/${accountId}/api/${apiId}/stage`);
+    };
+
     /**
      *
      * @returns {*}
@@ -140,6 +146,7 @@ class AccountApi extends Component
                     onDeleteApi={ this.handleDelete }
                     onUpdateApi={ this.handleUpdate }
                     onDeploy={ this.handleDeploy }
+                    onClickStageButton={ this.handleClickStageButton }
                 />
 
                 <DialogFormComponent open={this.state.open} title={this.state.isUpdateAction ? 'Update REST API' : 'Create REST API'}>

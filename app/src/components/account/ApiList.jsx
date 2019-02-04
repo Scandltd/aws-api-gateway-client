@@ -14,7 +14,8 @@ class ApiList extends Component
             accountId,
             onDeleteApi,
             onUpdateApi,
-            onDeploy
+            onDeploy,
+            onClickStageButton
         } = this.props;
 
         return (
@@ -29,6 +30,7 @@ class ApiList extends Component
                         onDelete={ onDeleteApi }
                         onUpdate={ onUpdateApi }
                         onDeploy={ onDeploy }
+                        onClickStageButton={ onClickStageButton }
                     />;
                 }) }
             </Grid>
@@ -43,4 +45,5 @@ ApiList.propTypes = {
     onDeleteApi: PropTypes.func,
     onUpdateApi: PropTypes.func,
     onDeploy: PropTypes.func,
+    onClickStageButton: PropTypes.func,
 };

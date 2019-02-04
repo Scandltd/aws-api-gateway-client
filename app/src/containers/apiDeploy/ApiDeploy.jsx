@@ -12,7 +12,6 @@ import {
 } from '../../store/actions/deploymentActions';
 import DialogFormComponent from '../../components/dialog/DialogFormComponent';
 import DeploymentForm from '../form/deployment/DeploymentForm';
-import Typography from '@material-ui/core/Typography';
 
 /**
  *
@@ -48,9 +47,6 @@ class ApiDeploy extends Component {
                 onClose={ this.handleCancel }
                 maxWidth="sm"
             >
-                <Typography variant="subtitle2" >
-                    Choose a stage where your API will be deployed.
-                </Typography>
                 { loadingStaging ?
                     <CircularProgress />
                     :
@@ -72,18 +68,25 @@ class ApiDeploy extends Component {
      * @returns {*}
      */
     handleSubmit = (data) => {
-        const { accountId, apiId } = this.props.match.params;
-        const stage = this.props.stages.find(item => item.value === data.stage);
-        if (!stage) {
-            return Promise.reject({errors: {
-                stage: 'Unable to find stage',
-            }});
-        }
-
         const params = {
-            stageName: stage.label || null,
             description: data.description,
         };
+
+        if (1 === data.type) {
+            params.stageName = data.newStageName;
+            params.stageDescription = data.newStageDescription;
+        } else {
+            const stage = this.props.stages.find(item => item.value === data.stage);
+            if (!stage) {
+                return Promise.reject({errors: {
+                    stage: 'Unable to find stage',
+                }});
+            }
+
+            params.stageName = stage.label || null;
+        }
+
+        const { accountId, apiId } = this.props.match.params;
 
         return this.props.createDeploymentRequest(accountId, apiId, params).then(data => {
             this.props.history.replace(`/account/${accountId}/api`);
