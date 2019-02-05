@@ -40,7 +40,7 @@ const styles = theme => ({
 
 class InnerPageWrapper extends Component {
     render() {
-        const { classes, title, actions, children, variant, searchBar } = this.props;
+        const { classes, title, actions, children, variant, searchBar, contentClass } = this.props;
 
         return (
             <Paper className={ classes.root }>
@@ -59,7 +59,7 @@ class InnerPageWrapper extends Component {
                     }
                 </Toolbar>
                 <Divider light />
-                <div className={cn(classes.contentWrapper, { [classes.contentCenter]: variant === 'center'}) }>
+                <div className={cn(classes.contentWrapper, { [classes.contentCenter]: variant === 'center'}, contentClass) }>
                     { children }
                 </div>
             </Paper>
@@ -74,4 +74,5 @@ InnerPageWrapper.propTypes = {
     searchBar: PropTypes.node,
     actions: PropTypes.node,
     variant: PropTypes.string,
+    contentClass: PropTypes.string,
 };

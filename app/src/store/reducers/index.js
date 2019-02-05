@@ -9,6 +9,7 @@ import list from './listReducer';
 import apiResourceDetail from './apiResourceDetailReducer';
 import stages from './stagesReducer';
 import deployment from './deploymentReducer';
+import stageDetail from './stageDetailReducer';
 
 export default combineReducers({
     account,
@@ -21,4 +22,5 @@ export default combineReducers({
     apiResourceDetail,
     stages,
     deployment,
+    stageDetail,
 });

@@ -34,7 +34,9 @@ class Stages extends Component {
      * @param deployId
      */
     handleOnSettings = (name, deployId) => {
-        console.log('on settings', name, deployId);
+        const { accountId, apiId } = this.props.match.params;
+
+        this.props.history.push(`/account/${accountId}/api/${apiId}/stage/${name}/details`);
     };
 
     /**
