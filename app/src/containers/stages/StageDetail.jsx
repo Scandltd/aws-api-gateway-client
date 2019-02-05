@@ -118,7 +118,7 @@ class StageDetail extends Component {
      */
     renderTabContent(){
         const { tabValue } = this.state;
-        const {stage, stageLoading} = this.props;
+        const { stage, stageLoading } = this.props;
 
         switch (tabValue) {
             case 0:
@@ -129,7 +129,9 @@ class StageDetail extends Component {
 
             case 1:
 
-                return <StageVariables />;
+                return <StageVariables
+                    variables={ stage.variables || {}}
+                />;
 
             case 2:
                 const {

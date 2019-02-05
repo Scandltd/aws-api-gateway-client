@@ -14,7 +14,6 @@ import Button from '@material-ui/core/Button';
 const styles = theme => ({
     root: {
         width: '100%',
-        marginTop: theme.spacing.unit * 3,
         overflowX: 'auto',
     },
     table: {
@@ -42,8 +41,8 @@ class StageDeployHistory extends Component {
         }
 
         return (
-            <div>
-                <Table className={classes.table}>
+            <div className={ classes.root }>
+                <Table className={ classes.table }>
                     <TableHead>
                         <TableRow>
                             <TableCell>Deployment date</TableCell>
