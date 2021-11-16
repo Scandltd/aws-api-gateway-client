@@ -7,7 +7,7 @@
     "develop": "nodemon ./bin/www"
   },
   "dependencies": {
-    "aws-sdk": "^2.388.0",
+    "aws-sdk": "^2.814.0",
     "cookie-parser": "~1.4.3",
     "cors": "^2.8.5",
     "debug": "~2.6.9",
